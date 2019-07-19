@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        /* Basic Options */
+        "target": "es6",
+        "module": "commonjs",
+        "lib": [
+            "esnext"
+        ],
+        // "declarationMap": true,   
+        "sourceMap": true,
+        /* Strict Type-Checking Options */
+        "strict": true,
+        /* Additional Checks */
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        /* Module Resolution Options */
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+    }
+}
