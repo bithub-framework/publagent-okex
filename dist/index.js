@@ -20,7 +20,7 @@ class QuoteAgentOkexWebsocket {
                 this.okex.once('open', resolve);
                 this.okex.once('error', reject);
             });
-            this.okex.subscribe('spot/trade:btc-ustd');
+            this.okex.subscribe('spot/trade:btc-usdt');
             this.okex.on('message', msg => void console.log(msg));
         });
     }
