@@ -6,7 +6,8 @@
     "types": "./dist/index.d.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc -b"
+        "build": "tsc -b",
+        "start": "node -r source-map-support ./dist/main"
     },
     "repository": {
         "type": "git",
@@ -17,5 +18,13 @@
     "bugs": {
         "url": "https://github.com/zimtsui/quote-agent-okex-websocket/issues"
     },
-    "homepage": "https://github.com/zimtsui/quote-agent-okex-websocket#readme"
+    "homepage": "https://github.com/zimtsui/quote-agent-okex-websocket#readme",
+    "devDependencies": {
+        "typescript": "^3.5.3"
+    },
+    "dependencies": {
+        "@okfe/okex-node": "0.0.50",
+        "@types/node": "^12.6.8",
+        "source-map-support": "^0.5.12"
+    }
 }
