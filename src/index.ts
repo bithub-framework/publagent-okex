@@ -28,62 +28,64 @@ class QAOW {
     private subscriberTrade: SubscriberTrade | undefined;
     private subscriberDepth: SubscriberDepth | undefined;
     private state = States.READY;
-    private started: Promise<void> | undefined;
-    private stopped: Promise<void> | undefined;
 
     constructor(private stopping: (err?: Error) => void = () => { }) { }
 
+    private started: Promise<void> | undefined;
     start(): Promise<void> {
-        this.started = (async () => {
-            assert(this.state === States.READY);
-            this.state = States.STARTING;
-
-            await this.connectOkex();
-            await this.connectQuoteCenter();
-
-            this.okex!.on('message', msg =>
-                void this.okex!.emit('data', JSON.parse(msg)));
-
-            this.subscriberTrade = new SubscriberTrade(this.okex!);
-            this.subscriberTrade.on('data', pipe(
-                (trades: Trade[]): QDFATC => ({
-                    exchange: 'okex',
-                    pair: ['btc', 'usdt'],
-                    trades,
-                }),
-                JSON.stringify,
-                this.center!.send.bind(this.center!),
-            ));
-            this.subscriberTrade.on('error', logger.error);
-            this.subscriberTrade.on(
-                SubscriberTrade.States.DESTRUCTING.toString(),
-                this.stop,
-            );
-
-            this.subscriberDepth = new SubscriberDepth(this.okex!);
-            this.subscriberDepth.on('data', pipe(
-                (orderbook: Orderbook): QDFATC => ({
-                    exchange: 'okex',
-                    pair: ['btc', 'usdt'],
-                    orderbook,
-                }),
-                JSON.stringify,
-                this.center!.send.bind(this.center!),
-            ));
-            this.subscriberDepth.on('error', logger.error);
-            this.subscriberDepth.on(
-                SubscriberDepth.States.DESTRUCTING.toString(),
-                this.stop,
-            );
-
-            this.state = States.RUNNING;
-        })().catch(err => {
+        this.started = this._start().catch(err => {
             this.stop();
             throw err;
         });
         return this.started;
     }
 
+    async _start(): Promise<void> {
+        assert(this.state === States.READY);
+        this.state = States.STARTING;
+
+        await this.connectOkex();
+        await this.connectQuoteCenter();
+
+        this.okex!.on('message', msg =>
+            void this.okex!.emit('data', JSON.parse(msg)));
+
+        this.subscriberTrade = new SubscriberTrade(this.okex!);
+        this.subscriberTrade.on('data', pipe(
+            (trades: Trade[]): QDFATC => ({
+                exchange: 'okex',
+                pair: ['btc', 'usdt'],
+                trades,
+            }),
+            JSON.stringify,
+            this.center!.send.bind(this.center!),
+        ));
+        this.subscriberTrade.on('error', logger.error);
+        this.subscriberTrade.on(
+            SubscriberTrade.States.DESTRUCTING.toString(),
+            this.stop,
+        );
+
+        this.subscriberDepth = new SubscriberDepth(this.okex!);
+        this.subscriberDepth.on('data', pipe(
+            (orderbook: Orderbook): QDFATC => ({
+                exchange: 'okex',
+                pair: ['btc', 'usdt'],
+                orderbook,
+            }),
+            JSON.stringify,
+            this.center!.send.bind(this.center!),
+        ));
+        this.subscriberDepth.on('error', logger.error);
+        this.subscriberDepth.on(
+            SubscriberDepth.States.DESTRUCTING.toString(),
+            this.stop,
+        );
+
+        this.state = States.RUNNING;
+    }
+
+    private stopped: Promise<void> | undefined;
     @boundMethod
     stop(err?: Error): Promise<void> {
         if (this.state === States.STOPPING)
@@ -93,15 +95,18 @@ class QAOW {
                 .then(() => void this.stop())
                 .catch(() => void this.stop());
 
-        this.state = States.STOPPING;
-        this.stopped = (async () => {
-            this.stopping(err);
-            this.okex!.close();
-            this.center!.close();
-
-            this.state = States.READY;
-        })();
+        this.stopped = Promise.resolve(this._stop(err));
         return this.stopped;
+    }
+
+    private _stop(err?: Error): void {
+        this.state = States.STOPPING;
+
+        this.stopping(err);
+        this.okex!.close();
+        this.center!.close();
+
+        this.state = States.READY;
     }
 
     private async connectQuoteCenter(): Promise<void> {

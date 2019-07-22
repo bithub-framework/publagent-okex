@@ -43,7 +43,14 @@ class QAOW {
         this.state = States.READY;
     }
     start() {
-        this.started = (() => __awaiter(this, void 0, void 0, function* () {
+        this.started = this._start().catch(err => {
+            this.stop();
+            throw err;
+        });
+        return this.started;
+    }
+    _start() {
+        return __awaiter(this, void 0, void 0, function* () {
             assert_1.default(this.state === States.READY);
             this.state = States.STARTING;
             yield this.connectOkex();
@@ -66,11 +73,7 @@ class QAOW {
             this.subscriberDepth.on('error', logger_1.default.error);
             this.subscriberDepth.on(subscriber_depth_1.default.States.DESTRUCTING.toString(), this.stop);
             this.state = States.RUNNING;
-        }))().catch(err => {
-            this.stop();
-            throw err;
         });
-        return this.started;
     }
     stop(err) {
         if (this.state === States.STOPPING)
@@ -79,14 +82,15 @@ class QAOW {
             return this.started
                 .then(() => void this.stop())
                 .catch(() => void this.stop());
-        this.state = States.STOPPING;
-        this.stopped = (() => __awaiter(this, void 0, void 0, function* () {
-            this.stopping(err);
-            this.okex.close();
-            this.center.close();
-            this.state = States.READY;
-        }))();
+        this.stopped = Promise.resolve(this._stop(err));
         return this.stopped;
+    }
+    _stop(err) {
+        this.state = States.STOPPING;
+        this.stopping(err);
+        this.okex.close();
+        this.center.close();
+        this.state = States.READY;
     }
     connectQuoteCenter() {
         return __awaiter(this, void 0, void 0, function* () {
