@@ -11,26 +11,28 @@ const mathjs_1 = require("mathjs");
 ;
 class Incremental {
     constructor() {
-        this.map = {
-            bids: new Map(),
-            asks: new Map(),
-        };
+        this.bids = new Map();
+        this.asks = new Map();
     }
-    update({ order, id }) {
+    update({ order, raw: { 0: rawPrice } }) {
         if (order.action === interfaces_1.Action.BID)
             if (mathjs_1.equal(order.amount, 0))
-                this.map.bids.delete(id);
+                this.bids.delete(rawPrice);
             else
-                this.map.bids.set(id, order);
+                this.bids.set(rawPrice, order);
         else if (mathjs_1.equal(order.amount, 0))
-            this.map.asks.delete(id);
+            this.asks.delete(rawPrice);
         else
-            this.map.asks.set(id, order);
+            this.asks.set(rawPrice, order);
+    }
+    clear() {
+        this.bids.clear();
+        this.asks.clear();
     }
     get latest() {
         return {
-            bids: [...this.map.bids.values()].sort(({ price: price1 }, { price: price2 }) => -mathjs_1.compare(price1, price2)),
-            asks: [...this.map.asks.values()].sort(({ price: price1 }, { price: price2 }) => mathjs_1.compare(price1, price2)),
+            bids: [...this.bids.values()].sort(({ price: price1 }, { price: price2 }) => -mathjs_1.compare(price1, price2)),
+            asks: [...this.asks.values()].sort(({ price: price1 }, { price: price2 }) => mathjs_1.compare(price1, price2)),
         };
     }
 }

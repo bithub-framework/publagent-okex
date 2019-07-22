@@ -31,55 +31,60 @@ class QAOW {
 
     constructor(private stopping: (err?: Error) => void = () => { }) { }
 
-    async start(): Promise<void> {
-        assert(this.state === States.READY);
-        this.state = States.STARTING;
+    start(): Promise<void> {
+        return Bluebird.try(async () => {
+            assert(this.state === States.READY);
+            this.state = States.STARTING;
 
-        await this.connectOkex();
-        await this.connectQuoteCenter();
+            await this.connectOkex();
+            await this.connectQuoteCenter();
 
-        this.okex!.on('message', msg =>
-            void this.okex!.emit('data', JSON.parse(msg)));
+            this.okex!.on('message', msg =>
+                void this.okex!.emit('data', JSON.parse(msg)));
 
-        this.subscriberTrade = new SubscriberTrade(this.okex!);
-        this.subscriberTrade.on('data', pipe(
-            (trades: Trade[]): QDFATC => ({
-                exchange: 'okex',
-                pair: ['btc', 'usdt'],
-                trades,
-            }),
-            JSON.stringify,
-            this.center!.send.bind(this.center!),
-        ));
-        this.subscriberTrade.on('error', logger.error);
-        this.subscriberTrade.on(
-            SubscriberTrade.States.DESTRUCTING.toString(),
-            () => Bluebird
-                .try(this.stop.bind(this))
-                .catch(() => { }));
+            this.subscriberTrade = new SubscriberTrade(this.okex!);
+            this.subscriberTrade.on('data', pipe(
+                (trades: Trade[]): QDFATC => ({
+                    exchange: 'okex',
+                    pair: ['btc', 'usdt'],
+                    trades,
+                }),
+                JSON.stringify,
+                this.center!.send.bind(this.center!),
+            ));
+            this.subscriberTrade.on('error', logger.error);
+            this.subscriberTrade.on(
+                SubscriberTrade.States.DESTRUCTING.toString(),
+                () => Bluebird
+                    .try(this.stop.bind(this))
+                    .catch(() => { }));
 
-        this.subscriberDepth = new SubscriberDepth(this.okex!);
-        this.subscriberDepth.on('data', pipe(
-            (orderbook: Orderbook): QDFATC => ({
-                exchange: 'okex',
-                pair: ['btc', 'usdt'],
-                orderbook,
-            }),
-            JSON.stringify,
-            this.center!.send.bind(this.center!),
-        ));
-        this.subscriberDepth.on('error', logger.error);
-        this.subscriberDepth.on(
-            SubscriberDepth.States.DESTRUCTING.toString(),
-            () => Bluebird
-                .try(() => void this.stop())
-                .catch(() => { }));
+            this.subscriberDepth = new SubscriberDepth(this.okex!);
+            this.subscriberDepth.on('data', pipe(
+                (orderbook: Orderbook): QDFATC => ({
+                    exchange: 'okex',
+                    pair: ['btc', 'usdt'],
+                    orderbook,
+                }),
+                JSON.stringify,
+                this.center!.send.bind(this.center!),
+            ));
+            this.subscriberDepth.on('error', logger.error);
+            this.subscriberDepth.on(
+                SubscriberDepth.States.DESTRUCTING.toString(),
+                () => Bluebird
+                    .try(() => void this.stop())
+                    .catch(() => { }));
 
-        this.state = States.RUNNING;
+            this.state = States.RUNNING;
+        }).catch(err => {
+            this.stop();
+            throw err;
+        });
     }
 
     stop(err?: Error): void {
-        assert(this.state !== States.STOPPING);
+        if (this.state === States.STOPPING) return;
         this.state = States.STOPPING;
 
         this.stopping(err);

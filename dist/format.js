@@ -18,7 +18,7 @@ function formatOrder(rawOrder, action) {
     };
     return {
         order,
-        id: rawOrder[0],
+        raw: [rawOrder[0], rawOrder[1]],
     };
 }
 exports.formatOrder = formatOrder;

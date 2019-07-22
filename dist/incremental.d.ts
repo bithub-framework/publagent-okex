@@ -5,15 +5,17 @@
  * 因为 n 很小，所以直接哈希。
  */
 import { Orderbook, Order } from 'interfaces';
-interface OrderWithID {
+interface OrderAndRaw {
     order: Order;
-    id: string;
+    raw: [string, string];
 }
 declare class Incremental {
-    private map;
+    private bids;
+    private asks;
     constructor();
-    update({ order, id }: OrderWithID): void;
+    update({ order, raw: { 0: rawPrice } }: OrderAndRaw): void;
+    clear(): void;
     readonly latest: Orderbook;
 }
 export default Incremental;
-export { OrderWithID, };
+export { OrderAndRaw, };
