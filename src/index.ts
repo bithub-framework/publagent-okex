@@ -3,7 +3,7 @@ import fEvent from 'first-event';
 import WebSocket from 'ws';
 import fse from 'fs-extra';
 import path from 'path';
-import Bluebird from 'bluebird';
+import { boundMethod } from 'autobind-decorator';
 import assert from 'assert';
 import { flow as pipe } from 'lodash';
 import { Trade, Orderbook, QuoteDataFromAgentToCenter as QDFATC } from 'interfaces';
@@ -28,11 +28,13 @@ class QAOW {
     private subscriberTrade: SubscriberTrade | undefined;
     private subscriberDepth: SubscriberDepth | undefined;
     private state = States.READY;
+    private started: Promise<void> | undefined;
+    private stopped: Promise<void> | undefined;
 
     constructor(private stopping: (err?: Error) => void = () => { }) { }
 
     start(): Promise<void> {
-        return Bluebird.try(async () => {
+        this.started = (async () => {
             assert(this.state === States.READY);
             this.state = States.STARTING;
 
@@ -55,9 +57,8 @@ class QAOW {
             this.subscriberTrade.on('error', logger.error);
             this.subscriberTrade.on(
                 SubscriberTrade.States.DESTRUCTING.toString(),
-                () => Bluebird
-                    .try(this.stop.bind(this))
-                    .catch(() => { }));
+                this.stop,
+            );
 
             this.subscriberDepth = new SubscriberDepth(this.okex!);
             this.subscriberDepth.on('data', pipe(
@@ -72,26 +73,35 @@ class QAOW {
             this.subscriberDepth.on('error', logger.error);
             this.subscriberDepth.on(
                 SubscriberDepth.States.DESTRUCTING.toString(),
-                () => Bluebird
-                    .try(() => void this.stop())
-                    .catch(() => { }));
+                this.stop,
+            );
 
             this.state = States.RUNNING;
-        }).catch(err => {
+        })().catch(err => {
             this.stop();
             throw err;
         });
+        return this.started;
     }
 
-    stop(err?: Error): void {
-        if (this.state === States.STOPPING) return;
+    @boundMethod
+    stop(err?: Error): Promise<void> {
+        if (this.state === States.STOPPING)
+            return this.stopped!;
+        if (this.state === States.STARTING)
+            return this.started!
+                .then(() => void this.stop())
+                .catch(() => void this.stop());
+
         this.state = States.STOPPING;
+        this.stopped = (async () => {
+            this.stopping(err);
+            this.okex!.close();
+            this.center!.close();
 
-        this.stopping(err);
-        this.okex!.close();
-        this.center!.close();
-
-        this.state = States.READY;
+            this.state = States.READY;
+        })();
+        return this.stopped;
     }
 
     private async connectQuoteCenter(): Promise<void> {

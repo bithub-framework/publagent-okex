@@ -11,7 +11,6 @@
  *
  * 有以下事件
  *
- * - destructing
  * - 5 个状态
  * - data
  * - error

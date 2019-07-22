@@ -5,9 +5,11 @@ declare class QAOW {
     private subscriberTrade;
     private subscriberDepth;
     private state;
+    private started;
+    private stopped;
     constructor(stopping?: (err?: Error) => void);
     start(): Promise<void>;
-    stop(err?: Error): void;
+    stop(err?: Error): Promise<void>;
     private connectQuoteCenter;
     private connectOkex;
 }

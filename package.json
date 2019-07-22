@@ -30,6 +30,7 @@
         "@types/node": "^12.6.8",
         "@types/pako": "^1.0.1",
         "@types/ws": "^6.0.1",
+        "autobind-decorator": "^2.4.0",
         "bluebird": "^3.5.5",
         "crc-32": "^1.2.0",
         "first-event": "git+https://github.com/zimtsui/first-event.git",

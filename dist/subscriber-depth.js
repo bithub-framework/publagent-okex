@@ -12,7 +12,6 @@
  *
  * 有以下事件
  *
- * - destructing
  * - 5 个状态
  * - data
  * - error
@@ -30,7 +29,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bluebird_1 = __importDefault(require("bluebird"));
 const events_1 = __importDefault(require("events"));
 const incremental_1 = __importDefault(require("./incremental"));
 const lodash_1 = require("lodash");
@@ -53,16 +51,14 @@ class SubscriberDepth extends events_1.default {
         this.onOkexClose = () => {
             this.destructor();
         };
-        this.onChecksumError = () => {
-            return bluebird_1.default.try(() => __awaiter(this, void 0, void 0, function* () {
-                this.incremental.clear();
-                yield this.unsubscribe();
-                yield this.subscribe();
-            })).catch(err => {
-                this.emit('error', err);
-                this.destructor();
-            });
-        };
+        this.onChecksumError = () => (() => __awaiter(this, void 0, void 0, function* () {
+            this.incremental.clear();
+            yield this.unsubscribe();
+            yield this.subscribe();
+        }))().catch(err => {
+            this.emit('error', err);
+            this.destructor();
+        });
         this.onData = (raw) => {
             if (raw.table !== 'spot/depth')
                 return;

@@ -11,14 +11,12 @@
  * 
  * 有以下事件
  * 
- * - destructing
  * - 5 个状态
  * - data
  * - error
  * - checksum error
  */
 
-import Bluebird from 'bluebird';
 import EventEmitter from 'events';
 import V3WebsocketClient from './official-v3-websocket-client';
 import Incremental from './incremental';
@@ -71,16 +69,14 @@ class SubscriberDepth extends EventEmitter {
         this.destructor();
     }
 
-    private onChecksumError = (): Promise<void> => {
-        return Bluebird.try(async () => {
-            this.incremental.clear();
-            await this.unsubscribe();
-            await this.subscribe();
-        }).catch(err => {
-            this.emit('error', err);
-            this.destructor();
-        });
-    }
+    private onChecksumError = (): Promise<void> => (async () => {
+        this.incremental.clear();
+        await this.unsubscribe();
+        await this.subscribe();
+    })().catch(err => {
+        this.emit('error', err);
+        this.destructor();
+    });
 
     private onDepthSub: ((data: any) => void) | undefined;
     private subscribe(): Promise<void> {
