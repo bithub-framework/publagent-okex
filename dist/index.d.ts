@@ -1,7 +1,18 @@
-declare class QuoteAgentOkexWebsocket {
+declare class QAOW {
+    private stopping;
     private okex;
-    constructor();
+    private center;
+    private incremental;
+    private state;
+    constructor(stopping?: (err?: Error) => void);
     start(): Promise<void>;
-    stop(): void;
+    stop(err?: Error): void;
+    private onMessage;
+    private subscribeTrade;
+    private subscribeDepth;
+    private connectQuoteCenter;
+    private connectOkex;
+    private normalize;
+    private updateOrders;
 }
-export default QuoteAgentOkexWebsocket;
+export default QAOW;

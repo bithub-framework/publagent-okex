@@ -16,5 +16,7 @@
         /* Module Resolution Options */
         "esModuleInterop": true,
         "resolveJsonModule": true,
+        /* Experimental Options */
+        "experimentalDecorators": true,
     }
 }

@@ -11,7 +11,7 @@ agent.start()
     timers_1.default.setTimeout(() => {
         agent.stop();
     }, 10000);
-}).catch(err => {
+}).catch((err) => {
     console.log(err);
 });
 //# sourceMappingURL=main.js.map
