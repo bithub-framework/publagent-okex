@@ -1,39 +1,76 @@
 "use strict";
 /**
- * 设单位时间内 k 次 update，orderbook 平均 size 为 n
- * 平衡树 O(klogn + kn) = O(kn)
- * 哈希 O(k+ knlogn) = O(knlogn)
+ * 设单位时间内 k 次 update，p 次 latest 或 checksum
+ * orderbook 平均 size 为 n
+ * 平衡树 O(klogn + pn)
+ * 哈希 O(k + pnlogn)
  * 因为 n 很小，所以直接哈希。
  */
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("interfaces");
-const mathjs_1 = require("mathjs");
-;
+const lodash_1 = require("lodash");
+const official_v3_websocket_client_1 = __importDefault(require("./official-v3-websocket-client"));
+const assert_1 = __importDefault(require("assert"));
 class Incremental {
     constructor() {
-        this.bids = new Map();
         this.asks = new Map();
+        this.bids = new Map();
     }
-    update({ order, raw: { 0: rawPrice } }) {
-        if (order.action === interfaces_1.Action.BID)
-            if (mathjs_1.equal(order.amount, 0))
-                this.bids.delete(rawPrice);
+    update(orderString) {
+        const orderNumber = this.formatOrderStringToOrder(orderString);
+        const orderBoth = {
+            string: orderString,
+            number: orderNumber,
+        };
+        if (orderString.action === interfaces_1.Action.ASK)
+            if (orderString.amount === '0')
+                this.asks.delete(orderString.price);
             else
-                this.bids.set(rawPrice, order);
-        else if (mathjs_1.equal(order.amount, 0))
-            this.asks.delete(rawPrice);
+                this.asks.set(orderString.price, orderBoth);
+        else if (orderString.amount === '0')
+            this.bids.delete(orderString.price);
         else
-            this.asks.set(rawPrice, order);
+            this.bids.set(orderString.price, orderBoth);
     }
     clear() {
-        this.bids.clear();
         this.asks.clear();
+        this.bids.clear();
     }
-    get latest() {
+    formatOrderStringToOrder(order) {
         return {
-            bids: [...this.bids.values()].sort(({ price: price1 }, { price: price2 }) => -mathjs_1.compare(price1, price2)),
-            asks: [...this.asks.values()].sort(({ price: price1 }, { price: price2 }) => mathjs_1.compare(price1, price2)),
+            action: order.action,
+            price: lodash_1.flow(Number.parseFloat, x => x * 100, Math.round)(order.price),
+            amount: Number.parseFloat(order.amount),
         };
+    }
+    getLatest(expected) {
+        const sortedAsks = [...this.asks.values()]
+            .sort((order1, order2) => order1.number.price - order2.number.price);
+        const sortedBids = [...this.asks.values()]
+            .sort((order1, order2) => order2.number.price - order1.number.price);
+        assert_1.default(this.checksum(sortedAsks, sortedBids, expected));
+        return {
+            asks: sortedAsks.map(orderBoth => orderBoth.number),
+            bids: sortedBids.map(orderBoth => orderBoth.number),
+        };
+    }
+    checksum(sortedAsks, sortedBids, expected) {
+        return official_v3_websocket_client_1.default.checksum({
+            data: [{
+                    asks: sortedAsks.map(orderBoth => [
+                        orderBoth.string.price,
+                        orderBoth.string.amount,
+                    ]),
+                    bids: sortedBids.map(orderBoth => [
+                        orderBoth.string.price,
+                        orderBoth.string.amount,
+                    ]),
+                    checksum: expected,
+                }]
+        });
     }
 }
 exports.default = Incremental;

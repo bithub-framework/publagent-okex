@@ -1,6 +1,5 @@
-import { OrderAndRaw } from './incremental';
-import { Trade, Action } from 'interfaces';
-declare function formatTrades(trades: any[]): Trade[];
-declare function formatOrder(rawOrder: [string, string, number], action: Action): OrderAndRaw;
-declare function formatOrderbook(orderbook: any): OrderAndRaw[];
-export { formatOrder, formatOrderbook, formatTrades, };
+import { Trade } from 'interfaces';
+import { RawTradeData, RawOrderbookData, OrderString } from './interface';
+declare function formatRawTrades(trades: RawTradeData['data']): Trade[];
+declare function formatRawOrderbookToOrdersString(orderbook: RawOrderbookData['data'][0]): OrderString[];
+export { formatRawOrderbookToOrdersString, formatRawTrades, };

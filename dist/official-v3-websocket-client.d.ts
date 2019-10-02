@@ -9,7 +9,7 @@ export declare class V3WebsocketClient extends EventEmitter {
     login(apiKey: string, apiSecret: string, passphrase: string): void;
     subscribe(...args: string[]): void;
     unsubscribe(...args: string[]): void;
-    checksum(data: any): boolean;
+    static checksum(data: any): boolean;
     private send;
     private onOpen;
     private initTimer;

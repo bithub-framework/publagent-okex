@@ -1,9 +1,13 @@
-import { OrderAndRaw } from './incremental';
 import {
-    Trade, Action, Order,
+    Trade, Action,
 } from 'interfaces';
+import {
+    RawTradeData,
+    RawOrderbookData,
+    OrderString,
+} from './interface';
 
-function formatTrades(trades: any[]): Trade[] {
+function formatRawTrades(trades: RawTradeData['data']): Trade[] {
     return trades.map(trade => ({
         action: trade.side === 'buy' ? Action.BID : Action.ASK,
         price: Number.parseFloat(trade.price),
@@ -12,29 +16,30 @@ function formatTrades(trades: any[]): Trade[] {
     })).reverse();
 }
 
-function formatOrder(rawOrder: [string, string, number], action: Action): OrderAndRaw {
-    const order: Order = {
-        action,
-        price: Number.parseFloat(rawOrder[0]),
-        amount: Number.parseFloat(rawOrder[1]),
-    };
+function formatRawOrderToOrderString(
+    rawOrder: RawOrderbookData['data'][0]['asks'][0],
+    action: Action
+): OrderString {
     return {
-        order,
-        raw: [rawOrder[0], rawOrder[1]],
-    }
+        action,
+        price: rawOrder[0],
+        amount: rawOrder[1],
+    };
+
 }
 
-function formatOrderbook(orderbook: any): OrderAndRaw[] {
+function formatRawOrderbookToOrdersString(
+    orderbook: RawOrderbookData['data'][0]
+): OrderString[] {
     return [
-        ...orderbook.bids.map((rawOrder: any) =>
-            formatOrder(rawOrder, Action.BID)),
-        ...orderbook.asks.map((rawOrder: any) =>
-            formatOrder(rawOrder, Action.ASK)),
+        ...orderbook.bids.map(rawOrder =>
+            formatRawOrderToOrderString(rawOrder, Action.BID)),
+        ...orderbook.asks.map(rawOrder =>
+            formatRawOrderToOrderString(rawOrder, Action.ASK)),
     ]
 }
 
 export {
-    formatOrder,
-    formatOrderbook,
-    formatTrades,
+    formatRawOrderbookToOrdersString,
+    formatRawTrades,
 };

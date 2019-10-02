@@ -51,7 +51,7 @@ export class V3WebsocketClient extends EventEmitter {
         this.send({ op: 'unsubscribe', args });
     }
 
-    checksum(data: any) {
+    static checksum(data: any) {
         if (data == null || data == undefined) {
             return false;
         }

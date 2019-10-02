@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("interfaces");
-function formatTrades(trades) {
+function formatRawTrades(trades) {
     return trades.map(trade => ({
         action: trade.side === 'buy' ? interfaces_1.Action.BID : interfaces_1.Action.ASK,
         price: Number.parseFloat(trade.price),
@@ -9,24 +9,19 @@ function formatTrades(trades) {
         time: new Date(trade.timestamp).getTime(),
     })).reverse();
 }
-exports.formatTrades = formatTrades;
-function formatOrder(rawOrder, action) {
-    const order = {
-        action,
-        price: Number.parseFloat(rawOrder[0]),
-        amount: Number.parseFloat(rawOrder[1]),
-    };
+exports.formatRawTrades = formatRawTrades;
+function formatRawOrderToOrderString(rawOrder, action) {
     return {
-        order,
-        raw: [rawOrder[0], rawOrder[1]],
+        action,
+        price: rawOrder[0],
+        amount: rawOrder[1],
     };
 }
-exports.formatOrder = formatOrder;
-function formatOrderbook(orderbook) {
+function formatRawOrderbookToOrdersString(orderbook) {
     return [
-        ...orderbook.bids.map((rawOrder) => formatOrder(rawOrder, interfaces_1.Action.BID)),
-        ...orderbook.asks.map((rawOrder) => formatOrder(rawOrder, interfaces_1.Action.ASK)),
+        ...orderbook.bids.map(rawOrder => formatRawOrderToOrderString(rawOrder, interfaces_1.Action.BID)),
+        ...orderbook.asks.map(rawOrder => formatRawOrderToOrderString(rawOrder, interfaces_1.Action.ASK)),
     ];
 }
-exports.formatOrderbook = formatOrderbook;
+exports.formatRawOrderbookToOrdersString = formatRawOrderbookToOrdersString;
 //# sourceMappingURL=format.js.map

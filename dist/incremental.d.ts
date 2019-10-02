@@ -1,21 +1,19 @@
 /**
- * 设单位时间内 k 次 update，orderbook 平均 size 为 n
- * 平衡树 O(klogn + kn) = O(kn)
- * 哈希 O(k+ knlogn) = O(knlogn)
+ * 设单位时间内 k 次 update，p 次 latest 或 checksum
+ * orderbook 平均 size 为 n
+ * 平衡树 O(klogn + pn)
+ * 哈希 O(k + pnlogn)
  * 因为 n 很小，所以直接哈希。
  */
-import { Orderbook, Order } from 'interfaces';
-interface OrderAndRaw {
-    order: Order;
-    raw: [string, string];
-}
+import { Orderbook } from 'interfaces';
+import { OrderString } from './interface';
 declare class Incremental {
-    private bids;
     private asks;
-    constructor();
-    update({ order, raw: { 0: rawPrice } }: OrderAndRaw): void;
+    private bids;
+    update(orderString: OrderString): void;
     clear(): void;
-    readonly latest: Orderbook;
+    private formatOrderStringToOrder;
+    getLatest(expected: number): Orderbook;
+    private checksum;
 }
 export default Incremental;
-export { OrderAndRaw, };

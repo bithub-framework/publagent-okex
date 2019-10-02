@@ -1,18 +1,14 @@
-declare class QAOW {
-    private stopping;
+import Autonomous from 'autonomous';
+declare class QuoteAgentOkexWebsocket extends Autonomous {
     private okex;
     private center;
     private subscriberTrade;
-    private subscriberDepth;
-    private state;
-    constructor(stopping?: (err?: Error) => void);
-    private started;
-    start(): Promise<void>;
-    _start(): Promise<void>;
-    private stopped;
-    stop(err?: Error): Promise<void>;
-    private _stop;
+    private subscriberOrderbook;
+    protected _start(): Promise<void>;
+    protected _stop(): Promise<void>;
     private connectQuoteCenter;
     private connectOkex;
+    private subscribeTrade;
+    private subscribeOrderbook;
 }
-export default QAOW;
+export default QuoteAgentOkexWebsocket;

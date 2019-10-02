@@ -1,53 +1,101 @@
 /**
- * 设单位时间内 k 次 update，orderbook 平均 size 为 n
- * 平衡树 O(klogn + kn) = O(kn)
- * 哈希 O(k+ knlogn) = O(knlogn)
+ * 设单位时间内 k 次 update，p 次 latest 或 checksum
+ * orderbook 平均 size 为 n
+ * 平衡树 O(klogn + pn)
+ * 哈希 O(k + pnlogn)
  * 因为 n 很小，所以直接哈希。
  */
 
 import { Orderbook, Order, Action } from 'interfaces';
-import { equal, compare } from 'mathjs';
+import { OrderString } from './interface';
+import { flow as pipe } from 'lodash';
+import V3WebsocketClient from './official-v3-websocket-client';
+import assert from 'assert';
 
-interface OrderAndRaw {
-    order: Order,
-    raw: [string, string],
-};
+type OrderNumber = Order;
+
+interface OrderBoth {
+    number: OrderNumber,
+    string: OrderString,
+}
 
 class Incremental {
-    private bids = new Map<string, Order>();
-    private asks = new Map<string, Order>();
+    private asks = new Map<string, OrderBoth>();
+    private bids = new Map<string, OrderBoth>();
 
-    constructor() { }
+    update(orderString: OrderString) {
+        const orderNumber = this.formatOrderStringToOrder(orderString);
+        const orderBoth: OrderBoth = {
+            string: orderString,
+            number: orderNumber,
+        };
 
-    update({ order, raw: { 0: rawPrice } }: OrderAndRaw): void {
-        if (order.action === Action.BID)
-            if (equal(order.amount, 0))
-                this.bids.delete(rawPrice);
-            else this.bids.set(rawPrice, order);
+        if (orderString.action === Action.ASK)
+            if (orderString.amount === '0')
+                this.asks.delete(orderString.price);
+            else this.asks.set(orderString.price, orderBoth);
         else
-            if (equal(order.amount, 0))
-                this.asks.delete(rawPrice);
-            else this.asks.set(rawPrice, order);
+            if (orderString.amount === '0')
+                this.bids.delete(orderString.price);
+            else this.bids.set(orderString.price, orderBoth);
     }
 
     clear(): void {
-        this.bids.clear();
         this.asks.clear();
+        this.bids.clear();
     }
 
-    get latest(): Orderbook {
+    private formatOrderStringToOrder(order: OrderString): Order {
         return {
-            bids: [...this.bids.values()].sort(
-                ({ price: price1 }, { price: price2 }) =>
-                    -<number>compare(price1, price2)),
-            asks: [...this.asks.values()].sort(
-                ({ price: price1 }, { price: price2 }) =>
-                    <number>compare(price1, price2)),
+            action: order.action,
+            price: pipe(
+                Number.parseFloat,
+                x => x * 100,
+                Math.round,
+            )(order.price),
+            amount: Number.parseFloat(order.amount),
+        };
+    }
+
+    getLatest(expected: number): Orderbook {
+        const sortedAsks = [...this.asks.values()]
+            .sort((order1, order2) =>
+                order1.number.price - order2.number.price);
+        const sortedBids = [...this.asks.values()]
+            .sort((order1, order2) =>
+                order2.number.price - order1.number.price);
+
+        assert(this.checksum(
+            sortedAsks,
+            sortedBids,
+            expected,
+        ));
+
+        return {
+            asks: sortedAsks.map(orderBoth => orderBoth.number),
+            bids: sortedBids.map(orderBoth => orderBoth.number),
         }
+    }
+
+    private checksum(
+        sortedAsks: OrderBoth[],
+        sortedBids: OrderBoth[],
+        expected: number,
+    ): boolean {
+        return V3WebsocketClient.checksum({
+            data: [{
+                asks: sortedAsks.map(orderBoth => [
+                    orderBoth.string.price,
+                    orderBoth.string.amount,
+                ]),
+                bids: sortedBids.map(orderBoth => [
+                    orderBoth.string.price,
+                    orderBoth.string.amount,
+                ]),
+                checksum: expected,
+            }]
+        });
     }
 }
 
 export default Incremental;
-export {
-    OrderAndRaw,
-};
