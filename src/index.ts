@@ -13,9 +13,12 @@ import logger from 'console';
 import Autonomous from 'autonomous';
 import { RawErrorData } from './interface';
 import EventEmitter from 'events';
+import process from 'process';
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 const config: {
-    QUOTE_CENTER_PORT: number,
+    QUOTE_CENTER_PORT: number;
+    OKEX_URL: string;
 } = fse.readJsonSync(path.join(__dirname, '../cfg/config.json'));
 
 class QuoteAgentOkexWebsocket extends Autonomous {
@@ -32,14 +35,15 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        this.okex.close();
-        this.center.close();
+        if (this.okex) this.okex.close();
+        if (this.center) this.center.close();
     }
 
     private async connectQuoteCenter(): Promise<void> {
         this.center = new WebSocket(
             `ws://localhost:${config.QUOTE_CENTER_PORT}`);
         await EventEmitter.once(this.center, 'open');
+        if (DEBUG) logger.log('quote center connected');
 
         this.center.on('error', (err: Error) => {
             logger.error(err);
@@ -48,11 +52,12 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     }
 
     private async connectOkex(): Promise<void> {
-        this.okex = new V3WebsocketClient();
+        this.okex = new V3WebsocketClient(config.OKEX_URL);
         this.okex.connect();
 
         // 会自动处理 'error' 事件，详见文档。
         await EventEmitter.once(this.okex, 'open');
+        if (DEBUG) logger.log('okex connected');
 
         this.okex.on('message', msg =>
             void this.okex.emit('rawData', JSON.parse(msg)));
@@ -82,6 +87,9 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             logger.error(err);
             this.stop();
         });
+
+        if (DEBUG) this.subscriberTrade.on('subscribed', () =>
+            void logger.log('trade subscribed'));
     }
 
     private subscribeOrderbook(): void {
@@ -99,6 +107,9 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             logger.error(err);
             this.stop();
         });
+
+        if (DEBUG) this.subscriberOrderbook.on('subscribed', () =>
+            void logger.log('orderbook subscribed'));
     }
 }
 

@@ -61,7 +61,7 @@ class Incremental {
         const sortedAsks = [...this.asks.values()]
             .sort((order1, order2) =>
                 order1.number.price - order2.number.price);
-        const sortedBids = [...this.asks.values()]
+        const sortedBids = [...this.bids.values()]
             .sort((order1, order2) =>
                 order2.number.price - order1.number.price);
 

@@ -7,7 +7,9 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc -b",
-        "start": "node -r source-map-support ./dist/main"
+        "start": "pandora start --env=\"NODE_ENV=production\"",
+        "stop": "pandora stop",
+        "dev": "pandora dev"
     },
     "repository": {
         "type": "git",

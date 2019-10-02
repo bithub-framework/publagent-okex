@@ -1,3 +1,4 @@
 {
-    "QUOTE_CENTER_PORT": 12001
+    "QUOTE_CENTER_PORT": 12001,
+    "OKEX_URL": "wss://real.okex.com:8443/ws/v3"
 }

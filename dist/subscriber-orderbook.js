@@ -30,7 +30,7 @@ class SubscriberOrderbook extends events_1.default {
     subscribe() {
         this.okex.subscribe('spot/depth:BTC-USDT');
         this.onOrderbookSub = raw => {
-            if (raw.channel !== 'spot/deoth:BTC-USDT')
+            if (raw.channel !== 'spot/depth:BTC-USDT')
                 return;
             this.okex.off('rawData', this.onOrderbookSub);
             if (raw.event === 'subscribe')

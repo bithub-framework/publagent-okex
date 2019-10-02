@@ -17,7 +17,7 @@ class SubscriberOrderbook extends EventEmitter {
     private subscribe(): void {
         this.okex.subscribe('spot/depth:BTC-USDT');
         this.onOrderbookSub = raw => {
-            if ((<any>raw).channel !== 'spot/deoth:BTC-USDT') return;
+            if ((<any>raw).channel !== 'spot/depth:BTC-USDT') return;
             this.okex.off('rawData', this.onOrderbookSub);
             if (raw.event === 'subscribe') this.emit('subscribed');
         }
