@@ -9,12 +9,9 @@ import {
 } from 'interfaces';
 import SubscriberTrade from './subscriber-trade';
 import SubscriberOrderbook from './subscriber-orderbook';
-import logger from 'console';
 import Autonomous from 'autonomous';
 import { RawErrorData } from './interface';
 import EventEmitter from 'events';
-import process from 'process';
-const DEBUG = process.env.NODE_ENV !== 'production';
 
 const config: {
     QUOTE_CENTER_PORT: number;
@@ -43,10 +40,10 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         this.center = new WebSocket(
             `ws://localhost:${config.QUOTE_CENTER_PORT}`);
         await EventEmitter.once(this.center, 'open');
-        if (DEBUG) logger.log('quote center connected');
+        console.log('quote center connected');
 
         this.center.on('error', (err: Error) => {
-            logger.error(err);
+            console.error(err);
             this.stop();
         });
     }
@@ -57,17 +54,17 @@ class QuoteAgentOkexWebsocket extends Autonomous {
 
         // 会自动处理 'error' 事件，详见文档。
         await EventEmitter.once(this.okex, 'open');
-        if (DEBUG) logger.log('okex connected');
+        console.log('okex connected');
 
         this.okex.on('message', msg =>
             void this.okex.emit('rawData', JSON.parse(msg)));
         this.okex.on('rawData', (raw: RawErrorData) => {
             if ((<any>raw).event !== 'error') return;
-            logger.error(new Error(raw.message));
+            console.error(new Error(raw.message));
             this.stop();
         });
         this.okex.on('error', (err: Error) => {
-            logger.error(err);
+            console.error(err);
             this.stop();
         });
     }
@@ -84,12 +81,12 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             (data: string) => this.center.send(data),
         ));
         this.subscriberTrade.on('error', (err: Error) => {
-            logger.error(err);
+            console.error(err);
             this.stop();
         });
 
-        if (DEBUG) this.subscriberTrade.on('subscribed', () =>
-            void logger.log('trade subscribed'));
+        this.subscriberTrade.on('subscribed', () =>
+            void console.log('trade subscribed'));
     }
 
     private subscribeOrderbook(): void {
@@ -104,12 +101,12 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             (data: string) => this.center.send(data),
         ));
         this.subscriberOrderbook.on('error', (err: Error) => {
-            logger.error(err);
+            console.error(err);
             this.stop();
         });
 
-        if (DEBUG) this.subscriberOrderbook.on('subscribed', () =>
-            void logger.log('orderbook subscribed'));
+        this.subscriberOrderbook.on('subscribed', () =>
+            void console.log('orderbook subscribed'));
     }
 }
 

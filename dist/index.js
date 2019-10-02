@@ -18,11 +18,8 @@ const path_1 = __importDefault(require("path"));
 const lodash_1 = require("lodash");
 const subscriber_trade_1 = __importDefault(require("./subscriber-trade"));
 const subscriber_orderbook_1 = __importDefault(require("./subscriber-orderbook"));
-const console_1 = __importDefault(require("console"));
 const autonomous_1 = __importDefault(require("autonomous"));
 const events_1 = __importDefault(require("events"));
-const process_1 = __importDefault(require("process"));
-const DEBUG = process_1.default.env.NODE_ENV !== 'production';
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 class QuoteAgentOkexWebsocket extends autonomous_1.default {
     _start() {
@@ -45,10 +42,9 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             this.center = new ws_1.default(`ws://localhost:${config.QUOTE_CENTER_PORT}`);
             yield events_1.default.once(this.center, 'open');
-            if (DEBUG)
-                console_1.default.log('quote center connected');
+            console.log('quote center connected');
             this.center.on('error', (err) => {
-                console_1.default.error(err);
+                console.error(err);
                 this.stop();
             });
         });
@@ -59,17 +55,16 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             this.okex.connect();
             // 会自动处理 'error' 事件，详见文档。
             yield events_1.default.once(this.okex, 'open');
-            if (DEBUG)
-                console_1.default.log('okex connected');
+            console.log('okex connected');
             this.okex.on('message', msg => void this.okex.emit('rawData', JSON.parse(msg)));
             this.okex.on('rawData', (raw) => {
                 if (raw.event !== 'error')
                     return;
-                console_1.default.error(new Error(raw.message));
+                console.error(new Error(raw.message));
                 this.stop();
             });
             this.okex.on('error', (err) => {
-                console_1.default.error(err);
+                console.error(err);
                 this.stop();
             });
         });
@@ -82,11 +77,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             trades,
         }), JSON.stringify, (data) => this.center.send(data)));
         this.subscriberTrade.on('error', (err) => {
-            console_1.default.error(err);
+            console.error(err);
             this.stop();
         });
-        if (DEBUG)
-            this.subscriberTrade.on('subscribed', () => void console_1.default.log('trade subscribed'));
+        this.subscriberTrade.on('subscribed', () => void console.log('trade subscribed'));
     }
     subscribeOrderbook() {
         this.subscriberOrderbook = new subscriber_orderbook_1.default(this.okex);
@@ -96,11 +90,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             orderbook,
         }), JSON.stringify, (data) => this.center.send(data)));
         this.subscriberOrderbook.on('error', (err) => {
-            console_1.default.error(err);
+            console.error(err);
             this.stop();
         });
-        if (DEBUG)
-            this.subscriberOrderbook.on('subscribed', () => void console_1.default.log('orderbook subscribed'));
+        this.subscriberOrderbook.on('subscribed', () => void console.log('orderbook subscribed'));
     }
 }
 exports.default = QuoteAgentOkexWebsocket;

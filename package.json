@@ -25,25 +25,17 @@
         "typescript": "^3.5.3"
     },
     "dependencies": {
-        "@types/bluebird": "^3.5.27",
         "@types/fs-extra": "^8.0.0",
         "@types/lodash": "^4.14.136",
-        "@types/mathjs": "^6.0.1",
         "@types/node": "^12.6.8",
         "@types/pako": "^1.0.1",
         "@types/ws": "^6.0.1",
-        "autobind-decorator": "^2.4.0",
         "autonomous": "git+https://github.com/zimtsui/autonomous.git",
-        "bluebird": "^3.5.5",
         "crc-32": "^1.2.0",
-        "first-event": "git+https://github.com/zimtsui/first-event.git",
         "fs-extra": "^8.1.0",
         "interfaces": "git+https://github.com/zimtsui/interfaces.git",
         "lodash": "^4.17.15",
-        "mathjs": "^6.0.3",
         "pako": "^1.0.10",
-        "source-map-support": "^0.5.12",
-        "winston": "^3.2.1",
         "ws": "^7.1.1"
     }
 }
