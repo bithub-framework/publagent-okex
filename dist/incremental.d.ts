@@ -6,7 +6,7 @@
  * 因为 n 很小，所以直接哈希。
  */
 import { Orderbook } from 'interfaces';
-import { OrderString } from './interface';
+import { OrderString } from './interfaces';
 declare class Incremental {
     private asks;
     private bids;

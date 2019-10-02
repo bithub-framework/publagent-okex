@@ -7,7 +7,8 @@ function formatRawTrades(trades) {
         price: Number.parseFloat(trade.price),
         amount: Number.parseFloat(trade.size),
         time: new Date(trade.timestamp).getTime(),
-    })).reverse();
+        id: Number.parseInt(trade.trade_id),
+    }));
 }
 exports.formatRawTrades = formatRawTrades;
 function formatRawOrderToOrderString(rawOrder, action) {

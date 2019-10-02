@@ -5,7 +5,7 @@ import {
     RawTradeData,
     RawOrderbookData,
     OrderString,
-} from './interface';
+} from './interfaces';
 
 function formatRawTrades(trades: RawTradeData['data']): Trade[] {
     return trades.map(trade => ({
@@ -13,7 +13,8 @@ function formatRawTrades(trades: RawTradeData['data']): Trade[] {
         price: Number.parseFloat(trade.price),
         amount: Number.parseFloat(trade.size),
         time: new Date(trade.timestamp).getTime(),
-    })).reverse();
+        id: Number.parseInt(trade.trade_id),
+    }));
 }
 
 function formatRawOrderToOrderString(

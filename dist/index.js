@@ -15,8 +15,7 @@ const official_v3_websocket_client_1 = __importDefault(require("./official-v3-we
 const ws_1 = __importDefault(require("ws"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
-const lodash_1 = require("lodash");
-const subscriber_trade_1 = __importDefault(require("./subscriber-trade"));
+const subscriber_trades_1 = __importDefault(require("./subscriber-trades"));
 const subscriber_orderbook_1 = __importDefault(require("./subscriber-orderbook"));
 const autonomous_1 = __importDefault(require("autonomous"));
 const events_1 = __importDefault(require("events"));
@@ -26,7 +25,7 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.connectOkex();
             yield this.connectQuoteCenter();
-            this.subscribeTrade();
+            this.subscribeTrades();
             this.subscribeOrderbook();
         });
     }
@@ -69,13 +68,16 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             });
         });
     }
-    subscribeTrade() {
-        this.subscriberTrade = new subscriber_trade_1.default(this.okex);
-        this.subscriberTrade.on('data', lodash_1.flow((trades) => ({
-            exchange: 'okex',
-            pair: ['btc', 'usdt'],
-            trades,
-        }), JSON.stringify, (data) => this.center.send(data)));
+    subscribeTrades() {
+        this.subscriberTrade = new subscriber_trades_1.default(this.okex);
+        this.subscriberTrade.on('data', (trades) => {
+            const data = {
+                exchange: 'okex',
+                pair: ['btc', 'usdt'],
+                trades,
+            };
+            void this.center.send(JSON.stringify(data));
+        });
         this.subscriberTrade.on('error', (err) => {
             console.error(err);
             this.stop();
@@ -84,11 +86,14 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
     }
     subscribeOrderbook() {
         this.subscriberOrderbook = new subscriber_orderbook_1.default(this.okex);
-        this.subscriberOrderbook.on('data', lodash_1.flow((orderbook) => ({
-            exchange: 'okex',
-            pair: ['btc', 'usdt'],
-            orderbook,
-        }), JSON.stringify, (data) => this.center.send(data)));
+        this.subscriberOrderbook.on('data', (orderbook) => {
+            const data = {
+                exchange: 'okex',
+                pair: ['btc', 'usdt'],
+                orderbook,
+            };
+            void this.center.send(JSON.stringify(data));
+        });
         this.subscriberOrderbook.on('error', (err) => {
             console.error(err);
             this.stop();

@@ -8,7 +8,7 @@ declare class QuoteAgentOkexWebsocket extends Autonomous {
     protected _stop(): Promise<void>;
     private connectQuoteCenter;
     private connectOkex;
-    private subscribeTrade;
+    private subscribeTrades;
     private subscribeOrderbook;
 }
 export default QuoteAgentOkexWebsocket;

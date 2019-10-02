@@ -7,7 +7,7 @@
  */
 
 import { Orderbook, Order, Action } from 'interfaces';
-import { OrderString } from './interface';
+import { OrderString } from './interfaces';
 import { flow as pipe } from 'lodash';
 import V3WebsocketClient from './official-v3-websocket-client';
 import assert from 'assert';

@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import V3WebsocketClient from './official-v3-websocket-client';
 import Incremental from './incremental';
 import { formatRawOrderbookToOrdersString } from './format';
-import { RawSubSuccData, RawOrderbookData } from './interface';
+import { RawSubSuccData, RawOrderbookData } from './interfaces';
 
 class SubscriberOrderbook extends EventEmitter {
     private incremental = new Incremental();

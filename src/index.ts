@@ -2,15 +2,14 @@ import V3WebsocketClient from './official-v3-websocket-client';
 import WebSocket from 'ws';
 import fse from 'fs-extra';
 import path from 'path';
-import { flow as pipe } from 'lodash';
 import {
     Trade, Orderbook,
     QuoteDataFromAgentToCenter as QDFATC,
 } from 'interfaces';
-import SubscriberTrade from './subscriber-trade';
+import SubscriberTrades from './subscriber-trades';
 import SubscriberOrderbook from './subscriber-orderbook';
 import Autonomous from 'autonomous';
-import { RawErrorData } from './interface';
+import { RawErrorData } from './interfaces';
 import EventEmitter from 'events';
 
 const config: {
@@ -21,13 +20,13 @@ const config: {
 class QuoteAgentOkexWebsocket extends Autonomous {
     private okex!: V3WebsocketClient;
     private center!: WebSocket;
-    private subscriberTrade!: SubscriberTrade;
+    private subscriberTrade!: SubscriberTrades;
     private subscriberOrderbook!: SubscriberOrderbook;
 
     protected async _start(): Promise<void> {
         await this.connectOkex();
         await this.connectQuoteCenter();
-        this.subscribeTrade();
+        this.subscribeTrades();
         this.subscribeOrderbook();
     }
 
@@ -69,17 +68,16 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         });
     }
 
-    private subscribeTrade(): void {
-        this.subscriberTrade = new SubscriberTrade(this.okex);
-        this.subscriberTrade.on('data', pipe(
-            (trades: Trade[]): QDFATC => ({
+    private subscribeTrades(): void {
+        this.subscriberTrade = new SubscriberTrades(this.okex);
+        this.subscriberTrade.on('data', (trades: Trade[]) => {
+            const data: QDFATC = {
                 exchange: 'okex',
                 pair: ['btc', 'usdt'],
                 trades,
-            }),
-            JSON.stringify,
-            (data: string) => this.center.send(data),
-        ));
+            };
+            void this.center.send(JSON.stringify(data));
+        });
         this.subscriberTrade.on('error', (err: Error) => {
             console.error(err);
             this.stop();
@@ -91,15 +89,14 @@ class QuoteAgentOkexWebsocket extends Autonomous {
 
     private subscribeOrderbook(): void {
         this.subscriberOrderbook = new SubscriberOrderbook(this.okex);
-        this.subscriberOrderbook.on('data', pipe(
-            (orderbook: Orderbook): QDFATC => ({
+        this.subscriberOrderbook.on('data', (orderbook: Orderbook) => {
+            const data: QDFATC = {
                 exchange: 'okex',
                 pair: ['btc', 'usdt'],
                 orderbook,
-            }),
-            JSON.stringify,
-            (data: string) => this.center.send(data),
-        ));
+            };
+            void this.center.send(JSON.stringify(data));
+        });
         this.subscriberOrderbook.on('error', (err: Error) => {
             console.error(err);
             this.stop();

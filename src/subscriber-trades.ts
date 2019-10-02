@@ -7,29 +7,29 @@ import EventEmitter from 'events';
 import V3WebsocketClient from './official-v3-websocket-client';
 import { flow as pipe } from 'lodash';
 import { formatRawTrades } from './format';
-import { RawTradeData, RawSubSuccData } from './interface';
+import { RawTradeData as RawTradesData, RawSubSuccData } from './interfaces';
 
-class SubscriberTrade extends EventEmitter {
+class SubscriberTrades extends EventEmitter {
     constructor(private okex: V3WebsocketClient) {
         super();
 
-        this.okex.on('rawData', this.onTradeData);
+        this.okex.on('rawData', this.onTradesData);
 
         this.subscribe();
     }
 
-    private onTradeSub!: (raw: RawSubSuccData) => void;
+    private onTradesSub!: (raw: RawSubSuccData) => void;
     private subscribe(): void {
         this.okex.subscribe('spot/trade:BTC-USDT');
-        this.onTradeSub = raw => {
+        this.onTradesSub = raw => {
             if ((<any>raw).channel !== 'spot/trade:BTC-USDT') return;
-            this.okex.off('rawData', this.onTradeSub);
+            this.okex.off('rawData', this.onTradesSub);
             if (raw.event === 'subscribe') this.emit('subscribed');
         }
-        this.okex.on('rawData', this.onTradeSub);
+        this.okex.on('rawData', this.onTradesSub);
     }
 
-    private onTradeData = (raw: RawTradeData): void => {
+    private onTradesData = (raw: RawTradesData): void => {
         if ((<any>raw).table !== 'spot/trade') return;
         return pipe(
             formatRawTrades,
@@ -38,4 +38,4 @@ class SubscriberTrade extends EventEmitter {
     }
 }
 
-export default SubscriberTrade;
+export default SubscriberTrades;
