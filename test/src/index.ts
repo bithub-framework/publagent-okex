@@ -11,7 +11,7 @@ const config: {
     OKEX_URL: string;
 } = fse.readJsonSync(path.join(__dirname, '../../cfg/config.json'));
 
-test('1', async t => {
+test.serial('1', async t => {
     console.log = t.log;
     console.info = t.log;
     console.error = t.log;
@@ -20,18 +20,21 @@ test('1', async t => {
     await qAOW.start();
     let latest = 0;
     for (let i = 1; i <= 5; i++) {
-        await Bluebird.delay(3000);
-        const res = await axios
+        await axios
             .get(`http://localhost:${config.QUOTE_CENTER_PORT}/trades`, {
                 params: {
                     exchange: 'okex',
                     pair: 'btc.usdt',
                     from: latest,
                 }
+            }).then(res => {
+                const trades: Trade[] = res.data;
+                t.log(trades);
+                if (trades.length) latest = trades[trades.length - 1].id;
+            }).catch(err => {
+                t.log(err.stack);
             });
-        const trades: Trade[] = res.data;
-        t.log(trades);
-        if (trades.length) latest = trades[trades.length - 1].id;
+        await Bluebird.delay(1000);
     }
     await qAOW.stop();
 });

@@ -18,7 +18,7 @@ const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
 const bluebird_1 = __importDefault(require("bluebird"));
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../../cfg/config.json'));
-ava_1.default('1', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default.serial('1', (t) => __awaiter(this, void 0, void 0, function* () {
     console.log = t.log;
     console.info = t.log;
     console.error = t.log;
@@ -26,19 +26,22 @@ ava_1.default('1', (t) => __awaiter(this, void 0, void 0, function* () {
     yield qAOW.start();
     let latest = 0;
     for (let i = 1; i <= 5; i++) {
-        yield bluebird_1.default.delay(3000);
-        const res = yield axios_1.default
+        yield axios_1.default
             .get(`http://localhost:${config.QUOTE_CENTER_PORT}/trades`, {
             params: {
                 exchange: 'okex',
                 pair: 'btc.usdt',
                 from: latest,
             }
+        }).then(res => {
+            const trades = res.data;
+            t.log(trades);
+            if (trades.length)
+                latest = trades[trades.length - 1].id;
+        }).catch(err => {
+            t.log(err.stack);
         });
-        const trades = res.data;
-        t.log(trades);
-        if (trades.length)
-            latest = trades[trades.length - 1].id;
+        yield bluebird_1.default.delay(1000);
     }
     yield qAOW.stop();
 }));
