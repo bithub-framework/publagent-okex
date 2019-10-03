@@ -7,7 +7,7 @@
     "scripts": {
         "test": "tsc -b ./test/ && ava",
         "build": "tsc -b",
-        "start": "pandora start --env=\"NODE_ENV=production\"",
+        "start": "pandora start",
         "stop": "pandora stop",
         "dev": "pandora dev"
     },

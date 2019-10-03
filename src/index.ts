@@ -45,6 +45,10 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             console.error(err);
             this.stop();
         });
+        this.center.on('close', () => {
+            console.error(new Error('quote center closed'));
+            this.stop();
+        });
     }
 
     private async connectOkex(): Promise<void> {
@@ -66,6 +70,10 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             console.error(err);
             this.stop();
         });
+        this.okex.on('close', () => {
+            console.log(new Error('okex closed'));
+            this.stop();
+        })
     }
 
     private subscribeTrades(): void {

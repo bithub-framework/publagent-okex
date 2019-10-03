@@ -46,6 +46,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
                 console.error(err);
                 this.stop();
             });
+            this.center.on('close', () => {
+                console.error(new Error('quote center closed'));
+                this.stop();
+            });
         });
     }
     connectOkex() {
@@ -64,6 +68,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             });
             this.okex.on('error', (err) => {
                 console.error(err);
+                this.stop();
+            });
+            this.okex.on('close', () => {
+                console.log(new Error('okex closed'));
                 this.stop();
             });
         });
