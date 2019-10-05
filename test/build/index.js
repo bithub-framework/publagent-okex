@@ -27,10 +27,8 @@ ava_1.default.serial('1', (t) => __awaiter(this, void 0, void 0, function* () {
     let latest = 0;
     for (let i = 1; i <= 5; i++) {
         yield axios_1.default
-            .get(`http://localhost:${config.QUOTE_CENTER_PORT}/trades`, {
+            .get(`http://localhost:${config.QUOTE_CENTER_PORT}/okex/btc.usdt/trades`, {
             params: {
-                exchange: 'okex',
-                pair: 'btc.usdt',
                 from: latest,
             }
         }).then(res => {

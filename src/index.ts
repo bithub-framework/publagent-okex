@@ -10,7 +10,7 @@ import SubscriberTrades from './subscriber-trades';
 import SubscriberOrderbook from './subscriber-orderbook';
 import Autonomous from 'autonomous';
 import { RawErrorData } from './interfaces';
-import EventEmitter from 'events';
+import { once } from 'events';
 
 const config: {
     QUOTE_CENTER_PORT: number;
@@ -37,8 +37,8 @@ class QuoteAgentOkexWebsocket extends Autonomous {
 
     private async connectQuoteCenter(): Promise<void> {
         this.center = new WebSocket(
-            `ws://localhost:${config.QUOTE_CENTER_PORT}`);
-        await EventEmitter.once(this.center, 'open');
+            `ws://localhost:${config.QUOTE_CENTER_PORT}/okex/btc.usdt`);
+        await once(this.center, 'open');
         console.log('quote center connected');
 
         this.center.on('error', (err: Error) => {
@@ -56,7 +56,7 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         this.okex.connect();
 
         // 会自动处理 'error' 事件，详见文档。
-        await EventEmitter.once(this.okex, 'open');
+        await once(this.okex, 'open');
         console.log('okex connected');
 
         this.okex.on('message', msg =>
@@ -80,8 +80,6 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         this.subscriberTrade = new SubscriberTrades(this.okex);
         this.subscriberTrade.on('data', (trades: Trade[]) => {
             const data: QDFATC = {
-                exchange: 'okex',
-                pair: ['btc', 'usdt'],
                 trades,
             };
             void this.center.send(JSON.stringify(data));
@@ -99,8 +97,6 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         this.subscriberOrderbook = new SubscriberOrderbook(this.okex);
         this.subscriberOrderbook.on('data', (orderbook: Orderbook) => {
             const data: QDFATC = {
-                exchange: 'okex',
-                pair: ['btc', 'usdt'],
                 orderbook,
             };
             void this.center.send(JSON.stringify(data));

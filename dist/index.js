@@ -18,7 +18,7 @@ const path_1 = __importDefault(require("path"));
 const subscriber_trades_1 = __importDefault(require("./subscriber-trades"));
 const subscriber_orderbook_1 = __importDefault(require("./subscriber-orderbook"));
 const autonomous_1 = __importDefault(require("autonomous"));
-const events_1 = __importDefault(require("events"));
+const events_1 = require("events");
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 class QuoteAgentOkexWebsocket extends autonomous_1.default {
     _start() {
@@ -39,8 +39,8 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
     }
     connectQuoteCenter() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.center = new ws_1.default(`ws://localhost:${config.QUOTE_CENTER_PORT}`);
-            yield events_1.default.once(this.center, 'open');
+            this.center = new ws_1.default(`ws://localhost:${config.QUOTE_CENTER_PORT}/okex/btc.usdt`);
+            yield events_1.once(this.center, 'open');
             console.log('quote center connected');
             this.center.on('error', (err) => {
                 console.error(err);
@@ -57,7 +57,7 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             this.okex = new official_v3_websocket_client_1.default(config.OKEX_URL);
             this.okex.connect();
             // 会自动处理 'error' 事件，详见文档。
-            yield events_1.default.once(this.okex, 'open');
+            yield events_1.once(this.okex, 'open');
             console.log('okex connected');
             this.okex.on('message', msg => void this.okex.emit('rawData', JSON.parse(msg)));
             this.okex.on('rawData', (raw) => {
@@ -80,8 +80,6 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         this.subscriberTrade = new subscriber_trades_1.default(this.okex);
         this.subscriberTrade.on('data', (trades) => {
             const data = {
-                exchange: 'okex',
-                pair: ['btc', 'usdt'],
                 trades,
             };
             void this.center.send(JSON.stringify(data));
@@ -96,8 +94,6 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         this.subscriberOrderbook = new subscriber_orderbook_1.default(this.okex);
         this.subscriberOrderbook.on('data', (orderbook) => {
             const data = {
-                exchange: 'okex',
-                pair: ['btc', 'usdt'],
                 orderbook,
             };
             void this.center.send(JSON.stringify(data));
