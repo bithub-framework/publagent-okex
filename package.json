@@ -33,6 +33,7 @@
         "@types/node": "^12.6.8",
         "@types/pako": "^1.0.1",
         "@types/ws": "^6.0.1",
+        "autobind-decorator": "^2.4.0",
         "autonomous": "git+https://github.com/zimtsui/autonomous.git",
         "crc-32": "^1.2.0",
         "fs-extra": "^8.1.0",

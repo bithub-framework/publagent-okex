@@ -1,6 +1,11 @@
-import { Action } from 'interfaces';
+import {
+    Action,
+    Orderbook,
+    Trade,
+    QuoteDataFromAgentToCenter,
+} from 'interfaces';
 
-interface RawTradeData {
+interface RawTrades {
     table: string;
     data: {
         instrument_id: string;
@@ -12,7 +17,7 @@ interface RawTradeData {
     }[];
 }
 
-interface RawOrderbookData {
+interface RawOrderbook {
     table: string;
     action: string;
     data: {
@@ -24,27 +29,18 @@ interface RawOrderbookData {
     }[];
 }
 
-interface RawSubSuccData {
-    event: string;
-    channel: string;
-}
-
 interface OrderString {
     price: string;
     amount: string;
     action: Action;
 }
 
-interface RawErrorData {
-    event: string;
-    message: string;
-    errorCode: string;
-}
-
 export {
-    RawTradeData,
-    RawSubSuccData,
-    RawOrderbookData,
+    Trade,
+    Action,
+    Orderbook,
+    RawTrades,
+    RawOrderbook,
     OrderString,
-    RawErrorData,
+    QuoteDataFromAgentToCenter,
 }
