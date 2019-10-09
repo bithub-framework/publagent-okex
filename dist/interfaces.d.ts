@@ -26,4 +26,8 @@ interface OrderString {
     amount: string;
     action: Action;
 }
-export { Trade, Action, Orderbook, RawTrades, RawOrderbook, OrderString, QuoteDataFromAgentToCenter, };
+interface Config {
+    QUOTE_CENTER_PORT: number;
+    OKEX_URL: string;
+}
+export { Trade, Action, Orderbook, RawTrades, RawOrderbook, OrderString, QuoteDataFromAgentToCenter, Config, };

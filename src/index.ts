@@ -11,12 +11,10 @@ import {
     RawOrderbook,
     RawTrades,
     QuoteDataFromAgentToCenter as QDFATC,
+    Config,
 } from './interfaces';
 
-const config: {
-    QUOTE_CENTER_PORT: number;
-    OKEX_URL: string;
-} = fse.readJsonSync(path.join(__dirname, '../cfg/config.json'));
+const config: Config = fse.readJsonSync(path.join(__dirname, '../cfg/config.json'));
 
 type RawData = any;
 

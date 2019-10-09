@@ -35,6 +35,11 @@ interface OrderString {
     action: Action;
 }
 
+interface Config {
+    QUOTE_CENTER_PORT: number;
+    OKEX_URL: string;
+}
+
 export {
     Trade,
     Action,
@@ -43,4 +48,5 @@ export {
     RawOrderbook,
     OrderString,
     QuoteDataFromAgentToCenter,
+    Config,
 }
