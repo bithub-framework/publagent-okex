@@ -8,7 +8,7 @@ module.exports = (pandora) => {
         .process('process1')
         .scale(1)
         .env({
-            NODE_ENV: pandora.env ? 'development' : 'production',
+            NODE_ENV: pandora.dev ? 'development' : 'production',
         });
 
     pandora
