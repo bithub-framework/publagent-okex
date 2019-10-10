@@ -6,14 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -37,70 +29,60 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         this.center = {};
         this.rawOrderbookHandler = {};
     }
-    _start() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.connectOkex();
-            yield this.connectQuoteCenter();
-            this.okex.on('rawData', this.onRawData);
-            yield this.getInstruments();
-            yield this.subscribeInstruments();
-            yield this.subscribeTrades();
-            yield this.subscribeOrderbook();
-        });
+    async _start() {
+        await this.connectOkex();
+        await this.connectQuoteCenter();
+        this.okex.on('rawData', this.onRawData);
+        await this.getInstruments();
+        await this.subscribeInstruments();
+        await this.subscribeTrades();
+        await this.subscribeOrderbook();
     }
-    _stop() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.okex)
-                this.okex.close();
-            for (const pair in mapping_1.marketDescriptors) {
-                const center = this.center[pair];
-                if (center && center.readyState !== 3) {
-                    center.close(ACTIVE_CLOSE);
-                    yield events_1.once(center, 'close');
-                }
+    async _stop() {
+        if (this.okex)
+            this.okex.close();
+        for (const pair in mapping_1.marketDescriptors) {
+            const center = this.center[pair];
+            if (center && center.readyState !== 3) {
+                center.close(ACTIVE_CLOSE);
+                await events_1.once(center, 'close');
             }
-        });
+        }
     }
-    connectQuoteCenter() {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const pair in mapping_1.marketDescriptors) {
-                const center = this.center[pair] = new ws_1.default(`${config.QUOTE_CENTER_BASE_URL}/okex/${pair}`);
-                center.on('close', code => {
-                    if (code !== ACTIVE_CLOSE)
-                        center.emit('error', new Error('quote center closed'));
-                });
-                center.on('error', (err) => {
-                    console.error(err);
-                    this.stop();
-                });
-                yield events_1.once(center, 'open');
-            }
-        });
-    }
-    connectOkex() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.okex = new official_v3_websocket_client_modified_1.default(config.OKEX_WEBSOCKET_URL);
-            this.okex.on('message', (msg) => void this.okex.emit('rawData', JSON.parse(msg)));
-            this.okex.on('rawData', (raw) => {
-                if (raw.event === 'error')
-                    this.okex.emit('error', new Error(raw.message));
+    async connectQuoteCenter() {
+        for (const pair in mapping_1.marketDescriptors) {
+            const center = this.center[pair] = new ws_1.default(`${config.QUOTE_CENTER_BASE_URL}/okex/${pair}`);
+            center.on('close', code => {
+                if (code !== ACTIVE_CLOSE)
+                    center.emit('error', new Error('quote center closed'));
             });
-            this.okex.on('close', () => {
-                this.okex.emit('error', new Error('okex closed'));
-            });
-            this.okex.on('error', (err) => {
+            center.on('error', (err) => {
                 console.error(err);
                 this.stop();
             });
-            this.okex.connect();
-            yield events_1.once(this.okex, 'open');
-        });
+            await events_1.once(center, 'open');
+        }
     }
-    getInstruments() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const rawInstrumentData = yield axios_1.default(`${config.OKEX_RESTFUL_BASE_URL}${config.OKEX_RESTFUL_URL_INSTRUMENTS}`).then(res => res.data);
-            this.onRawInstrumentsData(rawInstrumentData);
+    async connectOkex() {
+        this.okex = new official_v3_websocket_client_modified_1.default(config.OKEX_WEBSOCKET_URL);
+        this.okex.on('message', (msg) => void this.okex.emit('rawData', JSON.parse(msg)));
+        this.okex.on('rawData', (raw) => {
+            if (raw.event === 'error')
+                this.okex.emit('error', new Error(raw.message));
         });
+        this.okex.on('close', () => {
+            this.okex.emit('error', new Error('okex closed'));
+        });
+        this.okex.on('error', (err) => {
+            console.error(err);
+            this.stop();
+        });
+        this.okex.connect();
+        await events_1.once(this.okex, 'open');
+    }
+    async getInstruments() {
+        const rawInstrumentData = await axios_1.default(`${config.OKEX_RESTFUL_BASE_URL}${config.OKEX_RESTFUL_URL_INSTRUMENTS}`).then(res => res.data);
+        this.onRawInstrumentsData(rawInstrumentData);
     }
     onRawData(raw) {
         const { table } = raw;
@@ -158,53 +140,47 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         const sentData = { orderbook };
         this.center[pair].send(JSON.stringify(sentData));
     }
-    subscribeInstruments() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const channel = 'futures/instruments';
-            this.okex.subscribe(channel);
-            const onIdSub = (raw) => {
-                if (raw.channel === channel
+    async subscribeInstruments() {
+        const channel = 'futures/instruments';
+        this.okex.subscribe(channel);
+        const onIdSub = (raw) => {
+            if (raw.channel === channel
+                && raw.event === 'subscribe')
+                this.okex.emit('subscribed');
+        };
+        this.okex.on('rawData', onIdSub);
+        await events_1.once(this.okex, 'subscribed');
+        this.okex.off('rawData', onIdSub);
+    }
+    async subscribeTrades() {
+        for (const { tradesChannel } of Object.values(mapping_1.marketDescriptors)) {
+            this.okex.subscribe(tradesChannel);
+            const onTradesSub = (raw) => {
+                if (raw.channel === tradesChannel
                     && raw.event === 'subscribe')
                     this.okex.emit('subscribed');
             };
-            this.okex.on('rawData', onIdSub);
-            yield events_1.once(this.okex, 'subscribed');
-            this.okex.off('rawData', onIdSub);
-        });
+            this.okex.on('rawData', onTradesSub);
+            await events_1.once(this.okex, 'subscribed');
+            this.okex.off('rawData', onTradesSub);
+        }
     }
-    subscribeTrades() {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const { tradesChannel } of Object.values(mapping_1.marketDescriptors)) {
-                this.okex.subscribe(tradesChannel);
-                const onTradesSub = (raw) => {
-                    if (raw.channel === tradesChannel
-                        && raw.event === 'subscribe')
-                        this.okex.emit('subscribed');
-                };
-                this.okex.on('rawData', onTradesSub);
-                yield events_1.once(this.okex, 'subscribed');
-                this.okex.off('rawData', onTradesSub);
-            }
-        });
-    }
-    subscribeOrderbook() {
-        return __awaiter(this, void 0, void 0, function* () {
-            for (const pair in mapping_1.marketDescriptors) {
-                const { orderbookChannel } = mapping_1.marketDescriptors[pair];
-                const isContract = pair !== 'BTC/USDT';
-                this.rawOrderbookHandler[pair]
-                    = new raw_orderbook_handler_1.default(isContract);
-                this.okex.subscribe(orderbookChannel);
-                const onOrderbookSub = (raw) => {
-                    if (raw.channel === orderbookChannel
-                        && raw.event === 'subscribe')
-                        this.okex.emit('subscribed');
-                };
-                this.okex.on('rawData', onOrderbookSub);
-                yield events_1.once(this.okex, 'subscribed');
-                this.okex.off('rawData', onOrderbookSub);
-            }
-        });
+    async subscribeOrderbook() {
+        for (const pair in mapping_1.marketDescriptors) {
+            const { orderbookChannel } = mapping_1.marketDescriptors[pair];
+            const isContract = pair !== 'BTC/USDT';
+            this.rawOrderbookHandler[pair]
+                = new raw_orderbook_handler_1.default(isContract);
+            this.okex.subscribe(orderbookChannel);
+            const onOrderbookSub = (raw) => {
+                if (raw.channel === orderbookChannel
+                    && raw.event === 'subscribe')
+                    this.okex.emit('subscribed');
+            };
+            this.okex.on('rawData', onOrderbookSub);
+            await events_1.once(this.okex, 'subscribed');
+            this.okex.off('rawData', onOrderbookSub);
+        }
     }
 }
 __decorate([
