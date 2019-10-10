@@ -386,8 +386,8 @@
         "signature": "4b60bff0235fab2d61a28c18dbd65da84a4a6630dd5b5d4fd097722f72370837"
       },
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/incremental.ts": {
-        "version": "44667f614d44b59acf1da572b2605c51960711753c29a8cbf7eca72c5d7ca7ce",
-        "signature": "91a8ba3b7227f2c2f83ddf3cdb47622daa8599e0af1e726b7e399767d0b42c24"
+        "version": "d14f8ae97e6ed824eabcc1a5f3c1a9fb4ccd5d2eca1475d9777323a0614c701f",
+        "signature": "ad81d774f9aab54d680b7661e831c1df781fabdc0c36e85ffc0bb54a907aff73"
       },
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/fs-extra/index.d.ts": {
         "version": "02f8dc4777a4efb7efdc6613659540925b2a5660b483f9fa12cbc1b3ddef6050",
@@ -402,16 +402,20 @@
         "signature": "2de69362c6be41535d58884c066a2b104c9e0e5aab709f35aed8d4e08ead4c95"
       },
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/raw-orderbook-handler.ts": {
-        "version": "9700b5e2baeb002aca199ac0d459fe4a786ae55e9bfafa872dcf68c871250c4e",
-        "signature": "ca63a7a7488045cba7c7464a652a516d31232881440992318d022b63e764e4ba"
+        "version": "c43ea062a468ed7fab9056d66efa59069733c79bfa3e2e1176ce3fc37e1993c0",
+        "signature": "24af61fa254cfe22c16b4261d2b95ebbeda31f6aff61367fd443f488de2141ae"
       },
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/raw-trades-handler.ts": {
-        "version": "afa09469398ca7c1d154f74d0fabdb5942cd5ce881b5a88259c9c3eaac32c587",
-        "signature": "db0d01470b3183b197271ba2fc3d5f78bcc390d0702ce347136b9445e095481a"
+        "version": "d9b177258ed8e48c65fea5b3bff043dd1d6332edfdf4851084aec87769b64e4e",
+        "signature": "f3ccff5a5ff4e64dbc6e476b5707a3659b3a4e6d01c1c5010a1c473c5abb29e1"
+      },
+      "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/mapping.ts": {
+        "version": "d32b6fe322ffc78a69741a7d03836b865e8429d8aacd71210f014ed0803a1946",
+        "signature": "40370446d47163854d4310479d8660fdec594d6e183c0ed78bd5ee01c591ca9e"
       },
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/index.ts": {
-        "version": "3f7fae35c1d036f5d634f0fbcd1555c2a0df9b6c112047014f6b8bce56d2d577",
-        "signature": "067eceeb27d139f155d28719368a45ed86b54539ade08dc32e1e1a5a9959d9b3"
+        "version": "6dd52742a7403adada831b62496510c940a305a0c9c63456e1e365ba9fe564f0",
+        "signature": "ea0c1f5e2f8945ccc16bb2aacf21481318a4d8f7d4c6bc647118f19f2c2a1e54"
       },
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/bluebird/index.d.ts": {
         "version": "3c10804e3bd90aa404eefbc300c362b0ebbd23b34eb03ae592717ac111889f34",
@@ -1123,6 +1127,10 @@
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/node/util.d.ts",
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/mapping.ts": [
+        "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/node/util.d.ts",
+        "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/index.ts": [
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/ws/index.d.ts",
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/fs-extra/index.d.ts",
@@ -1134,6 +1142,7 @@
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/raw-orderbook-handler.ts",
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/raw-trades-handler.ts",
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/interfaces.ts",
+        "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/mapping.ts",
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/node/util.d.ts",
         "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1864,6 +1873,7 @@
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/interfaces/dist/index.d.ts",
+      "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/interfaces.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/lodash/ts3.1/common/common.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/lodash/ts3.1/common/array.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
@@ -1929,10 +1939,10 @@
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/fs-extra/index.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/autonomous/dist/index.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/autobind-decorator/index.d.ts",
+      "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/mapping.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/bluebird/index.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/minimatch/index.d.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/node_modules/@types/glob/index.d.ts",
-      "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/interfaces.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/incremental.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/raw-orderbook-handler.ts",
       "/home/zim/bithub/quote-agents/quote-agent-okex-websocket/src/raw-trades-handler.ts",

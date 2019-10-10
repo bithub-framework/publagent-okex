@@ -8,8 +8,8 @@ declare class QuoteAgentOkexWebsocket extends Autonomous {
     private connectQuoteCenter;
     private connectOkex;
     private onRawData;
-    private onRawTrades;
-    private onRawOrderbook;
+    private onRawTradeData;
+    private onRawOrderbookData;
     private subscribeTrades;
     private subscribeOrderbook;
 }

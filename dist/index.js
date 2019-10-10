@@ -26,12 +26,14 @@ const autobind_decorator_1 = require("autobind-decorator");
 const official_v3_websocket_client_1 = __importDefault(require("./official-v3-websocket-client"));
 const raw_orderbook_handler_1 = __importDefault(require("./raw-orderbook-handler"));
 const raw_trades_handler_1 = require("./raw-trades-handler");
+const mapping_1 = require("./mapping");
 const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
 const ACTIVE_CLOSE = 4000;
 class QuoteAgentOkexWebsocket extends autonomous_1.default {
     constructor() {
         super(...arguments);
-        this.rawOrderbookHandler = new raw_orderbook_handler_1.default();
+        this.center = {};
+        this.rawOrderbookHandler = {};
     }
     _start() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -46,24 +48,29 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.okex)
                 this.okex.close();
-            if (this.center && this.center.readyState !== 3) {
-                this.center.close(ACTIVE_CLOSE);
-                yield events_1.once(this.center, 'close');
+            for (const { pair } of mapping_1.MARKETS) {
+                const center = this.center[pair];
+                if (center && center.readyState !== 3) {
+                    center.close(ACTIVE_CLOSE);
+                    yield events_1.once(center, 'close');
+                }
             }
         });
     }
     connectQuoteCenter() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.center = new ws_1.default(`ws://localhost:${config.QUOTE_CENTER_PORT}/okex/btc.usdt`);
-            this.center.on('close', code => {
-                if (code !== ACTIVE_CLOSE)
-                    this.center.emit('error', new Error('quote center closed'));
-            });
-            this.center.on('error', (err) => {
-                console.error(err);
-                this.stop();
-            });
-            yield events_1.once(this.center, 'open');
+            for (const { pair } of mapping_1.MARKETS) {
+                const center = this.center[pair] = new ws_1.default(`ws://localhost:${config.QUOTE_CENTER_PORT}/okex/${pair}`);
+                center.on('close', code => {
+                    if (code !== ACTIVE_CLOSE)
+                        center.emit('error', new Error('quote center closed'));
+                });
+                center.on('error', (err) => {
+                    console.error(err);
+                    this.stop();
+                });
+                yield events_1.once(center, 'open');
+            }
         });
     }
     connectOkex() {
@@ -86,45 +93,68 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         });
     }
     onRawData(raw) {
-        if (raw.table === 'spot/trade')
-            this.onRawTrades(raw);
-        if (raw.table === 'spot/depth')
-            this.onRawOrderbook(raw);
+        const { table } = raw;
+        if (!table)
+            return;
+        const channel = mapping_1.getChannel(table);
+        if (channel === 'trades') {
+            for (const rawTradeData of raw.data) {
+                const { instrument_id } = rawTradeData;
+                const pair = mapping_1.getPair(table, instrument_id);
+                this.onRawTradeData(pair, rawTradeData);
+            }
+        }
+        if (channel === 'orderbook') {
+            for (const rawOrderbookData of raw.data) {
+                const { instrument_id } = rawOrderbookData;
+                const pair = mapping_1.getPair(table, instrument_id);
+                this.onRawOrderbookData(pair, rawOrderbookData);
+            }
+        }
     }
-    onRawTrades(rawTrades) {
-        const trades = raw_trades_handler_1.formatRawTrades(rawTrades);
-        const sentData = { trades };
-        this.center.send(JSON.stringify(sentData));
+    onRawTradeData(pair, rawTradesData) {
+        const isContract = pair !== 'BTC/USDT';
+        const trade = raw_trades_handler_1.formatRawTrade(rawTradesData, isContract);
+        const sentData = { trades: [trade] };
+        this.center[pair].send(JSON.stringify(sentData));
     }
-    onRawOrderbook(rawOrderbook) {
-        const orderbook = this.rawOrderbookHandler.handle(rawOrderbook);
+    onRawOrderbookData(pair, rawOrderbookData) {
+        const orderbook = this.rawOrderbookHandler[pair]
+            .handle(rawOrderbookData);
         const sentData = { orderbook };
-        this.center.send(JSON.stringify(sentData));
+        this.center[pair].send(JSON.stringify(sentData));
     }
     subscribeTrades() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.okex.subscribe('spot/trade:BTC-USDT');
-            const onTradesSub = (raw) => {
-                if (raw.channel === 'spot/trade:BTC-USDT'
-                    && raw.event === 'subscribe')
-                    this.okex.emit('trades subscribed');
-            };
-            this.okex.on('rawData', onTradesSub);
-            yield events_1.once(this.okex, 'trades subscribed');
-            this.okex.off('rawData', onTradesSub);
+            for (const { tradesChannel } of mapping_1.MARKETS) {
+                this.okex.subscribe(tradesChannel);
+                const onTradesSub = (raw) => {
+                    if (raw.channel === tradesChannel
+                        && raw.event === 'subscribe')
+                        this.okex.emit('subscribed');
+                };
+                this.okex.on('rawData', onTradesSub);
+                yield events_1.once(this.okex, 'subscribed');
+                this.okex.off('rawData', onTradesSub);
+            }
         });
     }
     subscribeOrderbook() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.okex.subscribe('spot/depth:BTC-USDT');
-            const onOrderbookSub = (raw) => {
-                if (raw.channel === 'spot/depth:BTC-USDT'
-                    && raw.event === 'subscribe')
-                    this.okex.emit('orderbook subscribed');
-            };
-            this.okex.on('rawData', onOrderbookSub);
-            yield events_1.once(this.okex, 'orderbook subscribed');
-            this.okex.off('rawData', onOrderbookSub);
+            for (const { pair, orderbookChannel } of mapping_1.MARKETS) {
+                const isContract = pair !== 'BTC/USDT';
+                this.rawOrderbookHandler[pair]
+                    = new raw_orderbook_handler_1.default(isContract);
+                this.okex.subscribe(orderbookChannel);
+                const onOrderbookSub = (raw) => {
+                    if (raw.channel === orderbookChannel
+                        && raw.event === 'subscribe')
+                        this.okex.emit('subscribed');
+                };
+                this.okex.on('rawData', onOrderbookSub);
+                yield events_1.once(this.okex, 'subscribed');
+                this.okex.off('rawData', onOrderbookSub);
+            }
         });
     }
 }

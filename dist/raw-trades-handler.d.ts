@@ -1,3 +1,3 @@
 import { RawTrades, Trade } from './interfaces';
-declare function formatRawTrades(rawTrades: RawTrades): Trade[];
-export { formatRawTrades, };
+declare function formatRawTrade(rawTrades: RawTrades['data'][0], isContract?: boolean): Trade;
+export { formatRawTrade, };

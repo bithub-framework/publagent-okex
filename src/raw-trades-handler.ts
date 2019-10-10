@@ -5,21 +5,27 @@ import {
     Action,
 } from './interfaces';
 
-function formatRawTrades(rawTrades: RawTrades): Trade[] {
-    const trades = rawTrades.data;
-    return trades.map(trade => ({
-        action: trade.side === 'buy' ? Action.BID : Action.ASK,
+function formatRawTrade(
+    rawTrades: RawTrades['data'][0],
+    isContract = false,
+): Trade {
+    const trade = {
+        action: rawTrades.side === 'buy' ? Action.BID : Action.ASK,
         price: pipe(
             Number.parseFloat,
             x => x * 100,
             Math.round,
-        )(trade.price),
-        amount: Number.parseFloat(trade.size),
-        time: new Date(trade.timestamp).getTime(),
-        id: Number.parseInt(trade.trade_id),
-    }));
+        )(rawTrades.price),
+        amount: Number.parseFloat(rawTrades.size),
+        time: new Date(rawTrades.timestamp).getTime(),
+        id: Number.parseInt(rawTrades.trade_id),
+    };
+    if (isContract) {
+        trade.amount *= 100 * 100 / trade.price;
+    }
+    return trade;
 }
 
 export {
-    formatRawTrades,
+    formatRawTrade,
 };

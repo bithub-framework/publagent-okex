@@ -29,15 +29,16 @@ function formatRawOrderbookToOrdersString(
 }
 
 class RawOrderbookHandler {
-    private incremental = new Incremental();
+    private incremental = new Incremental(this.isContract);
 
-    public handle(raw: RawOrderbook): Orderbook {
-        const ordersString = formatRawOrderbookToOrdersString(raw.data[0]);
+    constructor(private isContract = false) { }
+
+    public handle(raw: RawOrderbook['data'][0]): Orderbook {
+        const ordersString = formatRawOrderbookToOrdersString(raw);
         ordersString.forEach(orderString =>
             void this.incremental.update(orderString));
 
-        const orderbook = this.incremental.getLatest(
-            raw.data[0].checksum);
+        const orderbook = this.incremental.getLatest(raw.checksum);
         return orderbook;
     }
 }

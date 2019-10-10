@@ -23,8 +23,15 @@ class Incremental {
     private asks = new Map<string, OrderBoth>();
     private bids = new Map<string, OrderBoth>();
 
+    constructor(private isContract: boolean) { }
+
     update(orderString: OrderString) {
         const orderNumber = this.formatOrderStringToOrder(orderString);
+
+        if (this.isContract) {
+            orderNumber.amount *= 100 * 100 / orderNumber.price;
+        }
+
         const orderBoth: OrderBoth = {
             string: orderString,
             number: orderNumber,

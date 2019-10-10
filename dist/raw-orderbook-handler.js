@@ -19,13 +19,14 @@ function formatRawOrderbookToOrdersString(orderbook) {
     ];
 }
 class RawOrderbookHandler {
-    constructor() {
-        this.incremental = new incremental_1.default();
+    constructor(isContract = false) {
+        this.isContract = isContract;
+        this.incremental = new incremental_1.default(this.isContract);
     }
     handle(raw) {
-        const ordersString = formatRawOrderbookToOrdersString(raw.data[0]);
+        const ordersString = formatRawOrderbookToOrdersString(raw);
         ordersString.forEach(orderString => void this.incremental.update(orderString));
-        const orderbook = this.incremental.getLatest(raw.data[0].checksum);
+        const orderbook = this.incremental.getLatest(raw.checksum);
         return orderbook;
     }
 }
