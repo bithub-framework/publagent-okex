@@ -128,4 +128,4 @@ class V3WebsocketClient extends events_1.EventEmitter {
 }
 exports.V3WebsocketClient = V3WebsocketClient;
 exports.default = V3WebsocketClient;
-//# sourceMappingURL=official-v3-websocket-client.js.map
+//# sourceMappingURL=official-v3-websocket-client-modified.js.map

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("interfaces");
 const lodash_1 = require("lodash");
-const official_v3_websocket_client_1 = __importDefault(require("./official-v3-websocket-client"));
+const official_v3_websocket_client_modified_1 = __importDefault(require("./official-v3-websocket-client-modified"));
 const assert_1 = __importDefault(require("assert"));
 class Incremental {
     constructor(isContract) {
@@ -62,7 +62,7 @@ class Incremental {
         };
     }
     checksum(sortedAsks, sortedBids, expected) {
-        return official_v3_websocket_client_1.default.checksum({
+        return official_v3_websocket_client_modified_1.default.checksum({
             data: [{
                     asks: sortedAsks.map(orderBoth => [
                         orderBoth.string.price,

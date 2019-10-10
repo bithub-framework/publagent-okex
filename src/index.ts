@@ -1,10 +1,13 @@
+// TODO 把常数放到 config 里
+
 import WebSocket from 'ws';
 import fse from 'fs-extra';
 import path from 'path';
 import Autonomous from 'autonomous';
 import { once } from 'events';
+import axios from 'axios';
 import { boundMethod } from 'autobind-decorator';
-import V3WebsocketClient from './official-v3-websocket-client';
+import V3WebsocketClient from './official-v3-websocket-client-modified';
 import RawOrderbookHandler from './raw-orderbook-handler';
 import { formatRawTrade } from './raw-trades-handler';
 import {
@@ -12,11 +15,13 @@ import {
     RawTrades,
     QuoteDataFromAgentToCenter as QDFATC,
     Config,
+    RawInstrument,
 } from './interfaces';
 import {
-    MARKETS,
+    marketDescriptors,
     getChannel,
     getPair,
+    MarketDescriptor,
 } from './mapping';
 
 const config: Config = fse.readJsonSync(path.join(__dirname, '../cfg/config.json'));
@@ -39,14 +44,15 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         await this.connectQuoteCenter();
 
         this.okex.on('rawData', this.onRawData);
-
+        await this.getInstruments();
+        await this.subscribeInstruments();
         await this.subscribeTrades();
         await this.subscribeOrderbook();
     }
 
     protected async _stop(): Promise<void> {
         if (this.okex) this.okex.close();
-        for (const { pair } of MARKETS) {
+        for (const pair in marketDescriptors) {
             const center = this.center[pair];
             if (center && center.readyState !== 3) {
                 center.close(ACTIVE_CLOSE);
@@ -56,9 +62,9 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     }
 
     private async connectQuoteCenter(): Promise<void> {
-        for (const { pair } of MARKETS) {
+        for (const pair in marketDescriptors) {
             const center = this.center[pair] = new WebSocket(
-                `ws://localhost:${config.QUOTE_CENTER_PORT}/okex/${pair}`);
+                `${config.QUOTE_CENTER_BASE_URL}/okex/${pair}`);
 
             center.on('close', code => {
                 if (code !== ACTIVE_CLOSE)
@@ -74,7 +80,7 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     }
 
     private async connectOkex(): Promise<void> {
-        this.okex = new V3WebsocketClient(config.OKEX_URL);
+        this.okex = new V3WebsocketClient(config.OKEX_WEBSOCKET_URL);
 
         this.okex.on('message', (msg: string) =>
             void this.okex.emit('rawData', JSON.parse(msg)));
@@ -92,6 +98,15 @@ class QuoteAgentOkexWebsocket extends Autonomous {
 
         this.okex.connect();
         await once(this.okex, 'open');
+    }
+
+    private async getInstruments(): Promise<void> {
+        const rawInstrumentData: RawInstrument['data'][0]
+            = await axios(`${
+                config.OKEX_RESTFUL_BASE_URL}${
+                config.OKEX_RESTFUL_URL_INSTRUMENTS}`
+            ).then(res => res.data);
+        this.onRawInstrumentsData(rawInstrumentData);
     }
 
     @boundMethod
@@ -113,6 +128,36 @@ class QuoteAgentOkexWebsocket extends Autonomous {
                 this.onRawOrderbookData(pair, rawOrderbookData);
             }
         }
+        if (channel === 'instruments') {
+            this.onRawInstrumentsData(raw.data[0]);
+        }
+    }
+
+    private onRawInstrumentsData(
+        rawInstrumentData: RawInstrument['data'][0],
+    ) {
+        for (const instrument of rawInstrumentData) {
+            if (!(
+                instrument.underlying_index === 'BTC'
+                && instrument.quote_currency === 'USD'
+            )) continue;
+            const marketDescriptor: MarketDescriptor = {
+                instrumentId: instrument.instrument_id,
+                tradesChannel: `futures/trade:${
+                    instrument.instrument_id}`,
+                orderbookChannel: `futures/depth:${
+                    instrument.instrument_id}`,
+            };
+            if (instrument.alias === 'this_week')
+                marketDescriptors['BTC-USD-THIS-WEEK/USD']
+                    = marketDescriptor;
+            if (instrument.alias === 'next_week')
+                marketDescriptors['BTC-USD-NEXT-WEEK/USD']
+                    = marketDescriptor;
+            if (instrument.alias === 'quarter')
+                marketDescriptors['BTC-USD-QUARTER/USD']
+                    = marketDescriptor;
+        }
     }
 
     private onRawTradeData(
@@ -133,9 +178,23 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         this.center[pair].send(JSON.stringify(sentData));
     }
 
+    private async subscribeInstruments() {
+        const channel = 'futures/instruments';
+        this.okex.subscribe(channel);
+        const onIdSub = (raw: RawData) => {
+            if (
+                raw.channel === channel
+                && raw.event === 'subscribe'
+            ) this.okex.emit('subscribed');
+        }
+        this.okex.on('rawData', onIdSub);
+        await once(this.okex, 'subscribed');
+        this.okex.off('rawData', onIdSub);
+    }
+
     private async subscribeTrades(): Promise<void> {
-        for (const { tradesChannel } of MARKETS) {
-            this.okex.subscribe(tradesChannel);
+        for (const { tradesChannel } of Object.values(marketDescriptors)) {
+            this.okex.subscribe(tradesChannel!);
             const onTradesSub = (raw: RawData) => {
                 if (
                     raw.channel === tradesChannel
@@ -149,12 +208,13 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     }
 
     private async subscribeOrderbook(): Promise<void> {
-        for (const { pair, orderbookChannel } of MARKETS) {
+        for (const pair in marketDescriptors) {
+            const { orderbookChannel } = marketDescriptors[pair];
             const isContract = pair !== 'BTC/USDT';
             this.rawOrderbookHandler[pair]
                 = new RawOrderbookHandler(isContract);
 
-            this.okex.subscribe(orderbookChannel);
+            this.okex.subscribe(orderbookChannel!);
             const onOrderbookSub = (raw: RawData) => {
                 if (
                     raw.channel === orderbookChannel

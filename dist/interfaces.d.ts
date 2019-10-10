@@ -1,4 +1,13 @@
 import { Action, Orderbook, Trade, QuoteDataFromAgentToCenter } from 'interfaces';
+interface RawInstrument {
+    table: string;
+    data: {
+        instrument_id: string;
+        alias: string;
+        underlying_index: string;
+        quote_currency: string;
+    }[][];
+}
 interface RawTrades {
     table: string;
     data: {
@@ -27,7 +36,9 @@ interface OrderString {
     action: Action;
 }
 interface Config {
-    QUOTE_CENTER_PORT: number;
-    OKEX_URL: string;
+    QUOTE_CENTER_BASE_URL: string;
+    OKEX_WEBSOCKET_URL: string;
+    OKEX_RESTFUL_BASE_URL: string;
+    OKEX_RESTFUL_URL_INSTRUMENTS: string;
 }
-export { Trade, Action, Orderbook, RawTrades, RawOrderbook, OrderString, QuoteDataFromAgentToCenter, Config, };
+export { Trade, Action, Orderbook, RawTrades, RawOrderbook, OrderString, QuoteDataFromAgentToCenter, Config, RawInstrument, };

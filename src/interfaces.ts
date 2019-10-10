@@ -5,6 +5,16 @@ import {
     QuoteDataFromAgentToCenter,
 } from 'interfaces';
 
+interface RawInstrument {
+    table: string;
+    data: {
+        instrument_id: string;
+        alias: string;
+        underlying_index: string;
+        quote_currency: string;
+    }[][];
+}
+
 interface RawTrades {
     table: string;
     data: {
@@ -36,8 +46,10 @@ interface OrderString {
 }
 
 interface Config {
-    QUOTE_CENTER_PORT: number;
-    OKEX_URL: string;
+    QUOTE_CENTER_BASE_URL: string;
+    OKEX_WEBSOCKET_URL: string;
+    OKEX_RESTFUL_BASE_URL: string;
+    OKEX_RESTFUL_URL_INSTRUMENTS: string;
 }
 
 export {
@@ -49,4 +61,5 @@ export {
     OrderString,
     QuoteDataFromAgentToCenter,
     Config,
+    RawInstrument,
 }

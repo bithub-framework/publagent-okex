@@ -23,7 +23,6 @@
     "homepage": "https://github.com/zimtsui/quote-agent-okex-websocket#readme",
     "devDependencies": {
         "ava": "^2.4.0",
-        "axios": "^0.19.0",
         "bluebird": "^3.7.0",
         "typescript": "^3.5.3"
     },
@@ -35,6 +34,7 @@
         "@types/ws": "^6.0.1",
         "autobind-decorator": "^2.4.0",
         "autonomous": "git+https://github.com/zimtsui/autonomous.git",
+        "axios": "^0.19.0",
         "crc-32": "^1.2.0",
         "fs-extra": "^8.1.0",
         "interfaces": "git+https://github.com/zimtsui/interfaces.git",

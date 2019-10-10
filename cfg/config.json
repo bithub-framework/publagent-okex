@@ -1,4 +1,6 @@
 {
-    "QUOTE_CENTER_PORT": 12001,
-    "OKEX_URL": "wss://real.okex.com:8443/ws/v3"
+    "QUOTE_CENTER_BASE_URL": "ws://localhost:12001",
+    "OKEX_WEBSOCKET_URL": "wss://real.okex.com:8443/ws/v3",
+    "OKEX_RESTFUL_BASE_URL": "https://www.okex.com",
+    "OKEX_RESTFUL_URL_INSTRUMENTS": "/api/futures/v3/instruments"
 }
