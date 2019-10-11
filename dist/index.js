@@ -104,10 +104,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             }
         }
         if (channel === 'instruments') {
-            this.onRawInstrumentsData(raw.data[0]);
+            this.onRawInstrumentsData(raw.data[0], true);
         }
     }
-    onRawInstrumentsData(rawInstrumentData) {
+    async onRawInstrumentsData(rawInstrumentData, subscribe = false) {
         for (const instrument of rawInstrumentData) {
             if (!(instrument.underlying_index === 'BTC'
                 && instrument.quote_currency === 'USD'))
@@ -117,15 +117,43 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
                 tradesChannel: `futures/trade:${instrument.instrument_id}`,
                 orderbookChannel: `futures/depth:${instrument.instrument_id}`,
             };
-            if (instrument.alias === 'this_week')
-                mapping_1.marketDescriptors['BTC-USD-THIS-WEEK/USD']
-                    = marketDescriptor;
-            if (instrument.alias === 'next_week')
-                mapping_1.marketDescriptors['BTC-USD-NEXT-WEEK/USD']
-                    = marketDescriptor;
-            if (instrument.alias === 'quarter')
-                mapping_1.marketDescriptors['BTC-USD-QUARTER/USD']
-                    = marketDescriptor;
+            try {
+                let pair;
+                pair = 'BTC-USD-THIS-WEEK/USD';
+                if (instrument.alias === 'this_week'
+                    && instrument.instrument_id
+                        !== mapping_1.marketDescriptors[pair].instrumentId) {
+                    mapping_1.marketDescriptors[pair] = marketDescriptor;
+                    if (subscribe) {
+                        await this.subscribeTrades(pair);
+                        await this.subscribeOrderbook(pair);
+                    }
+                }
+                pair = 'BTC-USD-NEXT-WEEK/USD';
+                if (instrument.alias === 'next_week'
+                    && instrument.instrument_id
+                        !== mapping_1.marketDescriptors[pair].instrumentId) {
+                    mapping_1.marketDescriptors[pair] = marketDescriptor;
+                    if (subscribe) {
+                        await this.subscribeTrades(pair);
+                        await this.subscribeOrderbook(pair);
+                    }
+                }
+                pair = 'BTC-USD-QUARTER/USD';
+                if (instrument.alias === 'quarter'
+                    && instrument.instrument_id
+                        !== mapping_1.marketDescriptors[pair].instrumentId) {
+                    mapping_1.marketDescriptors[pair] = marketDescriptor;
+                    if (subscribe) {
+                        await this.subscribeTrades(pair);
+                        await this.subscribeOrderbook(pair);
+                    }
+                }
+            }
+            catch (err) {
+                console.error(err);
+                this.stop();
+            }
         }
     }
     onRawTradeData(pair, rawTradesData) {
@@ -152,8 +180,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
         await events_1.once(this.okex, 'subscribed');
         this.okex.off('rawData', onIdSub);
     }
-    async subscribeTrades() {
-        for (const { tradesChannel } of Object.values(mapping_1.marketDescriptors)) {
+    async subscribeTrades(pair) {
+        for (const { tradesChannel } of pair
+            ? [mapping_1.marketDescriptors[pair]]
+            : Object.values(mapping_1.marketDescriptors)) {
             this.okex.subscribe(tradesChannel);
             const onTradesSub = (raw) => {
                 if (raw.channel === tradesChannel
@@ -165,8 +195,10 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             this.okex.off('rawData', onTradesSub);
         }
     }
-    async subscribeOrderbook() {
-        for (const pair in mapping_1.marketDescriptors) {
+    async subscribeOrderbook(_pair) {
+        for (const pair in _pair
+            ? { [_pair]: {} }
+            : mapping_1.marketDescriptors) {
             const { orderbookChannel } = mapping_1.marketDescriptors[pair];
             const isContract = pair !== 'BTC/USDT';
             this.rawOrderbookHandler[pair]

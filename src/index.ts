@@ -129,12 +129,13 @@ class QuoteAgentOkexWebsocket extends Autonomous {
             }
         }
         if (channel === 'instruments') {
-            this.onRawInstrumentsData(raw.data[0]);
+            this.onRawInstrumentsData(raw.data[0], true);
         }
     }
 
-    private onRawInstrumentsData(
+    private async onRawInstrumentsData(
         rawInstrumentData: RawInstrument['data'][0],
+        subscribe = false,
     ) {
         for (const instrument of rawInstrumentData) {
             if (!(
@@ -148,15 +149,51 @@ class QuoteAgentOkexWebsocket extends Autonomous {
                 orderbookChannel: `futures/depth:${
                     instrument.instrument_id}`,
             };
-            if (instrument.alias === 'this_week')
-                marketDescriptors['BTC-USD-THIS-WEEK/USD']
-                    = marketDescriptor;
-            if (instrument.alias === 'next_week')
-                marketDescriptors['BTC-USD-NEXT-WEEK/USD']
-                    = marketDescriptor;
-            if (instrument.alias === 'quarter')
-                marketDescriptors['BTC-USD-QUARTER/USD']
-                    = marketDescriptor;
+            try {
+                let pair: string;
+
+                pair = 'BTC-USD-THIS-WEEK/USD';
+                if (
+                    instrument.alias === 'this_week'
+                    && instrument.instrument_id
+                    !== marketDescriptors[pair].instrumentId
+                ) {
+                    marketDescriptors[pair] = marketDescriptor;
+                    if (subscribe) {
+                        await this.subscribeTrades(pair);
+                        await this.subscribeOrderbook(pair);
+                    }
+                }
+
+                pair = 'BTC-USD-NEXT-WEEK/USD';
+                if (
+                    instrument.alias === 'next_week'
+                    && instrument.instrument_id
+                    !== marketDescriptors[pair].instrumentId
+                ) {
+                    marketDescriptors[pair] = marketDescriptor;
+                    if (subscribe) {
+                        await this.subscribeTrades(pair);
+                        await this.subscribeOrderbook(pair);
+                    }
+                }
+
+                pair = 'BTC-USD-QUARTER/USD';
+                if (
+                    instrument.alias === 'quarter'
+                    && instrument.instrument_id
+                    !== marketDescriptors[pair].instrumentId
+                ) {
+                    marketDescriptors[pair] = marketDescriptor;
+                    if (subscribe) {
+                        await this.subscribeTrades(pair);
+                        await this.subscribeOrderbook(pair);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                this.stop();
+            }
         }
     }
 
@@ -192,8 +229,12 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         this.okex.off('rawData', onIdSub);
     }
 
-    private async subscribeTrades(): Promise<void> {
-        for (const { tradesChannel } of Object.values(marketDescriptors)) {
+    private async subscribeTrades(pair?: string): Promise<void> {
+        for (const { tradesChannel } of
+            pair
+                ? [marketDescriptors[pair]]
+                : Object.values(marketDescriptors)
+        ) {
             this.okex.subscribe(tradesChannel!);
             const onTradesSub = (raw: RawData) => {
                 if (
@@ -207,8 +248,12 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         }
     }
 
-    private async subscribeOrderbook(): Promise<void> {
-        for (const pair in marketDescriptors) {
+    private async subscribeOrderbook(_pair?: string): Promise<void> {
+        for (const pair in
+            _pair
+                ? { [_pair]: {} }
+                : marketDescriptors
+        ) {
             const { orderbookChannel } = marketDescriptors[pair];
             const isContract = pair !== 'BTC/USDT';
             this.rawOrderbookHandler[pair]
