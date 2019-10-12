@@ -1,5 +1,5 @@
 {
-    "name": "quote-agent-okex-websocket",
+    "name": "public-agent-okex-websocket",
     "version": "0.0.1",
     "description": "",
     "main": "./dist/index.js",
@@ -13,14 +13,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/zimtsui/quote-agent-okex-websocket.git"
+        "url": "git+https://github.com/zimtsui/public-agent-okex-websocket.git"
     },
     "author": "Zim",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/zimtsui/quote-agent-okex-websocket/issues"
+        "url": "https://github.com/zimtsui/public-agent-okex-websocket/issues"
     },
-    "homepage": "https://github.com/zimtsui/quote-agent-okex-websocket#readme",
+    "homepage": "https://github.com/zimtsui/public-agent-okex-websocket#readme",
     "devDependencies": {
         "ava": "^2.4.0",
         "bluebird": "^3.7.0",

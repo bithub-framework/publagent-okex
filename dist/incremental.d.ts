@@ -19,3 +19,4 @@ declare class Incremental {
     private checksum;
 }
 export default Incremental;
+export { Incremental };

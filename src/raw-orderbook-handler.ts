@@ -44,3 +44,4 @@ class RawOrderbookHandler {
 }
 
 export default RawOrderbookHandler;
+export { RawOrderbookHandler };

@@ -26,6 +26,7 @@ function formatRawTrade(
     return trade;
 }
 
+export default formatRawTrade;
 export {
     formatRawTrade,
 };

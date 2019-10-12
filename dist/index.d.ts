@@ -1,11 +1,11 @@
 import Autonomous from 'autonomous';
-declare class QuoteAgentOkexWebsocket extends Autonomous {
+declare class PublicAgentOkexWebsocket extends Autonomous {
     private okex;
     private center;
     private rawOrderbookHandler;
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
-    private connectQuoteCenter;
+    private connectPublicCenter;
     private connectOkex;
     private getInstruments;
     private onRawData;
@@ -16,4 +16,4 @@ declare class QuoteAgentOkexWebsocket extends Autonomous {
     private subscribeTrades;
     private subscribeOrderbook;
 }
-export default QuoteAgentOkexWebsocket;
+export default PublicAgentOkexWebsocket;

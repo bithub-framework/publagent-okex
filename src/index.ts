@@ -1,19 +1,19 @@
 // TODO 把常数放到 config 里
 
 import WebSocket from 'ws';
-import fse from 'fs-extra';
-import path from 'path';
+import { readJsonSync } from 'fs-extra';
+import { join } from 'path';
 import Autonomous from 'autonomous';
 import { once } from 'events';
 import axios from 'axios';
 import { boundMethod } from 'autobind-decorator';
 import V3WebsocketClient from './official-v3-websocket-client-modified';
 import RawOrderbookHandler from './raw-orderbook-handler';
-import { formatRawTrade } from './raw-trades-handler';
+import formatRawTrade from './raw-trades-handler';
 import {
     RawOrderbook,
     RawTrades,
-    QuoteDataFromAgentToCenter as QDFATC,
+    PublicDataFromAgentToCenter as PDFATC,
     Config,
     RawInstrument,
 } from './interfaces';
@@ -24,13 +24,14 @@ import {
     MarketDescriptor,
 } from './mapping';
 
-const config: Config = fse.readJsonSync(path.join(__dirname, '../cfg/config.json'));
+const config: Config = readJsonSync(join(__dirname,
+    '../cfg/config.json'));
 
 type RawData = any;
 
 const ACTIVE_CLOSE = 4000;
 
-class QuoteAgentOkexWebsocket extends Autonomous {
+class PublicAgentOkexWebsocket extends Autonomous {
     private okex!: V3WebsocketClient;
     private center: {
         [key: string]: WebSocket;
@@ -41,7 +42,7 @@ class QuoteAgentOkexWebsocket extends Autonomous {
 
     protected async _start(): Promise<void> {
         await this.connectOkex();
-        await this.connectQuoteCenter();
+        await this.connectPublicCenter();
 
         this.okex.on('rawData', this.onRawData);
         await this.getInstruments();
@@ -61,14 +62,14 @@ class QuoteAgentOkexWebsocket extends Autonomous {
         }
     }
 
-    private async connectQuoteCenter(): Promise<void> {
+    private async connectPublicCenter(): Promise<void> {
         for (const pair in marketDescriptors) {
             const center = this.center[pair] = new WebSocket(
-                `${config.QUOTE_CENTER_BASE_URL}/okex/${pair}`);
+                `${config.PUBLIC_CENTER_BASE_URL}/okex/${pair}`);
 
             center.on('close', code => {
                 if (code !== ACTIVE_CLOSE)
-                    center.emit('error', new Error('quote center closed'));
+                    center.emit('error', new Error('public center closed'));
             });
             center.on('error', (err: Error) => {
                 console.error(err);
@@ -202,7 +203,7 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     ): void {
         const isContract = pair !== 'BTC/USDT';
         const trade = formatRawTrade(rawTradesData, isContract);
-        const sentData: QDFATC = { trades: [trade] };
+        const sentData: PDFATC = { trades: [trade] };
         this.center[pair].send(JSON.stringify(sentData));
     }
 
@@ -211,7 +212,7 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     ): void {
         const orderbook = this.rawOrderbookHandler[pair]
             .handle(rawOrderbookData);
-        const sentData: QDFATC = { orderbook };
+        const sentData: PDFATC = { orderbook };
         this.center[pair].send(JSON.stringify(sentData));
     }
 
@@ -273,4 +274,4 @@ class QuoteAgentOkexWebsocket extends Autonomous {
     }
 }
 
-export default QuoteAgentOkexWebsocket;
+export default PublicAgentOkexWebsocket;

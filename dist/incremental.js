@@ -77,5 +77,6 @@ class Incremental {
         });
     }
 }
+exports.Incremental = Incremental;
 exports.default = Incremental;
 //# sourceMappingURL=incremental.js.map

@@ -106,3 +106,4 @@ class Incremental {
 }
 
 export default Incremental;
+export { Incremental };

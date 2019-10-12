@@ -16,4 +16,5 @@ function formatRawTrade(rawTrades, isContract = false) {
     return trade;
 }
 exports.formatRawTrade = formatRawTrade;
+exports.default = formatRawTrade;
 //# sourceMappingURL=raw-trades-handler.js.map

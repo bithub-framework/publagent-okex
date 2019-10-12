@@ -11,19 +11,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ws_1 = __importDefault(require("ws"));
-const fs_extra_1 = __importDefault(require("fs-extra"));
-const path_1 = __importDefault(require("path"));
+const fs_extra_1 = require("fs-extra");
+const path_1 = require("path");
 const autonomous_1 = __importDefault(require("autonomous"));
 const events_1 = require("events");
 const axios_1 = __importDefault(require("axios"));
 const autobind_decorator_1 = require("autobind-decorator");
 const official_v3_websocket_client_modified_1 = __importDefault(require("./official-v3-websocket-client-modified"));
 const raw_orderbook_handler_1 = __importDefault(require("./raw-orderbook-handler"));
-const raw_trades_handler_1 = require("./raw-trades-handler");
+const raw_trades_handler_1 = __importDefault(require("./raw-trades-handler"));
 const mapping_1 = require("./mapping");
-const config = fs_extra_1.default.readJsonSync(path_1.default.join(__dirname, '../cfg/config.json'));
+const config = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/config.json'));
 const ACTIVE_CLOSE = 4000;
-class QuoteAgentOkexWebsocket extends autonomous_1.default {
+class PublicAgentOkexWebsocket extends autonomous_1.default {
     constructor() {
         super(...arguments);
         this.center = {};
@@ -31,7 +31,7 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
     }
     async _start() {
         await this.connectOkex();
-        await this.connectQuoteCenter();
+        await this.connectPublicCenter();
         this.okex.on('rawData', this.onRawData);
         await this.getInstruments();
         await this.subscribeInstruments();
@@ -49,12 +49,12 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
             }
         }
     }
-    async connectQuoteCenter() {
+    async connectPublicCenter() {
         for (const pair in mapping_1.marketDescriptors) {
-            const center = this.center[pair] = new ws_1.default(`${config.QUOTE_CENTER_BASE_URL}/okex/${pair}`);
+            const center = this.center[pair] = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/okex/${pair}`);
             center.on('close', code => {
                 if (code !== ACTIVE_CLOSE)
-                    center.emit('error', new Error('quote center closed'));
+                    center.emit('error', new Error('public center closed'));
             });
             center.on('error', (err) => {
                 console.error(err);
@@ -158,7 +158,7 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
     }
     onRawTradeData(pair, rawTradesData) {
         const isContract = pair !== 'BTC/USDT';
-        const trade = raw_trades_handler_1.formatRawTrade(rawTradesData, isContract);
+        const trade = raw_trades_handler_1.default(rawTradesData, isContract);
         const sentData = { trades: [trade] };
         this.center[pair].send(JSON.stringify(sentData));
     }
@@ -217,6 +217,6 @@ class QuoteAgentOkexWebsocket extends autonomous_1.default {
 }
 __decorate([
     autobind_decorator_1.boundMethod
-], QuoteAgentOkexWebsocket.prototype, "onRawData", null);
-exports.default = QuoteAgentOkexWebsocket;
+], PublicAgentOkexWebsocket.prototype, "onRawData", null);
+exports.default = PublicAgentOkexWebsocket;
 //# sourceMappingURL=index.js.map

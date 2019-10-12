@@ -1,4 +1,5 @@
-import { Action, Orderbook, Trade, QuoteDataFromAgentToCenter } from 'interfaces';
+export * from 'interfaces';
+import { Action } from 'interfaces';
 interface RawInstrument {
     table: string;
     data: {
@@ -30,15 +31,15 @@ interface RawOrderbook {
         timestamp: string;
     }[];
 }
+interface Config {
+    PUBLIC_CENTER_BASE_URL: string;
+    OKEX_WEBSOCKET_URL: string;
+    OKEX_RESTFUL_BASE_URL: string;
+    OKEX_RESTFUL_URL_INSTRUMENTS: string;
+}
 interface OrderString {
     price: string;
     amount: string;
     action: Action;
 }
-interface Config {
-    QUOTE_CENTER_BASE_URL: string;
-    OKEX_WEBSOCKET_URL: string;
-    OKEX_RESTFUL_BASE_URL: string;
-    OKEX_RESTFUL_URL_INSTRUMENTS: string;
-}
-export { Trade, Action, Orderbook, RawTrades, RawOrderbook, OrderString, QuoteDataFromAgentToCenter, Config, RawInstrument, };
+export { RawTrades, RawOrderbook, RawInstrument, OrderString, Config, };

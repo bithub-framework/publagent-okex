@@ -6,3 +6,4 @@ declare class RawOrderbookHandler {
     handle(raw: RawOrderbook['data'][0]): Orderbook;
 }
 export default RawOrderbookHandler;
+export { RawOrderbookHandler };

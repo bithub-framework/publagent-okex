@@ -30,5 +30,6 @@ class RawOrderbookHandler {
         return orderbook;
     }
 }
+exports.RawOrderbookHandler = RawOrderbookHandler;
 exports.default = RawOrderbookHandler;
 //# sourceMappingURL=raw-orderbook-handler.js.map
