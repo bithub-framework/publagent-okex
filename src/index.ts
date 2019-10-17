@@ -53,7 +53,7 @@ class PublicAgentOkexWebsocket extends Autonomous {
         if (this.okex) this.okex.close(ACTIVE_CLOSE);
         for (const pair in marketDescriptors) {
             const center = this.center[pair];
-            if (center && center.readyState !== 3) {
+            if (center.readyState === 0 || center.readyState === 1) {
                 center.close(ACTIVE_CLOSE);
                 await once(center, 'close');
             }
@@ -113,25 +113,30 @@ class PublicAgentOkexWebsocket extends Autonomous {
 
     @boundMethod
     private onRawData(raw: RawData): void {
-        const { table } = raw;
-        if (!table) return;
-        const channel = getChannel(table);
-        if (channel === 'trades') {
-            for (const rawTradeData of raw.data) {
-                const { instrument_id } = rawTradeData;
-                const pair = getPair(table, instrument_id);
-                this.onRawTradeData(pair, rawTradeData);
+        try {
+            const { table } = raw;
+            if (!table) return;
+            const channel = getChannel(table);
+            if (channel === 'trades') {
+                for (const rawTrade of raw.data) {
+                    const { instrument_id } = rawTrade;
+                    const pair = getPair(table, instrument_id);
+                    this.onRawTradeData(pair, rawTrade);
+                }
             }
-        }
-        if (channel === 'orderbook') {
-            for (const rawOrderbookData of raw.data) {
-                const { instrument_id } = rawOrderbookData;
-                const pair = getPair(table, instrument_id);
-                this.onRawOrderbookData(pair, rawOrderbookData);
+            if (channel === 'orderbook') {
+                for (const rawOrderbookData of raw.data) {
+                    const { instrument_id } = rawOrderbookData;
+                    const pair = getPair(table, instrument_id);
+                    this.onRawOrderbookData(pair, rawOrderbookData);
+                }
             }
-        }
-        if (channel === 'instruments') {
-            this.onRawInstrumentsData(raw.data[0], true);
+            if (channel === 'instruments') {
+                this.onRawInstrumentsData(raw.data[0], true);
+            }
+        } catch (err) {
+            console.error(err);
+            this.stop();
         }
     }
 
@@ -200,10 +205,10 @@ class PublicAgentOkexWebsocket extends Autonomous {
     }
 
     private onRawTradeData(
-        pair: string, rawTradesData: RawTrades['data'][0],
+        pair: string, rawTrade: RawTrades['data'][0],
     ): void {
         const isContract = pair !== 'BTC/USDT';
-        const trade = formatRawTrade(rawTradesData, isContract);
+        const trade = formatRawTrade(rawTrade, isContract);
         const sentData: PDFATC = { trades: [trade] };
         this.center[pair].send(JSON.stringify(sentData));
     }

@@ -42,7 +42,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
             this.okex.close(ACTIVE_CLOSE);
         for (const pair in mapping_1.marketDescriptors) {
             const center = this.center[pair];
-            if (center && center.readyState !== 3) {
+            if (center.readyState === 0 || center.readyState === 1) {
                 center.close(ACTIVE_CLOSE);
                 await events_1.once(center, 'close');
             }
@@ -85,26 +85,32 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
         this.onRawInstrumentsData(rawInstrumentData);
     }
     onRawData(raw) {
-        const { table } = raw;
-        if (!table)
-            return;
-        const channel = mapping_1.getChannel(table);
-        if (channel === 'trades') {
-            for (const rawTradeData of raw.data) {
-                const { instrument_id } = rawTradeData;
-                const pair = mapping_1.getPair(table, instrument_id);
-                this.onRawTradeData(pair, rawTradeData);
+        try {
+            const { table } = raw;
+            if (!table)
+                return;
+            const channel = mapping_1.getChannel(table);
+            if (channel === 'trades') {
+                for (const rawTrade of raw.data) {
+                    const { instrument_id } = rawTrade;
+                    const pair = mapping_1.getPair(table, instrument_id);
+                    this.onRawTradeData(pair, rawTrade);
+                }
+            }
+            if (channel === 'orderbook') {
+                for (const rawOrderbookData of raw.data) {
+                    const { instrument_id } = rawOrderbookData;
+                    const pair = mapping_1.getPair(table, instrument_id);
+                    this.onRawOrderbookData(pair, rawOrderbookData);
+                }
+            }
+            if (channel === 'instruments') {
+                this.onRawInstrumentsData(raw.data[0], true);
             }
         }
-        if (channel === 'orderbook') {
-            for (const rawOrderbookData of raw.data) {
-                const { instrument_id } = rawOrderbookData;
-                const pair = mapping_1.getPair(table, instrument_id);
-                this.onRawOrderbookData(pair, rawOrderbookData);
-            }
-        }
-        if (channel === 'instruments') {
-            this.onRawInstrumentsData(raw.data[0], true);
+        catch (err) {
+            console.error(err);
+            this.stop();
         }
     }
     async onRawInstrumentsData(rawInstrumentData, subscribe = false) {
@@ -156,9 +162,9 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
             }
         }
     }
-    onRawTradeData(pair, rawTradesData) {
+    onRawTradeData(pair, rawTrade) {
         const isContract = pair !== 'BTC/USDT';
-        const trade = raw_trades_handler_1.default(rawTradesData, isContract);
+        const trade = raw_trades_handler_1.default(rawTrade, isContract);
         const sentData = { trades: [trade] };
         this.center[pair].send(JSON.stringify(sentData));
     }

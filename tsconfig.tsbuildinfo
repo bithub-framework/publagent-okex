@@ -426,7 +426,7 @@
         "signature": "1266921389a7471798028b34b07276d53e094a75da9830ac9268922db51d7377"
       },
       "./src/index.ts": {
-        "version": "e6b0f28dd29f49068ac357c4e7f8441b530a42ff5bbb69e4ac6bd86a85651d03",
+        "version": "f063de0f8d9450a8d7b4b719bb1dca40042d3aef65302a4b0117f16aa67be1a6",
         "signature": "10f653db124770a971f094229c26df01c608b304975734a8793bc8f85be00d35"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
