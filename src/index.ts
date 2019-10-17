@@ -1,5 +1,3 @@
-// TODO 把常数放到 config 里
-
 import WebSocket from 'ws';
 import { readJsonSync } from 'fs-extra';
 import { join } from 'path';
