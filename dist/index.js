@@ -40,7 +40,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
     }
     async _stop() {
         if (this.okex)
-            this.okex.close();
+            this.okex.close(ACTIVE_CLOSE);
         for (const pair in mapping_1.marketDescriptors) {
             const center = this.center[pair];
             if (center && center.readyState !== 3) {
@@ -52,14 +52,13 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
     async connectPublicCenter() {
         for (const pair in mapping_1.marketDescriptors) {
             const center = this.center[pair] = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/okex/${pair}`);
-            center.on('close', code => {
-                if (code !== ACTIVE_CLOSE)
-                    center.emit('error', new Error('public center closed'));
+            center.on('close', (code, reason) => {
+                if (code !== ACTIVE_CLOSE) {
+                    console.error(new Error(`public center for ${pair} closed`));
+                    this.stop();
+                }
             });
-            center.on('error', (err) => {
-                console.error(err);
-                this.stop();
-            });
+            center.on('error', console.error);
             await events_1.once(center, 'open');
         }
     }
@@ -70,12 +69,14 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
             if (raw.event === 'error')
                 this.okex.emit('error', new Error(raw.message));
         });
-        this.okex.on('close', () => {
-            this.okex.emit('error', new Error('okex closed'));
+        this.okex.on('close', (code, reason) => {
+            if (code !== ACTIVE_CLOSE) {
+                console.error(new Error('okex closed'));
+                this.stop();
+            }
         });
         this.okex.on('error', (err) => {
             console.error(err);
-            this.stop();
         });
         this.okex.connect();
         await events_1.once(this.okex, 'open');

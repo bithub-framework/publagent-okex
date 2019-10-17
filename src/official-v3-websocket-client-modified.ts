@@ -128,9 +128,9 @@ export class V3WebsocketClient extends EventEmitter {
         this.emit('close');
     }
 
-    close() {
+    close(code?: number, reason?: string) {
         if (this.socket) {
-            this.socket.close();
+            this.socket.close(code, reason);
             if (this.interval) {
                 clearInterval(this.interval);
                 this.interval = null;

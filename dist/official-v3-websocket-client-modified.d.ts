@@ -16,6 +16,6 @@ export declare class V3WebsocketClient extends EventEmitter {
     private resetTimer;
     private onMessage;
     private onClose;
-    close(): void;
+    close(code?: number, reason?: string): void;
 }
 export default V3WebsocketClient;

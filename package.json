@@ -40,6 +40,7 @@
         "interfaces": "git+https://github.com/zimtsui/interfaces.git",
         "lodash": "^4.17.15",
         "pako": "^1.0.10",
+        "pandora-kita": "git+https://github.com/zimtsui/pandora-kita.git",
         "ws": "^7.1.1"
     },
     "ava": {
