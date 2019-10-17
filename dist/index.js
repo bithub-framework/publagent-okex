@@ -42,10 +42,10 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
             this.okex.close(ACTIVE_CLOSE);
         for (const pair in mapping_1.marketDescriptors) {
             const center = this.center[pair];
-            if (center.readyState === 0 || center.readyState === 1) {
+            if (center.readyState < 2)
                 center.close(ACTIVE_CLOSE);
+            if (center.readyState < 3)
                 await events_1.once(center, 'close');
-            }
         }
     }
     async connectPublicCenter() {
