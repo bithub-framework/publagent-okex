@@ -40,8 +40,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
     async _stop() {
         if (this.okex)
             this.okex.close(ACTIVE_CLOSE);
-        for (const pair in mapping_1.marketDescriptors) {
-            const center = this.center[pair];
+        for (const center of Object.values(this.center)) {
             if (center.readyState < 2)
                 center.close(ACTIVE_CLOSE);
             if (center.readyState < 3)

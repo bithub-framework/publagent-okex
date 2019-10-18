@@ -51,8 +51,7 @@ class PublicAgentOkexWebsocket extends Autonomous {
 
     protected async _stop(): Promise<void> {
         if (this.okex) this.okex.close(ACTIVE_CLOSE);
-        for (const pair in marketDescriptors) {
-            const center = this.center[pair];
+        for (const center of Object.values(this.center)) {
             if (center.readyState < 2) center.close(ACTIVE_CLOSE);
             if (center.readyState < 3) await once(center, 'close');
         }
