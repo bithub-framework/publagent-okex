@@ -1,8 +1,8 @@
 import { Orderbook, RawOrderbook } from './interfaces';
 declare class RawOrderbookHandler {
-    private isContract;
+    private isPerpetual;
     private incremental;
-    constructor(isContract?: boolean);
+    constructor(isPerpetual?: boolean);
     handle(raw: RawOrderbook['data'][0]): Orderbook;
 }
 export default RawOrderbookHandler;

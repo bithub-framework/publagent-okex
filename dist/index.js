@@ -14,7 +14,6 @@ const fs_extra_1 = require("fs-extra");
 const path_1 = require("path");
 const autonomous_1 = __importDefault(require("autonomous"));
 const events_1 = require("events");
-const axios_1 = __importDefault(require("axios"));
 const autobind_decorator_1 = require("autobind-decorator");
 const official_v3_websocket_client_modified_1 = __importDefault(require("./official-v3-websocket-client-modified"));
 const raw_orderbook_handler_1 = __importDefault(require("./raw-orderbook-handler"));
@@ -32,8 +31,6 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
         await this.connectOkex();
         await this.connectPublicCenter();
         this.okex.on('rawData', this.onRawData);
-        await this.getInstruments();
-        await this.subscribeInstruments();
         await this.subscribeTrades();
         await this.subscribeOrderbook();
     }
@@ -79,10 +76,6 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
         this.okex.connect();
         await events_1.once(this.okex, 'open');
     }
-    async getInstruments() {
-        const rawInstrumentData = await axios_1.default(`${config.OKEX_RESTFUL_BASE_URL}${config.OKEX_RESTFUL_URL_INSTRUMENTS}`).then(res => res.data);
-        this.onRawInstrumentsData(rawInstrumentData);
-    }
     onRawData(raw) {
         try {
             const { table } = raw;
@@ -103,62 +96,10 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
                     this.onRawOrderbookData(pair, rawOrderbookData);
                 }
             }
-            if (channel === 'instruments') {
-                this.onRawInstrumentsData(raw.data[0], true);
-            }
         }
         catch (err) {
             console.error(err);
             this.stop();
-        }
-    }
-    async onRawInstrumentsData(rawInstrumentData, subscribe = false) {
-        for (const instrument of rawInstrumentData) {
-            if (!(instrument.underlying_index === 'BTC'
-                && instrument.quote_currency === 'USD'))
-                continue;
-            const marketDescriptor = {
-                instrumentId: instrument.instrument_id,
-                tradesChannel: `futures/trade:${instrument.instrument_id}`,
-                orderbookChannel: `futures/depth:${instrument.instrument_id}`,
-            };
-            try {
-                let pair;
-                pair = 'BTC-USD-THIS-WEEK/USD';
-                if (instrument.alias === 'this_week'
-                    && instrument.instrument_id
-                        !== mapping_1.marketDescriptors[pair].instrumentId) {
-                    mapping_1.marketDescriptors[pair] = marketDescriptor;
-                    if (subscribe) {
-                        await this.subscribeTrades(pair);
-                        await this.subscribeOrderbook(pair);
-                    }
-                }
-                pair = 'BTC-USD-NEXT-WEEK/USD';
-                if (instrument.alias === 'next_week'
-                    && instrument.instrument_id
-                        !== mapping_1.marketDescriptors[pair].instrumentId) {
-                    mapping_1.marketDescriptors[pair] = marketDescriptor;
-                    if (subscribe) {
-                        await this.subscribeTrades(pair);
-                        await this.subscribeOrderbook(pair);
-                    }
-                }
-                pair = 'BTC-USD-QUARTER/USD';
-                if (instrument.alias === 'quarter'
-                    && instrument.instrument_id
-                        !== mapping_1.marketDescriptors[pair].instrumentId) {
-                    mapping_1.marketDescriptors[pair] = marketDescriptor;
-                    if (subscribe) {
-                        await this.subscribeTrades(pair);
-                        await this.subscribeOrderbook(pair);
-                    }
-                }
-            }
-            catch (err) {
-                console.error(err);
-                this.stop();
-            }
         }
     }
     onRawTradeData(pair, rawTrade) {
@@ -172,18 +113,6 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
             .handle(rawOrderbookData);
         const sentData = { orderbook };
         this.center[pair].send(JSON.stringify(sentData));
-    }
-    async subscribeInstruments() {
-        const channel = 'futures/instruments';
-        this.okex.subscribe(channel);
-        const onIdSub = (raw) => {
-            if (raw.channel === channel
-                && raw.event === 'subscribe')
-                this.okex.emit('subscribed');
-        };
-        this.okex.on('rawData', onIdSub);
-        await events_1.once(this.okex, 'subscribed');
-        this.okex.off('rawData', onIdSub);
     }
     async subscribeTrades(pair) {
         for (const { tradesChannel } of pair
@@ -200,14 +129,12 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
             this.okex.off('rawData', onTradesSub);
         }
     }
-    async subscribeOrderbook(_pair) {
-        for (const pair in _pair
-            ? { [_pair]: {} }
-            : mapping_1.marketDescriptors) {
+    async subscribeOrderbook() {
+        for (const pair in mapping_1.marketDescriptors) {
             const { orderbookChannel } = mapping_1.marketDescriptors[pair];
-            const isContract = pair !== 'BTC/USDT';
+            const isPerpetual = pair !== 'BTC/USDT';
             this.rawOrderbookHandler[pair]
-                = new raw_orderbook_handler_1.default(isContract);
+                = new raw_orderbook_handler_1.default(isPerpetual);
             this.okex.subscribe(orderbookChannel);
             const onOrderbookSub = (raw) => {
                 if (raw.channel === orderbookChannel
@@ -223,5 +150,6 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
 __decorate([
     autobind_decorator_1.boundMethod
 ], PublicAgentOkexWebsocket.prototype, "onRawData", null);
+exports.PublicAgentOkexWebsocket = PublicAgentOkexWebsocket;
 exports.default = PublicAgentOkexWebsocket;
 //# sourceMappingURL=index.js.map

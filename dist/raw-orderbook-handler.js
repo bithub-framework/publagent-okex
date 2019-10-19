@@ -19,9 +19,9 @@ function formatRawOrderbookToOrdersString(orderbook) {
     ];
 }
 class RawOrderbookHandler {
-    constructor(isContract = false) {
-        this.isContract = isContract;
-        this.incremental = new incremental_1.default(this.isContract);
+    constructor(isPerpetual = false) {
+        this.isPerpetual = isPerpetual;
+        this.incremental = new incremental_1.default(this.isPerpetual);
     }
     handle(raw) {
         const ordersString = formatRawOrderbookToOrdersString(raw);

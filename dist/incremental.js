@@ -15,14 +15,14 @@ const lodash_1 = require("lodash");
 const official_v3_websocket_client_modified_1 = __importDefault(require("./official-v3-websocket-client-modified"));
 const assert_1 = __importDefault(require("assert"));
 class Incremental {
-    constructor(isContract) {
-        this.isContract = isContract;
+    constructor(isPerpetual) {
+        this.isPerpetual = isPerpetual;
         this.asks = new Map();
         this.bids = new Map();
     }
     update(orderString) {
         const orderNumber = this.formatOrderStringToOrder(orderString);
-        if (this.isContract) {
+        if (this.isPerpetual) {
             orderNumber.amount *= 100 * 100 / orderNumber.price;
         }
         const orderBoth = {

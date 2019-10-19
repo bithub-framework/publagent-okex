@@ -138,8 +138,8 @@
         "signature": "8bd80df76f9ca93ffd181bf8a5a425b83d63f87efed0d0f27cbe21ac08e9e8b0"
       },
       "./src/interfaces.ts": {
-        "version": "cfb526b8abde317bd324751cfc8df6d8cb6171cbc07174132acc8e30025ae379",
-        "signature": "04c97f071bee76ce0ae930a8631a112556ac1cbe7f900d9ad575fbc5dff63f3a"
+        "version": "36bb98faf08980602ea08ad735a1d97a1dcec1fc08f629b5b851994bec2480f7",
+        "signature": "f03fda1fb4017e26faf52fa1c27a8fc89b503aa1b11e54f90948125804946508"
       },
       "./node_modules/@types/lodash/ts3.1/common/common.d.ts": {
         "version": "4025cf62742c5bb3d383c8a62342481622c87e3397ea5e7b7baab18b9efd5798",
@@ -390,8 +390,8 @@
         "signature": "b59690dab39b15f7940eeb652575a1ae42417f5d2894af60b0d674abffb0392a"
       },
       "./src/incremental.ts": {
-        "version": "82685c61afeeadc157d2e3940e9def11364cf624074f19e21f7a5cffc53f2bbe",
-        "signature": "ae013c2c2a994518b89ed9d0c2a62380fb682d85d282cbb6d42e308e4bcdb202"
+        "version": "a474e053f965e825b1719a21e5dba7d2cba4e472e5ba063010de5295bebfd3f0",
+        "signature": "39b8e8174315ed09d4bc34abc5f8a454d3d55a91d15280c19e336da18f9a9627"
       },
       "./node_modules/@types/fs-extra/index.d.ts": {
         "version": "02f8dc4777a4efb7efdc6613659540925b2a5660b483f9fa12cbc1b3ddef6050",
@@ -405,29 +405,25 @@
         "version": "a80e21f89e4c892da1a5c2d4dfeef5c3110f0a11b9ee781ac84331debed4c0ad",
         "signature": "a80e21f89e4c892da1a5c2d4dfeef5c3110f0a11b9ee781ac84331debed4c0ad"
       },
-      "./node_modules/axios/index.d.ts": {
-        "version": "9b3812f5ae5c9c8c9daf7107e1041f4ad9d19aebd12b738a81f22a1ac1f5e371",
-        "signature": "9b3812f5ae5c9c8c9daf7107e1041f4ad9d19aebd12b738a81f22a1ac1f5e371"
-      },
       "./node_modules/autobind-decorator/index.d.ts": {
         "version": "2de69362c6be41535d58884c066a2b104c9e0e5aab709f35aed8d4e08ead4c95",
         "signature": "2de69362c6be41535d58884c066a2b104c9e0e5aab709f35aed8d4e08ead4c95"
       },
       "./src/raw-orderbook-handler.ts": {
-        "version": "88497559d5a15c04fb2ecd61c6b34e7338c7d5e3159c092119b12b44a78671db",
-        "signature": "ab7da9b8a3b208e08dc29a331b119d5ed0fdf04d2f20d523cefc027c479db52a"
+        "version": "6c5fbe5f92a2eb711d2f5f6373d5b1991d5764d3e1b44b6b1c7d0fb87bafb651",
+        "signature": "4adce4611c50bcac24783f017163b5a3bd07c86f2e369b1f612beb9c32b3671d"
       },
       "./src/raw-trades-handler.ts": {
         "version": "a50a67b28eec49900d09ee8612b9014fea711a4da7f658133ad2e1e1a582365e",
         "signature": "b3b2019d92e9f792252ac6739367881617462b0252fae08cbee5148fd133596d"
       },
       "./src/mapping.ts": {
-        "version": "c9418ae29dcf493b96214ff570725c6e91bf926ecb2a0a7264d2b11eb15ed1b0",
+        "version": "8ff8f8c6a95159c57a4cc35424a277ec13fe0e2da49ef0561c9ec43b9b8a8d29",
         "signature": "1266921389a7471798028b34b07276d53e094a75da9830ac9268922db51d7377"
       },
       "./src/index.ts": {
-        "version": "4e9ee72fe00304d89e26218f9111ed72c731afeeb8077e1808ec241c34503ffa",
-        "signature": "10f653db124770a971f094229c26df01c608b304975734a8793bc8f85be00d35"
+        "version": "4369b3f275053754a214ec46aa96085e85404b7bf3527adf22fcea4dd0089258",
+        "signature": "2e8a1aabfc5173690ae4a40fc0326272c935f36252957523154043ed4e6fe57a"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "3c10804e3bd90aa404eefbc300c362b0ebbd23b34eb03ae592717ac111889f34",
@@ -1134,10 +1130,6 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./node_modules/axios/index.d.ts": [
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
       "./node_modules/autobind-decorator/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -1164,7 +1156,6 @@
         "./node_modules/@types/node/path.d.ts",
         "./node_modules/autonomous/dist/index.d.ts",
         "./node_modules/@types/node/events.d.ts",
-        "./node_modules/axios/index.d.ts",
         "./node_modules/autobind-decorator/index.d.ts",
         "./src/official-v3-websocket-client-modified.ts",
         "./src/raw-orderbook-handler.ts",
@@ -1849,10 +1840,6 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./node_modules/axios/index.d.ts": [
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
       "./node_modules/autobind-decorator/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -1917,7 +1904,6 @@
       "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "./node_modules/typescript/lib/lib.esnext.bigint.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
-      "./src/interfaces.ts",
       "./node_modules/@types/lodash/ts3.1/common/common.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/array.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/collection.d.ts",
@@ -1980,19 +1966,19 @@
       "./node_modules/@types/pako/index.d.ts",
       "./node_modules/crc-32/types/index.d.ts",
       "./src/official-v3-websocket-client-modified.ts",
-      "./src/incremental.ts",
       "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
       "./node_modules/autonomous/dist/index.d.ts",
-      "./node_modules/axios/index.d.ts",
       "./node_modules/autobind-decorator/index.d.ts",
-      "./src/raw-orderbook-handler.ts",
-      "./src/raw-trades-handler.ts",
-      "./src/mapping.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./src/index.ts"
+      "./src/interfaces.ts",
+      "./src/index.ts",
+      "./src/raw-trades-handler.ts",
+      "./src/raw-orderbook-handler.ts",
+      "./src/incremental.ts",
+      "./src/mapping.ts"
     ]
   },
   "version": "3.6.4"

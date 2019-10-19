@@ -8,10 +8,10 @@
 import { Orderbook } from 'interfaces';
 import { OrderString } from './interfaces';
 declare class Incremental {
-    private isContract;
+    private isPerpetual;
     private asks;
     private bids;
-    constructor(isContract: boolean);
+    constructor(isPerpetual: boolean);
     update(orderString: OrderString): void;
     clear(): void;
     private formatOrderStringToOrder;

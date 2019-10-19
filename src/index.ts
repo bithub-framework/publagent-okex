@@ -3,7 +3,6 @@ import { readJsonSync } from 'fs-extra';
 import { join } from 'path';
 import Autonomous from 'autonomous';
 import { once } from 'events';
-import axios from 'axios';
 import { boundMethod } from 'autobind-decorator';
 import V3WebsocketClient from './official-v3-websocket-client-modified';
 import RawOrderbookHandler from './raw-orderbook-handler';
@@ -13,13 +12,11 @@ import {
     RawTrades,
     PublicDataFromAgentToCenter as PDFATC,
     Config,
-    RawInstrument,
 } from './interfaces';
 import {
     marketDescriptors,
     getChannel,
     getPair,
-    MarketDescriptor,
 } from './mapping';
 
 const config: Config = readJsonSync(join(__dirname,
@@ -43,8 +40,6 @@ class PublicAgentOkexWebsocket extends Autonomous {
         await this.connectPublicCenter();
 
         this.okex.on('rawData', this.onRawData);
-        await this.getInstruments();
-        await this.subscribeInstruments();
         await this.subscribeTrades();
         await this.subscribeOrderbook();
     }
@@ -99,15 +94,6 @@ class PublicAgentOkexWebsocket extends Autonomous {
         await once(this.okex, 'open');
     }
 
-    private async getInstruments(): Promise<void> {
-        const rawInstrumentData: RawInstrument['data'][0]
-            = await axios(`${
-                config.OKEX_RESTFUL_BASE_URL}${
-                config.OKEX_RESTFUL_URL_INSTRUMENTS}`
-            ).then(res => res.data);
-        this.onRawInstrumentsData(rawInstrumentData);
-    }
-
     @boundMethod
     private onRawData(raw: RawData): void {
         try {
@@ -128,76 +114,9 @@ class PublicAgentOkexWebsocket extends Autonomous {
                     this.onRawOrderbookData(pair, rawOrderbookData);
                 }
             }
-            if (channel === 'instruments') {
-                this.onRawInstrumentsData(raw.data[0], true);
-            }
         } catch (err) {
             console.error(err);
             this.stop();
-        }
-    }
-
-    private async onRawInstrumentsData(
-        rawInstrumentData: RawInstrument['data'][0],
-        subscribe = false,
-    ) {
-        for (const instrument of rawInstrumentData) {
-            if (!(
-                instrument.underlying_index === 'BTC'
-                && instrument.quote_currency === 'USD'
-            )) continue;
-            const marketDescriptor: MarketDescriptor = {
-                instrumentId: instrument.instrument_id,
-                tradesChannel: `futures/trade:${
-                    instrument.instrument_id}`,
-                orderbookChannel: `futures/depth:${
-                    instrument.instrument_id}`,
-            };
-            try {
-                let pair: string;
-
-                pair = 'BTC-USD-THIS-WEEK/USD';
-                if (
-                    instrument.alias === 'this_week'
-                    && instrument.instrument_id
-                    !== marketDescriptors[pair].instrumentId
-                ) {
-                    marketDescriptors[pair] = marketDescriptor;
-                    if (subscribe) {
-                        await this.subscribeTrades(pair);
-                        await this.subscribeOrderbook(pair);
-                    }
-                }
-
-                pair = 'BTC-USD-NEXT-WEEK/USD';
-                if (
-                    instrument.alias === 'next_week'
-                    && instrument.instrument_id
-                    !== marketDescriptors[pair].instrumentId
-                ) {
-                    marketDescriptors[pair] = marketDescriptor;
-                    if (subscribe) {
-                        await this.subscribeTrades(pair);
-                        await this.subscribeOrderbook(pair);
-                    }
-                }
-
-                pair = 'BTC-USD-QUARTER/USD';
-                if (
-                    instrument.alias === 'quarter'
-                    && instrument.instrument_id
-                    !== marketDescriptors[pair].instrumentId
-                ) {
-                    marketDescriptors[pair] = marketDescriptor;
-                    if (subscribe) {
-                        await this.subscribeTrades(pair);
-                        await this.subscribeOrderbook(pair);
-                    }
-                }
-            } catch (err) {
-                console.error(err);
-                this.stop();
-            }
         }
     }
 
@@ -219,20 +138,6 @@ class PublicAgentOkexWebsocket extends Autonomous {
         this.center[pair].send(JSON.stringify(sentData));
     }
 
-    private async subscribeInstruments() {
-        const channel = 'futures/instruments';
-        this.okex.subscribe(channel);
-        const onIdSub = (raw: RawData) => {
-            if (
-                raw.channel === channel
-                && raw.event === 'subscribe'
-            ) this.okex.emit('subscribed');
-        }
-        this.okex.on('rawData', onIdSub);
-        await once(this.okex, 'subscribed');
-        this.okex.off('rawData', onIdSub);
-    }
-
     private async subscribeTrades(pair?: string): Promise<void> {
         for (const { tradesChannel } of
             pair
@@ -252,16 +157,12 @@ class PublicAgentOkexWebsocket extends Autonomous {
         }
     }
 
-    private async subscribeOrderbook(_pair?: string): Promise<void> {
-        for (const pair in
-            _pair
-                ? { [_pair]: {} }
-                : marketDescriptors
-        ) {
+    private async subscribeOrderbook(): Promise<void> {
+        for (const pair in marketDescriptors) {
             const { orderbookChannel } = marketDescriptors[pair];
-            const isContract = pair !== 'BTC/USDT';
+            const isPerpetual = pair !== 'BTC/USDT';
             this.rawOrderbookHandler[pair]
-                = new RawOrderbookHandler(isContract);
+                = new RawOrderbookHandler(isPerpetual);
 
             this.okex.subscribe(orderbookChannel!);
             const onOrderbookSub = (raw: RawData) => {
@@ -278,3 +179,4 @@ class PublicAgentOkexWebsocket extends Autonomous {
 }
 
 export default PublicAgentOkexWebsocket;
+export { PublicAgentOkexWebsocket };

@@ -3,17 +3,6 @@ import {
     Action,
 } from 'interfaces';
 
-
-interface RawInstrument {
-    table: string;
-    data: {
-        instrument_id: string;
-        alias: string;
-        underlying_index: string;
-        quote_currency: string;
-    }[][];
-}
-
 interface RawTrades {
     table: string;
     data: {
@@ -42,7 +31,6 @@ interface Config {
     PUBLIC_CENTER_BASE_URL: string;
     OKEX_WEBSOCKET_URL: string;
     OKEX_RESTFUL_BASE_URL: string;
-    OKEX_RESTFUL_URL_INSTRUMENTS: string;
 }
 
 interface OrderString {
@@ -54,7 +42,6 @@ interface OrderString {
 export {
     RawTrades,
     RawOrderbook,
-    RawInstrument,
     OrderString,
     Config,
 }
