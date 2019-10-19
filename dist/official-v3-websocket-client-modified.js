@@ -113,7 +113,7 @@ class V3WebsocketClient extends events_1.EventEmitter {
             clearInterval(this.interval);
             this.interval = null;
         }
-        this.emit('close');
+        this.emit('close', code, reason);
     }
     close(code, reason) {
         if (this.socket) {

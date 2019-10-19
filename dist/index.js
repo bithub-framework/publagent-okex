@@ -20,7 +20,7 @@ const raw_orderbook_handler_1 = __importDefault(require("./raw-orderbook-handler
 const raw_trades_handler_1 = __importDefault(require("./raw-trades-handler"));
 const mapping_1 = require("./mapping");
 const config = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/config.json'));
-const ACTIVE_CLOSE = 4000;
+const ACTIVE_CLOSE = 'public-agent-okex-websocket';
 class PublicAgentOkexWebsocket extends autonomous_1.default {
     constructor() {
         super(...arguments);
@@ -36,10 +36,10 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
     }
     async _stop() {
         if (this.okex)
-            this.okex.close(ACTIVE_CLOSE);
+            this.okex.close(1000, ACTIVE_CLOSE);
         for (const center of Object.values(this.center)) {
             if (center.readyState < 2)
-                center.close(ACTIVE_CLOSE);
+                center.close(1000, ACTIVE_CLOSE);
             if (center.readyState < 3)
                 await events_1.once(center, 'close');
         }
@@ -48,7 +48,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
         for (const pair in mapping_1.marketDescriptors) {
             const center = this.center[pair] = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/okex/${pair}`);
             center.on('close', (code, reason) => {
-                if (code !== ACTIVE_CLOSE) {
+                if (reason !== ACTIVE_CLOSE) {
                     console.error(new Error(`public center for ${pair} closed: ${code}`));
                     this.stop();
                 }
@@ -65,7 +65,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
                 this.okex.emit('error', new Error(raw.message));
         });
         this.okex.on('close', (code, reason) => {
-            if (code !== ACTIVE_CLOSE) {
+            if (reason !== ACTIVE_CLOSE) {
                 console.error(new Error(`okex closed: ${code}`));
                 this.stop();
             }

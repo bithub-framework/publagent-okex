@@ -24,7 +24,7 @@ const config: Config = readJsonSync(join(__dirname,
 
 type RawData = any;
 
-const ACTIVE_CLOSE = 4000;
+const ACTIVE_CLOSE = 'public-agent-okex-websocket';
 
 class PublicAgentOkexWebsocket extends Autonomous {
     private okex!: V3WebsocketClient;
@@ -45,9 +45,9 @@ class PublicAgentOkexWebsocket extends Autonomous {
     }
 
     protected async _stop(): Promise<void> {
-        if (this.okex) this.okex.close(ACTIVE_CLOSE);
+        if (this.okex) this.okex.close(1000, ACTIVE_CLOSE);
         for (const center of Object.values(this.center)) {
-            if (center.readyState < 2) center.close(ACTIVE_CLOSE);
+            if (center.readyState < 2) center.close(1000, ACTIVE_CLOSE);
             if (center.readyState < 3) await once(center, 'close');
         }
     }
@@ -57,8 +57,8 @@ class PublicAgentOkexWebsocket extends Autonomous {
             const center = this.center[pair] = new WebSocket(
                 `${config.PUBLIC_CENTER_BASE_URL}/okex/${pair}`);
 
-            center.on('close', (code?, reason?) => {
-                if (code !== ACTIVE_CLOSE) {
+            center.on('close', (code, reason) => {
+                if (reason !== ACTIVE_CLOSE) {
                     console.error(new Error(
                         `public center for ${pair} closed: ${code}`
                     ));
@@ -80,8 +80,8 @@ class PublicAgentOkexWebsocket extends Autonomous {
             if (raw.event === 'error')
                 this.okex.emit('error', new Error(raw.message));
         });
-        this.okex.on('close', (code?: number, reason?: string) => {
-            if (code !== ACTIVE_CLOSE) {
+        this.okex.on('close', (code: number, reason: string) => {
+            if (reason !== ACTIVE_CLOSE) {
                 console.error(new Error(`okex closed: ${code}`));
                 this.stop();
             }
