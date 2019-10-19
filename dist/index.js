@@ -103,8 +103,8 @@ class PublicAgentOkexWebsocket extends autonomous_1.default {
         }
     }
     onRawTradeData(pair, rawTrade) {
-        const isContract = pair !== 'BTC/USDT';
-        const trade = raw_trades_handler_1.default(rawTrade, isContract);
+        const isPerpetual = pair !== 'BTC/USDT';
+        const trade = raw_trades_handler_1.default(rawTrade, isPerpetual);
         const sentData = { trades: [trade] };
         this.center[pair].send(JSON.stringify(sentData));
     }

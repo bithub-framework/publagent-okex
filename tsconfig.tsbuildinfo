@@ -414,15 +414,15 @@
         "signature": "4adce4611c50bcac24783f017163b5a3bd07c86f2e369b1f612beb9c32b3671d"
       },
       "./src/raw-trades-handler.ts": {
-        "version": "a50a67b28eec49900d09ee8612b9014fea711a4da7f658133ad2e1e1a582365e",
-        "signature": "b3b2019d92e9f792252ac6739367881617462b0252fae08cbee5148fd133596d"
+        "version": "22db1903f0506c31592d06b5f716db41857f3b72f7ffcbe9fb4a1a95eb817369",
+        "signature": "29a404ac2a4d6803195ef6d5b1a6759e32f893ea3e1abd0d229d8f9abd8663c4"
       },
       "./src/mapping.ts": {
         "version": "8ff8f8c6a95159c57a4cc35424a277ec13fe0e2da49ef0561c9ec43b9b8a8d29",
         "signature": "1266921389a7471798028b34b07276d53e094a75da9830ac9268922db51d7377"
       },
       "./src/index.ts": {
-        "version": "4369b3f275053754a214ec46aa96085e85404b7bf3527adf22fcea4dd0089258",
+        "version": "621ac38659d2b668a614d8a31c33b2c6a493cedafb848950285b6232caaa2b48",
         "signature": "2e8a1aabfc5173690ae4a40fc0326272c935f36252957523154043ed4e6fe57a"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -1904,6 +1904,7 @@
       "./node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "./node_modules/typescript/lib/lib.esnext.bigint.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
+      "./src/interfaces.ts",
       "./node_modules/@types/lodash/ts3.1/common/common.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/array.d.ts",
       "./node_modules/@types/lodash/ts3.1/common/collection.d.ts",
@@ -1966,19 +1967,18 @@
       "./node_modules/@types/pako/index.d.ts",
       "./node_modules/crc-32/types/index.d.ts",
       "./src/official-v3-websocket-client-modified.ts",
+      "./src/incremental.ts",
       "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/autonomous/dist/auto-exit-decorator.d.ts",
       "./node_modules/autonomous/dist/index.d.ts",
       "./node_modules/autobind-decorator/index.d.ts",
+      "./src/raw-orderbook-handler.ts",
+      "./src/mapping.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./src/interfaces.ts",
-      "./src/index.ts",
       "./src/raw-trades-handler.ts",
-      "./src/raw-orderbook-handler.ts",
-      "./src/incremental.ts",
-      "./src/mapping.ts"
+      "./src/index.ts"
     ]
   },
   "version": "3.6.4"

@@ -7,7 +7,7 @@ import {
 
 function formatRawTrade(
     rawTrades: RawTrades['data'][0],
-    isContract = false,
+    isPerpetual = false,
 ): Trade {
     const trade = {
         action: rawTrades.side === 'buy' ? Action.BID : Action.ASK,
@@ -20,7 +20,7 @@ function formatRawTrade(
         time: new Date(rawTrades.timestamp).getTime(),
         id: Number.parseInt(rawTrades.trade_id),
     };
-    if (isContract) {
+    if (isPerpetual) {
         trade.amount *= 100 * 100 / trade.price;
     }
     return trade;

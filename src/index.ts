@@ -123,8 +123,8 @@ class PublicAgentOkexWebsocket extends Autonomous {
     private onRawTradeData(
         pair: string, rawTrade: RawTrades['data'][0],
     ): void {
-        const isContract = pair !== 'BTC/USDT';
-        const trade = formatRawTrade(rawTrade, isContract);
+        const isPerpetual = pair !== 'BTC/USDT';
+        const trade = formatRawTrade(rawTrade, isPerpetual);
         const sentData: PDFATC = { trades: [trade] };
         this.center[pair].send(JSON.stringify(sentData));
     }
