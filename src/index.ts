@@ -60,7 +60,7 @@ class PublicAgentOkexWebsocket extends Autonomous {
             center.on('close', (code?, reason?) => {
                 if (code !== ACTIVE_CLOSE) {
                     console.error(new Error(
-                        `public center for ${pair} closed`
+                        `public center for ${pair} closed: ${code}`
                     ));
                     this.stop();
                 }
@@ -82,7 +82,7 @@ class PublicAgentOkexWebsocket extends Autonomous {
         });
         this.okex.on('close', (code?: number, reason?: string) => {
             if (code !== ACTIVE_CLOSE) {
-                console.error(new Error('okex closed'));
+                console.error(new Error(`okex closed: ${code}`));
                 this.stop();
             }
         })

@@ -422,7 +422,7 @@
         "signature": "1266921389a7471798028b34b07276d53e094a75da9830ac9268922db51d7377"
       },
       "./src/index.ts": {
-        "version": "621ac38659d2b668a614d8a31c33b2c6a493cedafb848950285b6232caaa2b48",
+        "version": "eab1436331518ba2f9b996226ba90daca6ddc266d56d06c50801d1703f54e567",
         "signature": "2e8a1aabfc5173690ae4a40fc0326272c935f36252957523154043ed4e6fe57a"
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -1973,11 +1973,11 @@
       "./node_modules/autonomous/dist/index.d.ts",
       "./node_modules/autobind-decorator/index.d.ts",
       "./src/raw-orderbook-handler.ts",
+      "./src/raw-trades-handler.ts",
       "./src/mapping.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/minimatch/index.d.ts",
       "./node_modules/@types/glob/index.d.ts",
-      "./src/raw-trades-handler.ts",
       "./src/index.ts"
     ]
   },
