@@ -39,6 +39,7 @@
         "lodash": "^4.17.15",
         "pako": "^1.0.10",
         "pandora-kita": "git+https://github.com/zimtsui/pandora-kita.git",
+        "source-map-support": "^0.5.13",
         "ws": "^7.1.1"
     },
     "ava": {
