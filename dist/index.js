@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ws_1 = __importDefault(require("ws"));
 const fs_extra_1 = require("fs-extra");
 const path_1 = require("path");
-const autonomous_1 = __importDefault(require("autonomous"));
+const autonomous_1 = require("autonomous");
 const events_1 = require("events");
 const autobind_decorator_1 = require("autobind-decorator");
 const official_v3_websocket_client_modified_1 = __importDefault(require("./official-v3-websocket-client-modified"));
@@ -21,7 +21,7 @@ const raw_trades_handler_1 = __importDefault(require("./raw-trades-handler"));
 const mapping_1 = require("./mapping");
 const config = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/config.json'));
 const ACTIVE_CLOSE = 'public-agent-okex-websocket';
-class PublicAgentOkexWebsocket extends autonomous_1.default {
+class PublicAgentOkexWebsocket extends autonomous_1.Autonomous {
     constructor() {
         super(...arguments);
         this.center = {};

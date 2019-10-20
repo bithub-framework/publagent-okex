@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import { readJsonSync } from 'fs-extra';
 import { join } from 'path';
-import Autonomous from 'autonomous';
+import { Autonomous } from 'autonomous';
 import { once } from 'events';
 import { boundMethod } from 'autobind-decorator';
 import V3WebsocketClient from './official-v3-websocket-client-modified';

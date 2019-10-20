@@ -1,4 +1,4 @@
-import Autonomous from 'autonomous';
+import { Autonomous } from 'autonomous';
 declare class PublicAgentOkexWebsocket extends Autonomous {
     private okex;
     private center;
