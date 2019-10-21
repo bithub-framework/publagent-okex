@@ -4,7 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const incremental_1 = __importDefault(require("./incremental"));
+const fs_extra_1 = require("fs-extra");
+const path_1 = require("path");
 const interfaces_1 = require("./interfaces");
+const config = fs_extra_1.readJsonSync(path_1.join(__dirname, '../cfg/config.json'));
 function formatRawOrderToOrderString(rawOrder, action) {
     return {
         action,
@@ -26,7 +29,11 @@ class RawOrderbookHandler {
     handle(raw) {
         const ordersString = formatRawOrderbookToOrdersString(raw);
         ordersString.forEach(orderString => void this.incremental.update(orderString));
-        const orderbook = this.incremental.getLatest(raw.checksum);
+        const fullOrderbook = this.incremental.getLatest(raw.checksum);
+        const orderbook = {
+            bids: fullOrderbook.bids.slice(0, config.ORDERBOOK_DEPTH),
+            asks: fullOrderbook.asks.slice(0, config.ORDERBOOK_DEPTH),
+        };
         return orderbook;
     }
 }

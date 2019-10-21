@@ -1,10 +1,16 @@
 import Incremental from './incremental';
+import { readJsonSync } from 'fs-extra';
+import { join } from 'path';
 import {
     Orderbook,
     RawOrderbook,
     OrderString,
     Action,
+    Config,
 } from './interfaces';
+
+const config: Config = readJsonSync(join(__dirname,
+    '../cfg/config.json'));
 
 function formatRawOrderToOrderString(
     rawOrder: RawOrderbook['data'][0]['asks'][0],
@@ -38,7 +44,11 @@ class RawOrderbookHandler {
         ordersString.forEach(orderString =>
             void this.incremental.update(orderString));
 
-        const orderbook = this.incremental.getLatest(raw.checksum);
+        const fullOrderbook = this.incremental.getLatest(raw.checksum);
+        const orderbook: Orderbook = {
+            bids: fullOrderbook.bids.slice(0, config.ORDERBOOK_DEPTH),
+            asks: fullOrderbook.asks.slice(0, config.ORDERBOOK_DEPTH),
+        }
         return orderbook;
     }
 }
