@@ -49,7 +49,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.Autonomous {
             const center = this.center[pair] = new ws_1.default(`${config.PUBLIC_CENTER_BASE_URL}/okex/${pair}`);
             center.on('close', (code, reason) => {
                 if (reason !== ACTIVE_CLOSE) {
-                    console.error(new Error(`public center for ${pair} closed: ${code}`));
+                    console.error(`public center for ${pair} closed: ${code}`);
                     this.stop();
                 }
             });
@@ -66,7 +66,7 @@ class PublicAgentOkexWebsocket extends autonomous_1.Autonomous {
         });
         this.okex.on('close', (code, reason) => {
             if (reason !== ACTIVE_CLOSE) {
-                console.error(new Error(`okex closed: ${code}`));
+                console.error(`okex closed: ${code}`);
                 this.stop();
             }
         });
