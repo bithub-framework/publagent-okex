@@ -1,82 +1,82 @@
-"use strict";
 /**
- * 设单位时间内 k 次 update，p 次 latest 或 checksum
+ * 设单位时间内 k 次 update，分成 r (1 <= r <= k) 条消息来，p 次 getLatest/checksum
  * orderbook 平均 size 为 n
  * 平衡树 O(klogn + pn)
  * 哈希 O(k + pnlogn)
- * 因为 n 很小，所以直接哈希。
+ * 线性扫一遍 O(rn+k + pn) 最坏情况 r = k 每次来消息只更新一个 O(kn + pn)
+ * 因为 n 很小，所以 logn 近似为常数，平衡树和哈希时间复杂度相同
+ * 所以直接哈希。
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("interfaces");
-const lodash_1 = require("lodash");
-const official_v3_websocket_client_modified_1 = __importDefault(require("./official-v3-websocket-client-modified"));
-const assert_1 = __importDefault(require("assert"));
+import { flow as pipe } from 'lodash';
+import checksum from './checksum';
+import assert from 'assert';
+import { marketDescriptors, } from './market-descriptions';
 class Incremental {
-    constructor(isPerpetual) {
-        this.isPerpetual = isPerpetual;
+    constructor(pair) {
+        this.pair = pair;
         this.asks = new Map();
         this.bids = new Map();
+        this.time = Number.NEGATIVE_INFINITY;
     }
-    update(orderString) {
-        const orderNumber = this.formatOrderStringToOrder(orderString);
-        if (this.isPerpetual) {
-            orderNumber.amount *= 100 * 100 / orderNumber.price;
-        }
-        const orderBoth = {
-            string: orderString,
-            number: orderNumber,
-        };
-        if (orderString.action === interfaces_1.Action.ASK)
-            if (orderString.amount === '0')
-                this.asks.delete(orderString.price);
+    update(stringOrder, timeStamp) {
+        this.time = Date.parse(timeStamp);
+        if (stringOrder.action === "ask" /* ASK */)
+            if (stringOrder.amount === '0')
+                this.asks.delete(stringOrder.price);
             else
-                this.asks.set(orderString.price, orderBoth);
-        else if (orderString.amount === '0')
-            this.bids.delete(orderString.price);
+                this.asks.set(stringOrder.price, stringOrder);
+        else if (stringOrder.amount === '0')
+            this.bids.delete(stringOrder.price);
         else
-            this.bids.set(orderString.price, orderBoth);
+            this.bids.set(stringOrder.price, stringOrder);
     }
     clear() {
         this.asks.clear();
         this.bids.clear();
     }
-    formatOrderStringToOrder(order) {
-        return {
+    formatStringOrderToOrder(order) {
+        const numberOrder = {
             action: order.action,
-            price: lodash_1.flow(Number.parseFloat, x => x * 100, Math.round)(order.price),
+            price: pipe(Number.parseFloat, x => x * 100, Math.round)(order.price),
             amount: Number.parseFloat(order.amount),
         };
+        numberOrder.amount = marketDescriptors[this.pair].normalizeAmount(numberOrder.price, numberOrder.amount);
+        return numberOrder;
     }
     getLatest(expected) {
         const sortedAsks = [...this.asks.values()]
-            .sort((order1, order2) => order1.number.price - order2.number.price);
+            .map(stringOrder => ({
+            stringOrder,
+            numberOrder: this.formatStringOrderToOrder(stringOrder),
+        })).sort((order1, order2) => order1.numberOrder.price - order2.numberOrder.price);
         const sortedBids = [...this.bids.values()]
-            .sort((order1, order2) => order2.number.price - order1.number.price);
-        assert_1.default(this.checksum(sortedAsks, sortedBids, expected));
+            .map(stringOrder => ({
+            stringOrder,
+            numberOrder: this.formatStringOrderToOrder(stringOrder),
+        })).sort((order1, order2) => order2.numberOrder.price - order1.numberOrder.price);
+        assert(this.checksum(sortedAsks, sortedBids, expected));
         return {
-            asks: sortedAsks.map(orderBoth => orderBoth.number),
-            bids: sortedBids.map(orderBoth => orderBoth.number),
+            asks: sortedAsks.map(orderBoth => orderBoth.numberOrder),
+            bids: sortedBids.map(orderBoth => orderBoth.numberOrder),
+            time: this.time,
         };
     }
     checksum(sortedAsks, sortedBids, expected) {
-        return official_v3_websocket_client_modified_1.default.checksum({
+        return checksum({
             data: [{
-                    asks: sortedAsks.map(orderBoth => [
-                        orderBoth.string.price,
-                        orderBoth.string.amount,
+                    asks: sortedAsks.map(numberStringOrder => [
+                        numberStringOrder.stringOrder.price,
+                        numberStringOrder.stringOrder.amount,
                     ]),
-                    bids: sortedBids.map(orderBoth => [
-                        orderBoth.string.price,
-                        orderBoth.string.amount,
+                    bids: sortedBids.map(numberStringOrder => [
+                        numberStringOrder.stringOrder.price,
+                        numberStringOrder.stringOrder.amount,
                     ]),
                     checksum: expected,
                 }]
         });
     }
 }
-exports.Incremental = Incremental;
-exports.default = Incremental;
+export default Incremental;
+export { Incremental };
 //# sourceMappingURL=incremental.js.map

@@ -1,6 +1,23 @@
 export * from 'interfaces';
 import { Action } from 'interfaces';
-interface RawTrades {
+declare type Operation = 'subscribe' | 'unsubscribe';
+export interface RawMessage {
+    table?: string;
+    event?: 'error' | Operation;
+}
+export interface RawUnSub extends RawMessage {
+    event: Operation;
+    channel: string;
+}
+export interface RawError extends RawMessage {
+    event: 'error';
+    message: string;
+}
+export interface RawData extends RawMessage {
+    table: string;
+    data: {}[];
+}
+export interface RawTrades extends RawData {
     table: string;
     data: {
         instrument_id: string;
@@ -11,7 +28,7 @@ interface RawTrades {
         trade_id: string;
     }[];
 }
-interface RawOrderbook {
+export interface RawOrderbook extends RawData {
     table: string;
     action: string;
     data: {
@@ -22,15 +39,8 @@ interface RawOrderbook {
         timestamp: string;
     }[];
 }
-interface Config {
-    PUBLIC_CENTER_BASE_URL: string;
-    OKEX_WEBSOCKET_URL: string;
-    OKEX_RESTFUL_BASE_URL: string;
-    ORDERBOOK_DEPTH: number;
-}
-interface OrderString {
+export interface StringOrder {
     price: string;
     amount: string;
     action: Action;
 }
-export { RawTrades, RawOrderbook, OrderString, Config, };

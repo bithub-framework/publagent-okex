@@ -1,21 +1,17 @@
 import Incremental from './incremental';
-import { readJsonSync } from 'fs-extra';
-import { join } from 'path';
 import {
     Orderbook,
     RawOrderbook,
-    OrderString,
+    StringOrder,
     Action,
-    Config,
 } from './interfaces';
+import config from './config';
+import { Pair } from './market-descriptions';
 
-const config: Config = readJsonSync(join(__dirname,
-    '../cfg/config.json'));
-
-function formatRawOrderToOrderString(
+function formatRawOrderToStringOrder(
     rawOrder: RawOrderbook['data'][0]['asks'][0],
     action: Action
-): OrderString {
+): StringOrder {
     return {
         action,
         price: rawOrder[0],
@@ -23,31 +19,32 @@ function formatRawOrderToOrderString(
     };
 }
 
-function formatRawOrderbookToOrdersString(
+function formatRawOrderbookToStringOrders(
     orderbook: RawOrderbook['data'][0]
-): OrderString[] {
+): StringOrder[] {
     return [
         ...orderbook.bids.map(rawOrder =>
-            formatRawOrderToOrderString(rawOrder, Action.BID)),
+            formatRawOrderToStringOrder(rawOrder, Action.BID)),
         ...orderbook.asks.map(rawOrder =>
-            formatRawOrderToOrderString(rawOrder, Action.ASK)),
+            formatRawOrderToStringOrder(rawOrder, Action.ASK)),
     ]
 }
 
 class RawOrderbookHandler {
-    private incremental = new Incremental(this.isPerpetual);
+    private incremental = new Incremental(this.pair);
 
-    constructor(private isPerpetual = false) { }
+    constructor(private pair: Pair) { }
 
     public handle(raw: RawOrderbook['data'][0]): Orderbook {
-        const ordersString = formatRawOrderbookToOrdersString(raw);
+        const ordersString = formatRawOrderbookToStringOrders(raw);
         ordersString.forEach(orderString =>
-            void this.incremental.update(orderString));
+            void this.incremental.update(orderString, raw.timestamp));
 
         const fullOrderbook = this.incremental.getLatest(raw.checksum);
         const orderbook: Orderbook = {
             bids: fullOrderbook.bids.slice(0, config.ORDERBOOK_DEPTH),
             asks: fullOrderbook.asks.slice(0, config.ORDERBOOK_DEPTH),
+            time: fullOrderbook.time,
         }
         return orderbook;
     }

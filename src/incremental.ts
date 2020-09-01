@@ -1,59 +1,57 @@
 /**
- * 设单位时间内 k 次 update，p 次 latest 或 checksum
+ * 设单位时间内 k 次 update，分成 r (1 <= r <= k) 条消息来，p 次 getLatest/checksum
  * orderbook 平均 size 为 n
  * 平衡树 O(klogn + pn)
  * 哈希 O(k + pnlogn)
- * 因为 n 很小，所以直接哈希。
+ * 线性扫一遍 O(rn+k + pn) 最坏情况 r = k 每次来消息只更新一个 O(kn + pn)
+ * 因为 n 很小，所以 logn 近似为常数，平衡树和哈希时间复杂度相同
+ * 所以直接哈希。
  */
 
 import { Orderbook, Order, Action } from 'interfaces';
-import { OrderString } from './interfaces';
+import { StringOrder } from './interfaces';
 import { flow as pipe } from 'lodash';
-import V3WebsocketClient from './official-v3-websocket-client-modified';
+import checksum from './checksum';
 import assert from 'assert';
+import {
+    marketDescriptors,
+    Pair,
+} from './market-descriptions';
 
-type OrderNumber = Order;
+type NumberOrder = Order;
 
-interface OrderBoth {
-    number: OrderNumber,
-    string: OrderString,
+interface NumberStringOrder {
+    numberOrder: NumberOrder,
+    stringOrder: StringOrder,
 }
 
 class Incremental {
-    private asks = new Map<string, OrderBoth>();
-    private bids = new Map<string, OrderBoth>();
+    private asks = new Map<string, StringOrder>();
+    private bids = new Map<string, StringOrder>();
+    private time: number = Number.NEGATIVE_INFINITY;
 
-    constructor(private isPerpetual: boolean) { }
+    constructor(private pair: Pair) { }
 
-    update(orderString: OrderString) {
-        const orderNumber = this.formatOrderStringToOrder(orderString);
+    public update(stringOrder: StringOrder, timeStamp: string) {
+        this.time = Date.parse(timeStamp);
 
-        if (this.isPerpetual) {
-            orderNumber.amount *= 100 * 100 / orderNumber.price;
-        }
-
-        const orderBoth: OrderBoth = {
-            string: orderString,
-            number: orderNumber,
-        };
-
-        if (orderString.action === Action.ASK)
-            if (orderString.amount === '0')
-                this.asks.delete(orderString.price);
-            else this.asks.set(orderString.price, orderBoth);
+        if (stringOrder.action === Action.ASK)
+            if (stringOrder.amount === '0')
+                this.asks.delete(stringOrder.price);
+            else this.asks.set(stringOrder.price, stringOrder);
         else
-            if (orderString.amount === '0')
-                this.bids.delete(orderString.price);
-            else this.bids.set(orderString.price, orderBoth);
+            if (stringOrder.amount === '0')
+                this.bids.delete(stringOrder.price);
+            else this.bids.set(stringOrder.price, stringOrder);
     }
 
-    clear(): void {
+    public clear(): void {
         this.asks.clear();
         this.bids.clear();
     }
 
-    private formatOrderStringToOrder(order: OrderString): Order {
-        return {
+    private formatStringOrderToOrder(order: StringOrder): NumberOrder {
+        const numberOrder: NumberOrder = {
             action: order.action,
             price: pipe(
                 Number.parseFloat,
@@ -62,15 +60,25 @@ class Incremental {
             )(order.price),
             amount: Number.parseFloat(order.amount),
         };
+        numberOrder.amount = marketDescriptors[this.pair].normalizeAmount(
+            numberOrder.price, numberOrder.amount
+        );
+        return numberOrder;
     }
 
     getLatest(expected: number): Orderbook {
         const sortedAsks = [...this.asks.values()]
-            .sort((order1, order2) =>
-                order1.number.price - order2.number.price);
+            .map(stringOrder => ({
+                stringOrder,
+                numberOrder: this.formatStringOrderToOrder(stringOrder),
+            })).sort((order1, order2) =>
+                order1.numberOrder.price - order2.numberOrder.price);
         const sortedBids = [...this.bids.values()]
-            .sort((order1, order2) =>
-                order2.number.price - order1.number.price);
+            .map(stringOrder => ({
+                stringOrder,
+                numberOrder: this.formatStringOrderToOrder(stringOrder),
+            })).sort((order1, order2) =>
+                order2.numberOrder.price - order1.numberOrder.price);
 
         assert(this.checksum(
             sortedAsks,
@@ -79,25 +87,26 @@ class Incremental {
         ));
 
         return {
-            asks: sortedAsks.map(orderBoth => orderBoth.number),
-            bids: sortedBids.map(orderBoth => orderBoth.number),
+            asks: sortedAsks.map(orderBoth => orderBoth.numberOrder),
+            bids: sortedBids.map(orderBoth => orderBoth.numberOrder),
+            time: this.time,
         }
     }
 
     private checksum(
-        sortedAsks: OrderBoth[],
-        sortedBids: OrderBoth[],
+        sortedAsks: NumberStringOrder[],
+        sortedBids: NumberStringOrder[],
         expected: number,
     ): boolean {
-        return V3WebsocketClient.checksum({
+        return checksum({
             data: [{
-                asks: sortedAsks.map(orderBoth => [
-                    orderBoth.string.price,
-                    orderBoth.string.amount,
+                asks: sortedAsks.map(numberStringOrder => [
+                    numberStringOrder.stringOrder.price,
+                    numberStringOrder.stringOrder.amount,
                 ]),
-                bids: sortedBids.map(orderBoth => [
-                    orderBoth.string.price,
-                    orderBoth.string.amount,
+                bids: sortedBids.map(numberStringOrder => [
+                    numberStringOrder.stringOrder.price,
+                    numberStringOrder.stringOrder.amount,
                 ]),
                 checksum: expected,
             }]

@@ -1,8 +1,9 @@
 import { Orderbook, RawOrderbook } from './interfaces';
+import { Pair } from './market-descriptions';
 declare class RawOrderbookHandler {
-    private isPerpetual;
+    private pair;
     private incremental;
-    constructor(isPerpetual?: boolean);
+    constructor(pair: Pair);
     handle(raw: RawOrderbook['data'][0]): Orderbook;
 }
 export default RawOrderbookHandler;

@@ -1,20 +1,24 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const lodash_1 = require("lodash");
-const interfaces_1 = require("./interfaces");
-function formatRawTrade(rawTrades, isPerpetual = false) {
-    const trade = {
-        action: rawTrades.side === 'buy' ? interfaces_1.Action.BID : interfaces_1.Action.ASK,
-        price: lodash_1.flow(Number.parseFloat, x => x * 100, Math.round)(rawTrades.price),
-        amount: Number.parseFloat(rawTrades.size),
-        time: new Date(rawTrades.timestamp).getTime(),
-        id: Number.parseInt(rawTrades.trade_id),
-    };
-    if (isPerpetual) {
-        trade.amount *= 100 * 100 / trade.price;
+import _ from 'lodash';
+import { marketDescriptors, } from './market-descriptions';
+const { flow: pipe } = _;
+class RawTradesHandler {
+    constructor(pair) {
+        this.pair = pair;
     }
-    return trade;
+    static normalizeRawTrade(pair, rawTrades) {
+        const trade = {
+            action: rawTrades.side === 'buy' ? "bid" /* BID */ : "ask" /* ASK */,
+            price: pipe(Number.parseFloat, x => x * 100, Math.round)(rawTrades.price),
+            amount: Number.parseFloat(rawTrades.size),
+            time: new Date(rawTrades.timestamp).getTime(),
+            id: Number.parseInt(rawTrades.trade_id),
+        };
+        trade.amount = marketDescriptors[pair].normalizeAmount(trade.price, trade.amount);
+        return trade;
+    }
+    handle(rawTrades) {
+        return rawTrades.map(rawTrade => RawTradesHandler.normalizeRawTrade(this.pair, rawTrade));
+    }
 }
-exports.formatRawTrade = formatRawTrade;
-exports.default = formatRawTrade;
+export { RawTradesHandler as default, RawTradesHandler, };
 //# sourceMappingURL=raw-trades-handler.js.map

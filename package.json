@@ -2,6 +2,7 @@
     "name": "public-agent-okex-websocket",
     "version": "0.0.1",
     "description": "",
+    "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
@@ -22,28 +23,20 @@
     "homepage": "https://github.com/zimtsui/public-agent-okex-websocket#readme",
     "devDependencies": {
         "ava": "^2.4.0",
-        "bluebird": "^3.7.0",
         "typescript": "^3.5.3"
     },
     "dependencies": {
-        "@types/fs-extra": "^8.0.0",
         "@types/lodash": "^4.14.136",
-        "@types/node": "^12.11.1",
+        "@types/node": "^14.6.2",
         "@types/pako": "^1.0.1",
-        "@types/ws": "^6.0.1",
-        "autobind-decorator": "^2.4.0",
-        "autonomous": "git+https://github.com/zimtsui/autonomous.git",
+        "@types/ws": "^7.2.6",
         "crc-32": "^1.2.0",
-        "fs-extra": "^8.1.0",
-        "interfaces": "git+https://github.com/zimtsui/interfaces.git",
+        "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "lodash": "^4.17.15",
         "pako": "^1.0.10",
-        "pandora-kita": "git+https://github.com/zimtsui/pandora-kita.git",
+        "pollerloop": "https://gitee.com/zimtsui/pollerloop.git",
         "source-map-support": "^0.5.13",
+        "startable": "https://gitee.com/zimtsui/startable.git",
         "ws": "^7.1.1"
-    },
-    "ava": {
-        "failWithoutAssertions": false,
-        "verbose": true
     }
 }

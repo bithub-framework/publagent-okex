@@ -2,7 +2,8 @@
     "compilerOptions": {
         /* Basic Options */
         "target": "es2020",
-        "module": "commonjs",
+        "module": "es6",
+        "moduleResolution": "node",
         "lib": [
             "esnext"
         ],
@@ -10,13 +11,9 @@
         "sourceMap": true,
         /* Strict Type-Checking Options */
         "strict": true,
-        /* Additional Checks */
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
         /* Module Resolution Options */
         "esModuleInterop": true,
-        "resolveJsonModule": true,
         /* Experimental Options */
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
     }
 }
