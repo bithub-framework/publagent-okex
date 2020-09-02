@@ -1,0 +1,9 @@
+{
+    "name": "public-agent-okex-websocket",
+    "path": "./dist/public-agent.js",
+    "node-args": [
+        "--experimental-specifier-resolution=node",
+        "--enable-source-maps"
+    ],
+    "stop-timeout": 5000
+}

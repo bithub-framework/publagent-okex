@@ -8,8 +8,8 @@
     "scripts": {
         "test": "tsc -b ./test/ && ava",
         "build": "tsc -b",
-        "dev": "env NODE_ENV=development node -r source-map-support/register ./dist/main",
-        "start": "pm2 start ./ecosystem.config.js"
+        "debug": "epi-cli run -c ./epi.config.json",
+        "start": "epi-cli start -c ./epi.config.json"
     },
     "repository": {
         "type": "git",
@@ -21,10 +21,7 @@
         "url": "https://github.com/zimtsui/public-agent-okex-websocket/issues"
     },
     "homepage": "https://github.com/zimtsui/public-agent-okex-websocket#readme",
-    "devDependencies": {
-        "ava": "^2.4.0",
-        "typescript": "^3.5.3"
-    },
+    "devDependencies": {},
     "dependencies": {
         "@types/lodash": "^4.14.136",
         "@types/node": "^14.6.2",
@@ -34,8 +31,6 @@
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "lodash": "^4.17.15",
         "pako": "^1.0.10",
-        "pollerloop": "https://gitee.com/zimtsui/pollerloop.git",
-        "source-map-support": "^0.5.13",
         "startable": "https://gitee.com/zimtsui/startable.git",
         "ws": "^7.1.1"
     }
