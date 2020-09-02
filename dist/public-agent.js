@@ -14,8 +14,7 @@ class PublicAgentOkexWebsocket extends Startable {
         await this.connectPublicCenter();
         this.normalizer.on('trades', (pair, trades) => void this.onTrades(pair, trades).catch(err => void this.stop(err)));
         this.normalizer.on('orderbook', (pair, orderbook) => void this.onOrderbook(pair, orderbook).catch(err => void this.stop(err)));
-        await this.subscribeTrades();
-        await this.subscribeOrderbook();
+        await this.subscribe();
     }
     async _stop() {
         if (this.normalizer)
@@ -54,14 +53,9 @@ class PublicAgentOkexWebsocket extends Startable {
         await this.center[pair].send(JSON.stringify(dataSent))
             .catch(err => void this.stop(err));
     }
-    async subscribeTrades() {
-        for (const { tradesChannel } of Object.values(marketDescriptors)) {
-            await this.normalizer.unSubscribe('subscribe', tradesChannel);
-        }
-    }
-    async subscribeOrderbook() {
-        for (const { orderbookChannel } of Object.values(marketDescriptors))
-            await this.normalizer.unSubscribe('subscribe', orderbookChannel);
+    async subscribe() {
+        for (const pair in marketDescriptors)
+            await this.normalizer.unSubscribe('subscribe', pair);
     }
 }
 export { PublicAgentOkexWebsocket as default, PublicAgentOkexWebsocket, };

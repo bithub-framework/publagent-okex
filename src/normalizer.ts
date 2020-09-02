@@ -12,6 +12,8 @@ import {
 import {
     getChannel,
     getPair,
+    Pair,
+    marketDescriptors,
 } from './market-descriptions';
 
 /*
@@ -72,12 +74,8 @@ class Normalizer extends Startable {
         }
     }
 
-    public async unSubscribe(
-        operation: Operation,
-        rawChannel: string,
-    ) {
-        await this.extractor.send({ op: operation, args: [rawChannel] });
-        await new Promise((resolve, reject) => {
+    private waitForUnsub(operation: Operation, rawChannel: string): Promise<void> {
+        return new Promise((resolve, reject) => {
             const onUnSub = (raw: RawUnSub) => {
                 if (
                     raw.event === operation &&
@@ -91,6 +89,25 @@ class Normalizer extends Startable {
             this.extractor.on('(un)sub', onUnSub);
             this.extractor.on('error', reject);
         });
+    }
+
+    public async unSubscribe(
+        operation: Operation,
+        pair: Pair,
+    ) {
+        this.rawTradesHandler[pair] = new RawTradesHandler(pair);
+        this.rawOrderbookHandler[pair] = new RawOrderbookHandler(pair);
+        await this.extractor.send({
+            op: operation,
+            args: [
+                marketDescriptors[pair].tradesChannel,
+                marketDescriptors[pair].orderbookChannel,
+            ],
+        });
+        await Promise.all([
+            this.waitForUnsub(operation, marketDescriptors[pair].tradesChannel),
+            this.waitForUnsub(operation, marketDescriptors[pair].orderbookChannel),
+        ]);
     }
 }
 

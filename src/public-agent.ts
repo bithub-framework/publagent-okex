@@ -25,8 +25,7 @@ class PublicAgentOkexWebsocket extends Startable {
             void this.onTrades(pair, trades).catch(err => void this.stop(err)));
         this.normalizer.on('orderbook', (pair, orderbook) =>
             void this.onOrderbook(pair, orderbook).catch(err => void this.stop(err)));
-        await this.subscribeTrades();
-        await this.subscribeOrderbook();
+        await this.subscribe();
     }
 
     protected async _stop(): Promise<void> {
@@ -70,15 +69,9 @@ class PublicAgentOkexWebsocket extends Startable {
             .catch(err => void this.stop(err));
     }
 
-    private async subscribeTrades(): Promise<void> {
-        for (const { tradesChannel } of Object.values(marketDescriptors)) {
-            await this.normalizer.unSubscribe('subscribe', tradesChannel);
-        }
-    }
-
-    private async subscribeOrderbook(): Promise<void> {
-        for (const { orderbookChannel } of Object.values(marketDescriptors))
-            await this.normalizer.unSubscribe('subscribe', orderbookChannel);
+    private async subscribe(): Promise<void> {
+        for (const pair in marketDescriptors)
+            await this.normalizer.unSubscribe('subscribe', <Pair>pair);
     }
 }
 

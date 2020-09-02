@@ -612,13 +612,13 @@
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "e86aaf421e39ba0e159502f4c035b207b7a9bd32dba5675547a31cb847b2dd6b",
-        "signature": "a9384ecef51cc95a117c31f6c61be3031a6073b4b310ea00f73ed5f2fee4d9e0",
+        "version": "25ddd9719346cb9f5266157561318e699624c90ce46adccd6d8c5b40a1a47757",
+        "signature": "624c1a4f9095fe47799e1db8ef0adaaf05c948a8e14a82409e72224bc3497902",
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "05bde6f3d26033bc1641dbad6f78d3ebb4bbfe56e67f3b634c299a3021eae56e",
-        "signature": "28b0b04903b2ccd1ee5f2a3456b4f81827b0efd0df7903cd0ac70e8c9e9c9598",
+        "version": "151615560d719faad1324b22f7faae99351c7fa8ca9aca2d8326b6f3beb50dce",
+        "signature": "5941109fadbf8a26220616cfefeedd53876704362027d552695c4d2675d6703a",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/chai/index.d.ts": {
@@ -2807,7 +2807,8 @@
       ],
       "./src/normalizer.ts": [
         "./node_modules/startable/dist/index.d.ts",
-        "./src/interfaces.ts"
+        "./src/interfaces.ts",
+        "./src/market-descriptions.ts"
       ],
       "./src/promisified-websocket.ts": [
         "./node_modules/startable/dist/index.d.ts"

@@ -8,7 +8,6 @@ declare class PublicAgentOkexWebsocket extends Startable {
     private connectPublicCenter;
     private onTrades;
     private onOrderbook;
-    private subscribeTrades;
-    private subscribeOrderbook;
+    private subscribe;
 }
 export { PublicAgentOkexWebsocket as default, PublicAgentOkexWebsocket, };
