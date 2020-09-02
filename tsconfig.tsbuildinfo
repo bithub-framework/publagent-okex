@@ -297,7 +297,7 @@
         "affectsGlobalScope": false
       },
       "./src/incremental.ts": {
-        "version": "ff224cf0ec2980f8ed2ed92d8b6c3d2a85a01726d7476c27e30af47ab4c85e65",
+        "version": "5e924ea30d29db3ea425567548564284e9804ac306c887598e5067619e0d2bae",
         "signature": "7f676904b2b82f6f4c823dbcf5a7ef5c64285ba0ce813209a9a87d8e3c92c521",
         "affectsGlobalScope": false
       },

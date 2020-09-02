@@ -7,10 +7,11 @@
     因为 n 很小，所以 logn 近似为常数，平衡树和哈希时间复杂度相同
     所以直接哈希。
  */
-import { flow as pipe } from 'lodash';
+import _ from 'lodash';
 import checksum from './checksum';
 import assert from 'assert';
 import { marketDescriptors, } from './market-descriptions';
+const { flow: pipe } = _;
 class Incremental {
     constructor(pair) {
         this.pair = pair;

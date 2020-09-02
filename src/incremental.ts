@@ -10,13 +10,14 @@
 
 import { Orderbook, Order, Action } from 'interfaces';
 import { StringOrder } from './interfaces';
-import { flow as pipe } from 'lodash';
+import _ from 'lodash';
 import checksum from './checksum';
 import assert from 'assert';
 import {
     marketDescriptors,
     Pair,
 } from './market-descriptions';
+const { flow: pipe } = _;
 
 type NumberOrder = Order;
 
