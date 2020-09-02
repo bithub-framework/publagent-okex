@@ -2,7 +2,7 @@ export function getChannel(table) {
     const c = table.split('/')[1];
     if (c === 'trade')
         return 'trades';
-    if (c === 'depth')
+    if (c === 'depth_l2_tbt')
         return 'orderbook';
     if (table === 'futures/instruments')
         return 'instruments';

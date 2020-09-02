@@ -292,7 +292,7 @@
         "affectsGlobalScope": true
       },
       "./src/market-descriptions.ts": {
-        "version": "0fd1c9eecfb2d3ea8695c8762a836b31dca368813331adc13157a56f890d06ab",
+        "version": "00fd07b16c20a782551476dd1bcba29e7650ae9329e23cc985519aae4f325dde",
         "signature": "47cc0526f04c2b56a3c6297592aee50c34c0fc889413526dd0308600cd3bc230",
         "affectsGlobalScope": false
       },

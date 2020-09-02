@@ -4,7 +4,7 @@ export type Channel = 'trades' | 'orderbook' | 'instruments';
 export function getChannel(table: string): Channel {
     const c = table.split('/')[1];
     if (c === 'trade') return 'trades';
-    if (c === 'depth') return 'orderbook';
+    if (c === 'depth_l2_tbt') return 'orderbook';
     if (table === 'futures/instruments') return 'instruments';
     throw new Error('invalid channel');
 }
