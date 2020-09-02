@@ -12,6 +12,15 @@ import checksum from './checksum';
 import assert from 'assert';
 import { marketDescriptors, } from './market-descriptions';
 const { flow: pipe } = _;
+function formatStringOrderToOrder(pair, order) {
+    const numberOrder = {
+        action: order.action === 'ask' ? "ask" /* ASK */ : "bid" /* BID */,
+        price: pipe(Number.parseFloat, x => x * 100, Math.round)(order.price),
+        amount: Number.parseFloat(order.amount),
+    };
+    numberOrder.amount = marketDescriptors[pair].normalizeAmount(numberOrder.price, numberOrder.amount);
+    return numberOrder;
+}
 class Incremental {
     constructor(pair) {
         this.pair = pair;
@@ -31,25 +40,16 @@ class Incremental {
         else
             this.bids.set(stringOrder.price, stringOrder);
     }
-    formatStringOrderToOrder(order) {
-        const numberOrder = {
-            action: order.action === 'ask' ? "ask" /* ASK */ : "bid" /* BID */,
-            price: pipe(Number.parseFloat, x => x * 100, Math.round)(order.price),
-            amount: Number.parseFloat(order.amount),
-        };
-        numberOrder.amount = marketDescriptors[this.pair].normalizeAmount(numberOrder.price, numberOrder.amount);
-        return numberOrder;
-    }
     getLatest(expected) {
         const sortedAsks = [...this.asks.values()]
             .map(stringOrder => ({
             stringOrder,
-            numberOrder: this.formatStringOrderToOrder(stringOrder),
+            numberOrder: formatStringOrderToOrder(this.pair, stringOrder),
         })).sort((order1, order2) => order1.numberOrder.price - order2.numberOrder.price);
         const sortedBids = [...this.bids.values()]
             .map(stringOrder => ({
             stringOrder,
-            numberOrder: this.formatStringOrderToOrder(stringOrder),
+            numberOrder: formatStringOrderToOrder(this.pair, stringOrder),
         })).sort((order1, order2) => order2.numberOrder.price - order1.numberOrder.price);
         assert(this.checksum(sortedAsks, sortedBids, expected));
         return {
@@ -74,5 +74,5 @@ class Incremental {
         });
     }
 }
-export { Incremental as default, Incremental, };
+export { Incremental as default, Incremental, formatStringOrderToOrder, };
 //# sourceMappingURL=incremental.js.map

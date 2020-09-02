@@ -26,6 +26,21 @@ interface NumberStringOrder {
     stringOrder: StringOrder,
 }
 
+function formatStringOrderToOrder(pair: Pair, order: StringOrder): NumberOrder {
+    const numberOrder: NumberOrder = {
+        action: order.action === 'ask' ? Action.ASK : Action.BID,
+        price: pipe(
+            Number.parseFloat,
+            x => x * 100,
+            Math.round,
+        )(order.price),
+        amount: Number.parseFloat(order.amount),
+    };
+    numberOrder.amount = marketDescriptors[pair].normalizeAmount(
+        numberOrder.price, numberOrder.amount);
+    return numberOrder;
+}
+
 class Incremental {
     private asks = new Map<string, StringOrder>();
     private bids = new Map<string, StringOrder>();
@@ -46,32 +61,19 @@ class Incremental {
             else this.bids.set(stringOrder.price, stringOrder);
     }
 
-    private formatStringOrderToOrder(order: StringOrder): NumberOrder {
-        const numberOrder: NumberOrder = {
-            action: order.action === 'ask' ? Action.ASK : Action.BID,
-            price: pipe(
-                Number.parseFloat,
-                x => x * 100,
-                Math.round,
-            )(order.price),
-            amount: Number.parseFloat(order.amount),
-        };
-        numberOrder.amount = marketDescriptors[this.pair].normalizeAmount(
-            numberOrder.price, numberOrder.amount);
-        return numberOrder;
-    }
+
 
     public getLatest(expected: number): Orderbook {
         const sortedAsks = [...this.asks.values()]
             .map(stringOrder => ({
                 stringOrder,
-                numberOrder: this.formatStringOrderToOrder(stringOrder),
+                numberOrder: formatStringOrderToOrder(this.pair, stringOrder),
             })).sort((order1, order2) =>
                 order1.numberOrder.price - order2.numberOrder.price);
         const sortedBids = [...this.bids.values()]
             .map(stringOrder => ({
                 stringOrder,
-                numberOrder: this.formatStringOrderToOrder(stringOrder),
+                numberOrder: formatStringOrderToOrder(this.pair, stringOrder),
             })).sort((order1, order2) =>
                 order2.numberOrder.price - order1.numberOrder.price);
 
@@ -112,4 +114,5 @@ class Incremental {
 export {
     Incremental as default,
     Incremental,
+    formatStringOrderToOrder,
 };

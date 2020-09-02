@@ -292,13 +292,13 @@
         "affectsGlobalScope": true
       },
       "./src/market-descriptions.ts": {
-        "version": "00fd07b16c20a782551476dd1bcba29e7650ae9329e23cc985519aae4f325dde",
+        "version": "7e4c5168fc769f6d305670aa3b2c590beff43ffb7720971fa1e59a005a959bbb",
         "signature": "47cc0526f04c2b56a3c6297592aee50c34c0fc889413526dd0308600cd3bc230",
         "affectsGlobalScope": false
       },
       "./src/incremental.ts": {
-        "version": "5e924ea30d29db3ea425567548564284e9804ac306c887598e5067619e0d2bae",
-        "signature": "7f676904b2b82f6f4c823dbcf5a7ef5c64285ba0ce813209a9a87d8e3c92c521",
+        "version": "1654e4479f61e0713c7961550086c2ed3534a2cb2f32d557f55f16ad70226d89",
+        "signature": "aabb5253d119d0093a5673adb77c9db83cfee8019ab87c4357501b06eae33447",
         "affectsGlobalScope": false
       },
       "./node_modules/eventemitter3/index.d.ts": {
@@ -602,8 +602,8 @@
         "affectsGlobalScope": false
       },
       "./src/raw-orderbook-handler.ts": {
-        "version": "882b8e2b386735e4ba6b063bccbfea372f6e815c8c93ff7a6e67e072036ad8e0",
-        "signature": "337b17a8cb43c8a16fcac465c6ae01b0df5f66909754445e75ca7d9aaf25e187",
+        "version": "8b2c813b9891b1eef372e7e9eda10580d65833c6f0a89f7a3172d7028e8558e2",
+        "signature": "233930d3df1bae877deaf026b3aacd2bbf91cdcd02a3c572a179dab84ddd1f86",
         "affectsGlobalScope": false
       },
       "./src/raw-trades-handler.ts": {
@@ -612,7 +612,7 @@
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "25ddd9719346cb9f5266157561318e699624c90ce46adccd6d8c5b40a1a47757",
+        "version": "4f16b384bfb5ea1010a93ed004c5b3ab9d946c87919de0bef746b5bacf586499",
         "signature": "624c1a4f9095fe47799e1db8ef0adaaf05c948a8e14a82409e72224bc3497902",
         "affectsGlobalScope": false
       },

@@ -68,7 +68,8 @@ class Normalizer extends Startable {
                 const { instrument_id } = rawOrderbookData;
                 const pair = getPair(table, instrument_id);
                 this.emit('orderbook', pair,
-                    this.rawOrderbookHandler[pair].handle(rawOrderbookData),
+                    // this.rawOrderbookHandler[pair].handle(rawOrderbookData),
+                    this.rawOrderbookHandler[pair].handleStock(rawOrderbookData),
                 );
             }
         }

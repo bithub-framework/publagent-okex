@@ -5,5 +5,6 @@ declare class RawOrderbookHandler {
     private incremental;
     constructor(pair: Pair);
     handle(rawOrderbook: RawOrderbook): Orderbook;
+    handleStock(rawOrderbook: RawOrderbook): Orderbook;
 }
 export { RawOrderbookHandler as default, RawOrderbookHandler, };

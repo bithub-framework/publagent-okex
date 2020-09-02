@@ -1,4 +1,4 @@
-import Incremental from './incremental';
+import { Incremental, formatStringOrderToOrder, } from './incremental';
 function formatRawOrderToStringOrder(rawOrder, action) {
     return {
         action,
@@ -18,9 +18,20 @@ class RawOrderbookHandler {
         this.incremental = new Incremental(this.pair);
     }
     handle(rawOrderbook) {
-        const ordersString = formatRawOrderbookToStringOrders(rawOrderbook);
-        ordersString.forEach(orderString => void this.incremental.update(orderString, rawOrderbook.timestamp));
+        const stringOrders = formatRawOrderbookToStringOrders(rawOrderbook);
+        stringOrders.forEach(orderString => void this.incremental.update(orderString, rawOrderbook.timestamp));
         return this.incremental.getLatest(rawOrderbook.checksum);
+    }
+    handleStock(rawOrderbook) {
+        return {
+            asks: rawOrderbook.asks
+                .map(rawOrder => formatRawOrderToStringOrder(rawOrder, "ask" /* ASK */))
+                .map(stringOrder => formatStringOrderToOrder(this.pair, stringOrder)),
+            bids: rawOrderbook.bids
+                .map(rawOrder => formatRawOrderToStringOrder(rawOrder, "bid" /* BID */))
+                .map(stringOrder => formatStringOrderToOrder(this.pair, stringOrder)),
+            time: Date.parse(rawOrderbook.timestamp),
+        };
     }
 }
 export { RawOrderbookHandler as default, RawOrderbookHandler, };

@@ -4,7 +4,8 @@ export type Channel = 'trades' | 'orderbook' | 'instruments';
 export function getChannel(table: string): Channel {
     const c = table.split('/')[1];
     if (c === 'trade') return 'trades';
-    if (c === 'depth_l2_tbt') return 'orderbook';
+    if (c === 'depth5') return 'orderbook';
+    // if (c === 'depth_l2_tbt') return 'orderbook';
     if (table === 'futures/instruments') return 'instruments';
     throw new Error('invalid channel');
 }
@@ -28,13 +29,15 @@ export const marketDescriptors: {
 } = {
     'BTC/USDT': {
         tradesChannel: 'spot/trade:BTC-USDT',
-        orderbookChannel: 'spot/depth_l2_tbt:BTC-USDT',
+        orderbookChannel: 'spot/depth5:BTC-USDT',
+        // orderbookChannel: 'spot/depth_l2_tbt:BTC-USDT',
         instrumentId: 'BTC-USDT',
         normalizeAmount: (price, amount) => amount,
     },
     'BTC-USD-SWAP/USD': {
         tradesChannel: 'swap/trade:BTC-USD-SWAP',
-        orderbookChannel: 'swap/depth_l2_tbt:BTC-USD-SWAP',
+        orderbookChannel: 'swap/depth5:BTC-USD-SWAP',
+        // orderbookChannel: 'swap/depth_l2_tbt:BTC-USD-SWAP',
         instrumentId: 'BTC-USD-SWAP',
         normalizeAmount: (price, amount) => amount * 100 * 100 / price,
     },

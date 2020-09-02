@@ -1,4 +1,7 @@
-import Incremental from './incremental';
+import {
+    Incremental,
+    formatStringOrderToOrder,
+} from './incremental';
 import {
     Orderbook,
     StringOrder,
@@ -36,11 +39,23 @@ class RawOrderbookHandler {
     constructor(private pair: Pair) { }
 
     public handle(rawOrderbook: RawOrderbook): Orderbook {
-        const ordersString = formatRawOrderbookToStringOrders(rawOrderbook);
-        ordersString.forEach(orderString =>
+        const stringOrders = formatRawOrderbookToStringOrders(rawOrderbook);
+        stringOrders.forEach(orderString =>
             void this.incremental.update(orderString, rawOrderbook.timestamp));
 
         return this.incremental.getLatest(rawOrderbook.checksum);
+    }
+
+    public handleStock(rawOrderbook: RawOrderbook): Orderbook {
+        return {
+            asks: rawOrderbook.asks
+                .map(rawOrder => formatRawOrderToStringOrder(rawOrder, Action.ASK))
+                .map(stringOrder => formatStringOrderToOrder(this.pair, stringOrder)),
+            bids: rawOrderbook.bids
+                .map(rawOrder => formatRawOrderToStringOrder(rawOrder, Action.BID))
+                .map(stringOrder => formatStringOrderToOrder(this.pair, stringOrder)),
+            time: Date.parse(rawOrderbook.timestamp),
+        };
     }
 }
 
