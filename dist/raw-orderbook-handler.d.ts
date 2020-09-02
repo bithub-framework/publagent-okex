@@ -4,7 +4,6 @@ declare class RawOrderbookHandler {
     private pair;
     private incremental;
     constructor(pair: Pair);
-    handle(raw: RawOrderbook['data'][0]): Orderbook;
+    handle(rawOrderbook: RawOrderbook): Orderbook;
 }
-export default RawOrderbookHandler;
-export { RawOrderbookHandler };
+export { RawOrderbookHandler as default, RawOrderbookHandler, };

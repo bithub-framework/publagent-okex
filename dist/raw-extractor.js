@@ -32,11 +32,10 @@ class RawExtractor extends Startable {
             this.pongee = setTimeout(() => {
                 this.stop(new Error('Pong not received')).catch(console.error);
             }, PONG_LATENCY);
-            const onMessage = () => {
-                this.socket.off('message', onMessage);
+            this.socket.once('message', () => {
                 clearTimeout(this.pongee);
                 this.pongee = undefined;
-            };
+            });
         }, PING_LATENCY);
         this.socket.on('message', (message) => {
             this.pinger();

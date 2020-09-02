@@ -21,17 +21,8 @@ class PublicAgentOkexWebsocket extends Startable {
     protected async _start(): Promise<void> {
         await this.connectOkex();
         await this.connectPublicCenter();
-
-        this.normalizer.on('trades', (pair: Pair, trades: Trade[]) => {
-            const dataSent: DFPATC = { trades, };
-            this.center[pair].send(JSON.stringify(dataSent))
-                .catch(err => void this.stop(err));
-        });
-        this.normalizer.on('orderbook', (pair: Pair, orderbook: Orderbook) => {
-            const dataSent: DFPATC = { orderbook, };
-            this.center[pair].send(JSON.stringify(dataSent))
-                .catch(err => void this.stop(err));
-        });
+        this.normalizer.on('trades', this.onTrades);
+        this.normalizer.on('orderbook', this.onOrderbook);
         await this.subscribeTrades();
         await this.subscribeOrderbook();
     }
@@ -66,6 +57,18 @@ class PublicAgentOkexWebsocket extends Startable {
             });
 
         }
+    }
+
+    private async onTrades(pair: Pair, trades: Trade[]): Promise<void> {
+        const dataSent: DFPATC = { trades, };
+        await this.center[pair].send(JSON.stringify(dataSent))
+            .catch(err => void this.stop(err));
+    }
+
+    private async onOrderbook(pair: Pair, orderbook: Orderbook): Promise<void> {
+        const dataSent: DFPATC = { orderbook, };
+        await this.center[pair].send(JSON.stringify(dataSent))
+            .catch(err => void this.stop(err));
     }
 
     private async subscribeTrades(): Promise<void> {

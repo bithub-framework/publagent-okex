@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {
-    RawTrades,
+    RawTrade,
     Trade,
     Action,
 } from './interfaces';
@@ -15,7 +15,7 @@ class RawTradesHandler {
 
     public static normalizeRawTrade(
         pair: Pair,
-        rawTrades: RawTrades['data'][0],
+        rawTrades: RawTrade,
     ): Trade {
         const trade = {
             action: rawTrades.side === 'buy' ? Action.BID : Action.ASK,
@@ -32,7 +32,7 @@ class RawTradesHandler {
         return trade;
     }
 
-    public handle(rawTrades: RawTrades['data']): Trade[] {
+    public handle(rawTrades: RawTrade[]): Trade[] {
         return rawTrades.map(rawTrade =>
             RawTradesHandler.normalizeRawTrade(this.pair, rawTrade)
         );

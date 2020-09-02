@@ -14,10 +14,7 @@ class Normalizer extends Startable {
     }
     async _start() {
         this.extractor.on('error', console.error);
-        await this.extractor.start(err => {
-            if (err)
-                this.stop(err);
-        });
+        await this.extractor.start(err => void this.stop(err));
         this.extractor.on('data', (raw) => {
             try {
                 this.onRawData(raw);
@@ -48,14 +45,14 @@ class Normalizer extends Startable {
             }
         }
     }
-    async unSubscribe(operation, channel) {
-        await this.extractor.send({ op: operation, args: [channel] });
+    async unSubscribe(operation, rawChannel) {
+        await this.extractor.send({ op: operation, args: [rawChannel] });
         await new Promise((resolve, reject) => {
             const onUnSub = (raw) => {
                 if (raw.event === operation &&
-                    raw.channel === channel) {
-                    this.off('(un)sub', onUnSub);
-                    this.off('error', reject);
+                    raw.channel === rawChannel) {
+                    this.extractor.off('(un)sub', onUnSub);
+                    this.extractor.off('error', reject);
                     resolve();
                 }
             };

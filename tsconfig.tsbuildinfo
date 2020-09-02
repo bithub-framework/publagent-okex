@@ -207,8 +207,8 @@
         "affectsGlobalScope": false
       },
       "./src/config.ts": {
-        "version": "4e9a1d773221b22248cf74dc5bdd5a165d1cc05778a5270b455a5b6e4907ab9c",
-        "signature": "0685b37a5a1f35234c113f5629b708d4615e4d8ac28d769f6644640c1d56c1b9",
+        "version": "4d2a9c2cf6c4f34f458dbd50a3b29806ccc0ed69b16ae20e9753eef7fc81deb5",
+        "signature": "1824aa6b03b2f4cc0fd60a559715e29db14e6558cbcba3c9000f67f42fd38282",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
@@ -217,8 +217,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "a586331ea944f750361c449a0f28ebd455b5e45af6ff3b790b4c97a9fc5ce5ed",
-        "signature": "274c3b8cde8afe65b5b9cfb8126d660aef0f45d49cdb4c13a640f8ef6b04685b",
+        "version": "172e9f54fa3d984aa9c6335d97f1efa7683cb8a0831337a48e74fbfd5454902e",
+        "signature": "794f5debf6c635b7acca426de9c04aefc680509377078b0940dae7dbe3e55f98",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/lodash/common/common.d.ts": {
@@ -292,8 +292,8 @@
         "affectsGlobalScope": false
       },
       "./src/incremental.ts": {
-        "version": "ae8218bbb331fb2864dac0451e0dd15d301368650668323dcd33af95ca75a6d0",
-        "signature": "69a2201d9727cd0558f6a40791395fc3b48423e0d5977811e754f77b120c07d7",
+        "version": "ff224cf0ec2980f8ed2ed92d8b6c3d2a85a01726d7476c27e30af47ab4c85e65",
+        "signature": "7f676904b2b82f6f4c823dbcf5a7ef5c64285ba0ce813209a9a87d8e3c92c521",
         "affectsGlobalScope": false
       },
       "./node_modules/eventemitter3/index.d.ts": {
@@ -592,28 +592,28 @@
         "affectsGlobalScope": false
       },
       "./src/raw-extractor.ts": {
-        "version": "647e12caddf374c1017caa3d5995e18f9621557be2f213f6c1171a5be38a7d9a",
+        "version": "20e7c15559fb3588e2a6d1b76bab66638260ece9c0b82be19290ff12c1d42289",
         "signature": "d1434adbd89efbcff5bd908bbcd24e9e92140974cec19b7540d5b023faed8df1",
         "affectsGlobalScope": false
       },
       "./src/raw-orderbook-handler.ts": {
-        "version": "b516707acbdad470b0b0d5a760efb721e3a8e563f3b1eb14daf660f864bb8239",
-        "signature": "1f011e6f022b974d965793afb89881516b98a95612796929daf842c6a3c90b5a",
+        "version": "882b8e2b386735e4ba6b063bccbfea372f6e815c8c93ff7a6e67e072036ad8e0",
+        "signature": "337b17a8cb43c8a16fcac465c6ae01b0df5f66909754445e75ca7d9aaf25e187",
         "affectsGlobalScope": false
       },
       "./src/raw-trades-handler.ts": {
-        "version": "4cb634b10eb177f757d4a36bcc75a1913976c3cff78f4125041f44997925784d",
-        "signature": "7e737dcc790af25a4dcb25e33c1e4eb004d5f4a892bdfd0c5624cb5749a1735b",
+        "version": "ea16a870b4869355f0200d65b107b48e47005ad05f8fd0417db296b78e7601d1",
+        "signature": "80a6dabaeb92486d97f09a2a914df0da5a470117cee965a4fa9db06f0f629bdd",
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "02a33ccde744af895b017a084f8a2e475ae24b70dc123d671bd4b2c0c25362c2",
-        "signature": "b96bea19cc4cf1474b98382fad9dd18a1af9594ad36814f6aa67f36eb959b699",
+        "version": "e86aaf421e39ba0e159502f4c035b207b7a9bd32dba5675547a31cb847b2dd6b",
+        "signature": "a9384ecef51cc95a117c31f6c61be3031a6073b4b310ea00f73ed5f2fee4d9e0",
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "d00538997707524857e1f2f72be0ca20763a509470df869a717ea637018220f7",
-        "signature": "d2bc289a20893129023bf907071a2d5b59ae904b7c5ba0a94c70929bebc079dc",
+        "version": "8254c95016b996cc2a009075eb2496527276dd015dbb04b7247653121d5b2461",
+        "signature": "28b0b04903b2ccd1ee5f2a3456b4f81827b0efd0df7903cd0ac70e8c9e9c9598",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/chai/index.d.ts": {
@@ -1955,7 +1955,6 @@
         "./node_modules/@types/node/ts3.2/process.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
-        "./src/config.ts",
         "./src/incremental.ts",
         "./src/interfaces.ts",
         "./src/market-descriptions.ts"
@@ -3175,7 +3174,8 @@
         "./node_modules/interfaces/dist/index.d.ts"
       ],
       "./src/normalizer.ts": [
-        "./node_modules/startable/dist/index.d.ts"
+        "./node_modules/startable/dist/index.d.ts",
+        "./src/interfaces.ts"
       ],
       "./src/promisified-websocket.ts": [
         "./node_modules/startable/dist/index.d.ts"

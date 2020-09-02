@@ -1,11 +1,11 @@
-/**
- * 设单位时间内 k 次 update，分成 r (1 <= r <= k) 条消息来，p 次 getLatest/checksum
- * orderbook 平均 size 为 n
- * 平衡树 O(klogn + pn)
- * 哈希 O(k + pnlogn)
- * 线性扫一遍 O(rn+k + pn) 最坏情况 r = k 每次来消息只更新一个 O(kn + pn)
- * 因为 n 很小，所以 logn 近似为常数，平衡树和哈希时间复杂度相同
- * 所以直接哈希。
+/*
+    设单位时间内 k 次 update，分成 r (1 <= r <= k) 条消息来，p 次 getLatest/checksum
+    orderbook 平均 size 为 n
+    平衡树 O(klogn + pn)
+    哈希 O(k + pnlogn)
+    线性扫一遍 O(rn+k + pn) 最坏情况 r = k 每次来消息只更新一个 O(kn + pn)
+    因为 n 很小，所以 logn 近似为常数，平衡树和哈希时间复杂度相同
+    所以直接哈希。
  */
 
 import { Orderbook, Order, Action } from 'interfaces';
@@ -45,14 +45,9 @@ class Incremental {
             else this.bids.set(stringOrder.price, stringOrder);
     }
 
-    public clear(): void {
-        this.asks.clear();
-        this.bids.clear();
-    }
-
     private formatStringOrderToOrder(order: StringOrder): NumberOrder {
         const numberOrder: NumberOrder = {
-            action: order.action,
+            action: order.action === 'ask' ? Action.ASK : Action.BID,
             price: pipe(
                 Number.parseFloat,
                 x => x * 100,
@@ -61,12 +56,11 @@ class Incremental {
             amount: Number.parseFloat(order.amount),
         };
         numberOrder.amount = marketDescriptors[this.pair].normalizeAmount(
-            numberOrder.price, numberOrder.amount
-        );
+            numberOrder.price, numberOrder.amount);
         return numberOrder;
     }
 
-    getLatest(expected: number): Orderbook {
+    public getLatest(expected: number): Orderbook {
         const sortedAsks = [...this.asks.values()]
             .map(stringOrder => ({
                 stringOrder,
@@ -87,8 +81,8 @@ class Incremental {
         ));
 
         return {
-            asks: sortedAsks.map(orderBoth => orderBoth.numberOrder),
-            bids: sortedBids.map(orderBoth => orderBoth.numberOrder),
+            asks: sortedAsks.map(numberStringOrder => numberStringOrder.numberOrder),
+            bids: sortedBids.map(numberStringOrder => numberStringOrder.numberOrder),
             time: this.time,
         }
     }
@@ -114,5 +108,7 @@ class Incremental {
     }
 }
 
-export default Incremental;
-export { Incremental };
+export {
+    Incremental as default,
+    Incremental,
+};

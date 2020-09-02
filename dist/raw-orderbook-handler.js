@@ -1,5 +1,4 @@
 import Incremental from './incremental';
-import config from './config';
 function formatRawOrderToStringOrder(rawOrder, action) {
     return {
         action,
@@ -7,10 +6,10 @@ function formatRawOrderToStringOrder(rawOrder, action) {
         amount: rawOrder[1],
     };
 }
-function formatRawOrderbookToStringOrders(orderbook) {
+function formatRawOrderbookToStringOrders(rawOrderbook) {
     return [
-        ...orderbook.bids.map(rawOrder => formatRawOrderToStringOrder(rawOrder, "bid" /* BID */)),
-        ...orderbook.asks.map(rawOrder => formatRawOrderToStringOrder(rawOrder, "ask" /* ASK */)),
+        ...rawOrderbook.bids.map(rawOrder => formatRawOrderToStringOrder(rawOrder, "bid" /* BID */)),
+        ...rawOrderbook.asks.map(rawOrder => formatRawOrderToStringOrder(rawOrder, "ask" /* ASK */)),
     ];
 }
 class RawOrderbookHandler {
@@ -18,18 +17,11 @@ class RawOrderbookHandler {
         this.pair = pair;
         this.incremental = new Incremental(this.pair);
     }
-    handle(raw) {
-        const ordersString = formatRawOrderbookToStringOrders(raw);
-        ordersString.forEach(orderString => void this.incremental.update(orderString, raw.timestamp));
-        const fullOrderbook = this.incremental.getLatest(raw.checksum);
-        const orderbook = {
-            bids: fullOrderbook.bids.slice(0, config.ORDERBOOK_DEPTH),
-            asks: fullOrderbook.asks.slice(0, config.ORDERBOOK_DEPTH),
-            time: fullOrderbook.time,
-        };
-        return orderbook;
+    handle(rawOrderbook) {
+        const ordersString = formatRawOrderbookToStringOrders(rawOrderbook);
+        ordersString.forEach(orderString => void this.incremental.update(orderString, rawOrderbook.timestamp));
+        return this.incremental.getLatest(rawOrderbook.checksum);
     }
 }
-export default RawOrderbookHandler;
-export { RawOrderbookHandler };
+export { RawOrderbookHandler as default, RawOrderbookHandler, };
 //# sourceMappingURL=raw-orderbook-handler.js.map

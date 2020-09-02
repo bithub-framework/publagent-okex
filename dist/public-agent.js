@@ -12,16 +12,8 @@ class PublicAgentOkexWebsocket extends Startable {
     async _start() {
         await this.connectOkex();
         await this.connectPublicCenter();
-        this.normalizer.on('trades', (pair, trades) => {
-            const dataSent = { trades, };
-            this.center[pair].send(JSON.stringify(dataSent))
-                .catch(err => void this.stop(err));
-        });
-        this.normalizer.on('orderbook', (pair, orderbook) => {
-            const dataSent = { orderbook, };
-            this.center[pair].send(JSON.stringify(dataSent))
-                .catch(err => void this.stop(err));
-        });
+        this.normalizer.on('trades', this.onTrades);
+        this.normalizer.on('orderbook', this.onOrderbook);
         await this.subscribeTrades();
         await this.subscribeOrderbook();
     }
@@ -52,6 +44,16 @@ class PublicAgentOkexWebsocket extends Startable {
                 }
             });
         }
+    }
+    async onTrades(pair, trades) {
+        const dataSent = { trades, };
+        await this.center[pair].send(JSON.stringify(dataSent))
+            .catch(err => void this.stop(err));
+    }
+    async onOrderbook(pair, orderbook) {
+        const dataSent = { orderbook, };
+        await this.center[pair].send(JSON.stringify(dataSent))
+            .catch(err => void this.stop(err));
     }
     async subscribeTrades() {
         for (const { tradesChannel } of Object.values(marketDescriptors)) {

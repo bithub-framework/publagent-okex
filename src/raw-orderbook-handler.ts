@@ -1,15 +1,15 @@
 import Incremental from './incremental';
 import {
     Orderbook,
-    RawOrderbook,
     StringOrder,
     Action,
+    RawOrderbook,
+    RawOrder,
 } from './interfaces';
-import config from './config';
 import { Pair } from './market-descriptions';
 
 function formatRawOrderToStringOrder(
-    rawOrder: RawOrderbook['data'][0]['asks'][0],
+    rawOrder: RawOrder,
     action: Action
 ): StringOrder {
     return {
@@ -20,12 +20,12 @@ function formatRawOrderToStringOrder(
 }
 
 function formatRawOrderbookToStringOrders(
-    orderbook: RawOrderbook['data'][0]
+    rawOrderbook: RawOrderbook,
 ): StringOrder[] {
     return [
-        ...orderbook.bids.map(rawOrder =>
+        ...rawOrderbook.bids.map(rawOrder =>
             formatRawOrderToStringOrder(rawOrder, Action.BID)),
-        ...orderbook.asks.map(rawOrder =>
+        ...rawOrderbook.asks.map(rawOrder =>
             formatRawOrderToStringOrder(rawOrder, Action.ASK)),
     ]
 }
@@ -35,20 +35,16 @@ class RawOrderbookHandler {
 
     constructor(private pair: Pair) { }
 
-    public handle(raw: RawOrderbook['data'][0]): Orderbook {
-        const ordersString = formatRawOrderbookToStringOrders(raw);
+    public handle(rawOrderbook: RawOrderbook): Orderbook {
+        const ordersString = formatRawOrderbookToStringOrders(rawOrderbook);
         ordersString.forEach(orderString =>
-            void this.incremental.update(orderString, raw.timestamp));
+            void this.incremental.update(orderString, rawOrderbook.timestamp));
 
-        const fullOrderbook = this.incremental.getLatest(raw.checksum);
-        const orderbook: Orderbook = {
-            bids: fullOrderbook.bids.slice(0, config.ORDERBOOK_DEPTH),
-            asks: fullOrderbook.asks.slice(0, config.ORDERBOOK_DEPTH),
-            time: fullOrderbook.time,
-        }
-        return orderbook;
+        return this.incremental.getLatest(rawOrderbook.checksum);
     }
 }
 
-export default RawOrderbookHandler;
-export { RawOrderbookHandler };
+export {
+    RawOrderbookHandler as default,
+    RawOrderbookHandler,
+};

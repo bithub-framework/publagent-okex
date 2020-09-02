@@ -1,9 +1,9 @@
-import { RawTrades, Trade } from './interfaces';
+import { RawTrade, Trade } from './interfaces';
 import { Pair } from './market-descriptions';
 declare class RawTradesHandler {
     private pair;
     constructor(pair: Pair);
-    static normalizeRawTrade(pair: Pair, rawTrades: RawTrades['data'][0]): Trade;
-    handle(rawTrades: RawTrades['data']): Trade[];
+    static normalizeRawTrade(pair: Pair, rawTrades: RawTrade): Trade;
+    handle(rawTrades: RawTrade[]): Trade[];
 }
 export { RawTradesHandler as default, RawTradesHandler, };

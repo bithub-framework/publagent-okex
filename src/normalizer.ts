@@ -3,10 +3,11 @@ import RawExtractor from './raw-extractor';
 import RawOrderbookHandler from './raw-orderbook-handler';
 import RawTradesHandler from './raw-trades-handler';
 import {
-    RawOrderbook,
-    RawTrades,
+    RawDataOrderbook,
+    RawDataTrades,
     RawUnSub,
     RawData,
+    Operation,
 } from './interfaces';
 import {
     getChannel,
@@ -34,9 +35,7 @@ class Normalizer extends Startable {
 
     protected async _start(): Promise<void> {
         this.extractor.on('error', console.error);
-        await this.extractor.start(err => {
-            if (err) this.stop(err);
-        });
+        await this.extractor.start(err => void this.stop(err));
         this.extractor.on('data', (raw: RawData) => {
             try {
                 this.onRawData(raw);
@@ -54,7 +53,7 @@ class Normalizer extends Startable {
         const { table } = raw;
         const channel = getChannel(table);
         if (channel === 'trades') {
-            for (const rawTrade of (<RawTrades>raw).data) {
+            for (const rawTrade of (<RawDataTrades>raw).data) {
                 const { instrument_id } = rawTrade;
                 const pair = getPair(table, instrument_id);
                 this.emit('trades', pair,
@@ -63,7 +62,7 @@ class Normalizer extends Startable {
             }
         }
         if (channel === 'orderbook') {
-            for (const rawOrderbookData of (<RawOrderbook>raw).data) {
+            for (const rawOrderbookData of (<RawDataOrderbook>raw).data) {
                 const { instrument_id } = rawOrderbookData;
                 const pair = getPair(table, instrument_id);
                 this.emit('orderbook', pair,
@@ -74,18 +73,18 @@ class Normalizer extends Startable {
     }
 
     public async unSubscribe(
-        operation: 'subscribe' | 'unsubscribe',
-        channel: string,
+        operation: Operation,
+        rawChannel: string,
     ) {
-        await this.extractor.send({ op: operation, args: [channel] });
+        await this.extractor.send({ op: operation, args: [rawChannel] });
         await new Promise((resolve, reject) => {
             const onUnSub = (raw: RawUnSub) => {
                 if (
                     raw.event === operation &&
-                    raw.channel === channel
+                    raw.channel === rawChannel
                 ) {
-                    this.off('(un)sub', onUnSub);
-                    this.off('error', reject);
+                    this.extractor.off('(un)sub', onUnSub);
+                    this.extractor.off('error', reject);
                     resolve();
                 }
             }

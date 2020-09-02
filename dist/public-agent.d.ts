@@ -6,6 +6,8 @@ declare class PublicAgentOkexWebsocket extends Startable {
     protected _stop(): Promise<void>;
     private connectOkex;
     private connectPublicCenter;
+    private onTrades;
+    private onOrderbook;
     private subscribeTrades;
     private subscribeOrderbook;
 }
