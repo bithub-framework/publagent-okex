@@ -66,6 +66,7 @@ class RawExtractor extends Startable {
                     this.emit('data', rawMessage);
             }
         });
+        this.pinger();
     }
 
     protected async _stop(err?: Error) {
