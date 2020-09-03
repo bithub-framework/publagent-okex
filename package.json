@@ -26,12 +26,11 @@
         "@types/lodash": "^4.14.136",
         "@types/node": "^14.6.2",
         "@types/pako": "^1.0.1",
-        "@types/ws": "^7.2.6",
         "crc-32": "^1.2.0",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "lodash": "^4.17.15",
         "pako": "^1.0.10",
-        "startable": "https://gitee.com/zimtsui/startable.git",
-        "ws": "^7.1.1"
+        "promisified-websocket": "https://gitee.com/zimtsui/promisified-websocket.git",
+        "startable": "https://gitee.com/zimtsui/startable.git"
     }
 }

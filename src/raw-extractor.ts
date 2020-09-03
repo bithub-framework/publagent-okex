@@ -1,7 +1,7 @@
 import Startable from 'startable';
 import pako from 'pako';
 import _ from 'lodash';
-import PromisifiedWebSocket from './promisified-websocket';
+import PromisifiedWebSocket from 'promisified-websocket';
 import {
     RawMessage,
     RawError,

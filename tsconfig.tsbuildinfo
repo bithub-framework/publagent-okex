@@ -586,18 +586,18 @@
         "signature": "d522314e80ed71b57e3c2939d3c9594eaae63a4adf028559e6574f6b270b0fee",
         "affectsGlobalScope": false
       },
-      "./node_modules/@types/ws/index.d.ts": {
-        "version": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
-        "signature": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
-        "affectsGlobalScope": false
-      },
-      "./src/promisified-websocket.ts": {
-        "version": "bacd613f57f851b4aff6f799c3f6841dcc7fdaae568d9f89b999fa4b5fb0bd82",
+      "./node_modules/promisified-websocket/dist/websocket.d.ts": {
+        "version": "716d1c9c4148154f920bb79634ab41b78c3ca9ca554205d8ed5ea7fc132479e9",
         "signature": "716d1c9c4148154f920bb79634ab41b78c3ca9ca554205d8ed5ea7fc132479e9",
         "affectsGlobalScope": false
       },
+      "./node_modules/promisified-websocket/dist/index.d.ts": {
+        "version": "a929faac4f32ea01b6b5c42f4d0e16615902e643a177fd9ada5c937373b111d4",
+        "signature": "a929faac4f32ea01b6b5c42f4d0e16615902e643a177fd9ada5c937373b111d4",
+        "affectsGlobalScope": false
+      },
       "./src/raw-extractor.ts": {
-        "version": "20e7c15559fb3588e2a6d1b76bab66638260ece9c0b82be19290ff12c1d42289",
+        "version": "b07c7373ff14d1797abfaa7fb8ae42fe1bd5f1369ee8e95b72fc07dd885fc2f6",
         "signature": "d1434adbd89efbcff5bd908bbcd24e9e92140974cec19b7540d5b023faed8df1",
         "affectsGlobalScope": false
       },
@@ -617,7 +617,7 @@
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "151615560d719faad1324b22f7faae99351c7fa8ca9aca2d8326b6f3beb50dce",
+        "version": "5c56661bcae58ae9baf0f2b9fe3fa916ee8ff30ff684fbdd6653d3a7bb3b5e60",
         "signature": "5941109fadbf8a26220616cfefeedd53876704362027d552695c4d2675d6703a",
         "affectsGlobalScope": false
       },
@@ -625,6 +625,11 @@
         "version": "2fc02febc18eb7df45ce134505a190daeb2fad54c71d12f41a741d47c0cc5549",
         "signature": "2fc02febc18eb7df45ce134505a190daeb2fad54c71d12f41a741d47c0cc5549",
         "affectsGlobalScope": true
+      },
+      "./node_modules/@types/ws/index.d.ts": {
+        "version": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
+        "signature": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
+        "affectsGlobalScope": false
       }
     },
     "options": {
@@ -1472,6 +1477,25 @@
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
       ],
+      "./node_modules/promisified-websocket/dist/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/process.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/process.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/promisified-websocket/dist/websocket.d.ts"
+      ],
+      "./node_modules/promisified-websocket/dist/websocket.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/process.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/process.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/startable/dist/index.d.ts"
+      ],
       "./node_modules/startable/dist/index.d.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/process.d.ts",
@@ -1561,17 +1585,6 @@
         "./src/raw-orderbook-handler.ts",
         "./src/raw-trades-handler.ts"
       ],
-      "./src/promisified-websocket.ts": [
-        "./node_modules/@types/node/events.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/process.d.ts",
-        "./node_modules/@types/node/ts3.2/fs.d.ts",
-        "./node_modules/@types/node/ts3.2/process.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/ws/index.d.ts",
-        "./node_modules/startable/dist/index.d.ts"
-      ],
       "./src/public-agent.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/process.d.ts",
@@ -1579,12 +1592,12 @@
         "./node_modules/@types/node/ts3.2/process.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
+        "./node_modules/promisified-websocket/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./src/config.ts",
         "./src/interfaces.ts",
         "./src/market-descriptions.ts",
-        "./src/normalizer.ts",
-        "./src/promisified-websocket.ts"
+        "./src/normalizer.ts"
       ],
       "./src/raw-extractor.ts": [
         "./node_modules/@types/lodash/index.d.ts",
@@ -1595,9 +1608,9 @@
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/pako/index.d.ts",
+        "./node_modules/promisified-websocket/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./src/interfaces.ts",
-        "./src/promisified-websocket.ts"
+        "./src/interfaces.ts"
       ],
       "./src/raw-orderbook-handler.ts": [
         "./node_modules/@types/node/fs.d.ts",
@@ -2770,6 +2783,25 @@
         "./node_modules/@types/node/ts3.2/util.d.ts",
         "./node_modules/@types/node/util.d.ts"
       ],
+      "./node_modules/promisified-websocket/dist/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/process.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/process.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/promisified-websocket/dist/websocket.d.ts"
+      ],
+      "./node_modules/promisified-websocket/dist/websocket.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/process.d.ts",
+        "./node_modules/@types/node/ts3.2/fs.d.ts",
+        "./node_modules/@types/node/ts3.2/process.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts",
+        "./node_modules/@types/node/ts3.7/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/startable/dist/index.d.ts"
+      ],
       "./node_modules/startable/dist/index.d.ts": [
         "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/process.d.ts",
@@ -2809,9 +2841,6 @@
         "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts",
         "./src/market-descriptions.ts"
-      ],
-      "./src/promisified-websocket.ts": [
-        "./node_modules/startable/dist/index.d.ts"
       ],
       "./src/public-agent.ts": [
         "./node_modules/startable/dist/index.d.ts"
@@ -3220,6 +3249,8 @@
       "./node_modules/crc-32/types/index.d.ts",
       "./node_modules/eventemitter3/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
+      "./node_modules/promisified-websocket/dist/index.d.ts",
+      "./node_modules/promisified-websocket/dist/websocket.d.ts",
       "./node_modules/startable/dist/index.d.ts",
       "./node_modules/startable/dist/primitive.d.ts",
       "./node_modules/startable/dist/startable.d.ts",
@@ -3229,7 +3260,6 @@
       "./src/interfaces.ts",
       "./src/market-descriptions.ts",
       "./src/normalizer.ts",
-      "./src/promisified-websocket.ts",
       "./src/public-agent.ts",
       "./src/raw-extractor.ts",
       "./src/raw-orderbook-handler.ts",

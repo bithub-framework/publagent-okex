@@ -1,4 +1,4 @@
-import PromisifiedWebSocket from './promisified-websocket';
+import PromisifiedWebSocket from 'promisified-websocket';
 import Startable from 'startable';
 import {
     DataFromPublicAgentToCenter as DFPATC,
