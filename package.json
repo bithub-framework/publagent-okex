@@ -16,7 +16,7 @@
         "url": "git+https://github.com/zimtsui/public-agent-okex-websocket.git"
     },
     "author": "Zim",
-    "license": "MIT",
+    "license": "SEE LICENSE IN ./LICENSE",
     "bugs": {
         "url": "https://github.com/zimtsui/public-agent-okex-websocket/issues"
     },
