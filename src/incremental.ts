@@ -16,7 +16,7 @@ import assert from 'assert';
 import {
     marketDescriptors,
     Pair,
-} from './market-descriptions';
+} from './mappings';
 const { flow: pipe } = _;
 
 type NumberOrder = Order;

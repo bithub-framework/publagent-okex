@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { marketDescriptors, } from './market-descriptions';
+import { marketDescriptors, } from './mappings';
 const { flow: pipe } = _;
 class RawTradesHandler {
     constructor(pair) {

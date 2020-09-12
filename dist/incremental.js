@@ -10,7 +10,7 @@
 import _ from 'lodash';
 import checksum from './checksum';
 import assert from 'assert';
-import { marketDescriptors, } from './market-descriptions';
+import { marketDescriptors, } from './mappings';
 const { flow: pipe } = _;
 function formatStringOrderToOrder(pair, order) {
     const numberOrder = {

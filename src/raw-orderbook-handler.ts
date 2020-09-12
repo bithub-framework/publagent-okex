@@ -9,7 +9,7 @@ import {
     RawOrderbook,
     RawOrder,
 } from './interfaces';
-import { Pair } from './market-descriptions';
+import { Pair } from './mappings';
 
 function formatRawOrderToStringOrder(
     rawOrder: RawOrder,

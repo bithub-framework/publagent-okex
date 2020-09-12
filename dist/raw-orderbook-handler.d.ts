@@ -1,5 +1,5 @@
 import { Orderbook, RawOrderbook } from './interfaces';
-import { Pair } from './market-descriptions';
+import { Pair } from './mappings';
 declare class RawOrderbookHandler {
     private pair;
     private incremental;

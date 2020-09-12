@@ -13,10 +13,11 @@ import config from './config';
 const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
 
-/**
-    error
-    (un)sub
-    data
+/*
+    events:
+        error
+        (un)sub
+        data
 */
 
 function isRawUnSub(raw: RawMessage): raw is RawUnSub {
@@ -67,10 +68,11 @@ class RawExtractor extends Startable {
                     this.emit('data', rawMessage);
             }
         });
+
         this.pinger();
     }
 
-    protected async _stop(err?: Error) {
+    protected async _stop() {
         if (this.pinger) this.pinger.cancel();
         if (this.pongee) clearTimeout(this.pongee);
         await this.socket.stop();

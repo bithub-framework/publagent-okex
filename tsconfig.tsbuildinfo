@@ -291,14 +291,14 @@
         "signature": "0714e2046df66c0e93c3330d30dbc0565b3e8cd3ee302cf99e4ede6220e5fec8",
         "affectsGlobalScope": true
       },
-      "./src/market-descriptions.ts": {
-        "version": "7e4c5168fc769f6d305670aa3b2c590beff43ffb7720971fa1e59a005a959bbb",
+      "./src/mappings.ts": {
+        "version": "ac98fe71192c638c0e7bafcf1b908094da3c94202b25be0182e64657716ca050",
         "signature": "47cc0526f04c2b56a3c6297592aee50c34c0fc889413526dd0308600cd3bc230",
         "affectsGlobalScope": false
       },
       "./src/incremental.ts": {
-        "version": "1654e4479f61e0713c7961550086c2ed3534a2cb2f32d557f55f16ad70226d89",
-        "signature": "aabb5253d119d0093a5673adb77c9db83cfee8019ab87c4357501b06eae33447",
+        "version": "d88d2418aa6908f8b5b83e5a8569672f872e7526184fd64db053f48d13270322",
+        "signature": "71400bba9aef319474fd9f523d79f6c0b46d09f8693a9633811d3ae89151836c",
         "affectsGlobalScope": false
       },
       "./node_modules/eventemitter3/index.d.ts": {
@@ -571,9 +571,14 @@
         "signature": "b755e9c9cdd3fe80563a564b0b54ec76158a963ce1a4547e9ec4623ecd5b1cb1",
         "affectsGlobalScope": false
       },
+      "./node_modules/@types/ws/index.d.ts": {
+        "version": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
+        "signature": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
+        "affectsGlobalScope": false
+      },
       "./node_modules/promisified-websocket/dist/websocket.d.ts": {
-        "version": "716d1c9c4148154f920bb79634ab41b78c3ca9ca554205d8ed5ea7fc132479e9",
-        "signature": "716d1c9c4148154f920bb79634ab41b78c3ca9ca554205d8ed5ea7fc132479e9",
+        "version": "a71ea592e127e8b3ad38edb17f7e518c7c0e7afa0cc6987f6119a48d8fe57bf2",
+        "signature": "a71ea592e127e8b3ad38edb17f7e518c7c0e7afa0cc6987f6119a48d8fe57bf2",
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-websocket/dist/index.d.ts": {
@@ -582,23 +587,23 @@
         "affectsGlobalScope": false
       },
       "./src/raw-extractor.ts": {
-        "version": "348339aa357f8356b279150ae4cf75206d2fcd612b98e28331fe93193d613a87",
-        "signature": "8432d2fdf79d8d25e2f70ae29d87e617c2031c76c81bb737c10ff178d4a7bb62",
+        "version": "9fe31c45672feac995e2058d738a404d5fc8fe457d789b196ae95afacec32aa3",
+        "signature": "579e4318d0ef7acb7ee0e0a1c93f86bade40b7f583804d6862ed7a1d7016e2c1",
         "affectsGlobalScope": false
       },
       "./src/raw-orderbook-handler.ts": {
-        "version": "8b2c813b9891b1eef372e7e9eda10580d65833c6f0a89f7a3172d7028e8558e2",
-        "signature": "233930d3df1bae877deaf026b3aacd2bbf91cdcd02a3c572a179dab84ddd1f86",
+        "version": "b8ed053deadba1c4da01682317741e325107301f7fa1e7802213c4bc873f4097",
+        "signature": "242d9c5a606b9d0c2dee10875fc3ba90c0a86ff460e02b005894f8fb2d6249d7",
         "affectsGlobalScope": false
       },
       "./src/raw-trades-handler.ts": {
-        "version": "ea16a870b4869355f0200d65b107b48e47005ad05f8fd0417db296b78e7601d1",
-        "signature": "80a6dabaeb92486d97f09a2a914df0da5a470117cee965a4fa9db06f0f629bdd",
+        "version": "fe64dc44b3b3b6cd78c9752a8dd244d0005f8b35789391b6aa2100ab110139be",
+        "signature": "e3084f0069d3e305bbb1071418d9505a7db50a2768b78b5a1142df94d26cc83f",
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "ed31ce3f20e75bcb368a1531bea0d76e193d6432b15ac9157ab9c5ffb5d401cf",
-        "signature": "4360f93c87fb7c2c99a3bc7c51a4279419e255c7ff38ce980f432ea3cc738f77",
+        "version": "812ecd5fb9e02c812dc4ff9ff01fdc76f5c9362d4b0ead8cac70714ecf64429c",
+        "signature": "575b3e6164dfa519a6e716fc2cb70e942bc3559405d5cf15e2fe51727a2c77f9",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/accepts/index.d.ts": {
@@ -696,18 +701,13 @@
         "signature": "3b3bdf1af9a608401323ee0964f87a936373462198af6a3020fe53a1d6f8fc18",
         "affectsGlobalScope": false
       },
-      "./node_modules/@types/ws/index.d.ts": {
-        "version": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
-        "signature": "81361d2b8ba5b6bae26d65a42c01cb163e49dc626fd5c151b8b337f5d44d3bf8",
-        "affectsGlobalScope": false
-      },
       "./src/ws-server.ts": {
         "version": "73b5de133f017c919f217731b1abc653f48ebc125ce26c79a5f71c325d03b0ba",
         "signature": "a5ed2f9754e9e20ee4eb6696ea5ee598be14dc6c163c02f3d477bd07f245c17b",
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "226eacd5a84e6ebd19b6e0898a35fbfe21314cbcb15d90e9906bf486a7d99d6e",
+        "version": "123012a152923cd8b71159365d8a38685d4aa924b4a07b99780c0c4e947d128c",
         "signature": "3ac2d7ae975fb64d424b7acda6436235523cbd0b4553595c1cff15cdab155337",
         "affectsGlobalScope": false
       },
@@ -1568,11 +1568,11 @@
         "./node_modules/promisified-websocket/dist/websocket.d.ts"
       ],
       "./node_modules/promisified-websocket/dist/websocket.d.ts": [
-        "./node_modules/@types/node/index.d.ts",
         "./node_modules/@types/node/ts3.1/fs.d.ts",
         "./node_modules/@types/node/ts3.1/util.d.ts",
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts",
+        "./node_modules/@types/ws/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./node_modules/startable/dist/index.d.ts": [
@@ -1619,7 +1619,7 @@
         "./node_modules/interfaces/dist/index.d.ts",
         "./src/checksum.ts",
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/interfaces.ts": [
         "./node_modules/@types/node/ts3.1/fs.d.ts",
@@ -1628,7 +1628,7 @@
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
       ],
-      "./src/market-descriptions.ts": [
+      "./src/mappings.ts": [
         "./node_modules/@types/node/ts3.1/fs.d.ts",
         "./node_modules/@types/node/ts3.1/util.d.ts",
         "./node_modules/@types/node/ts3.3/fs.d.ts",
@@ -1641,7 +1641,7 @@
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts",
+        "./src/mappings.ts",
         "./src/raw-extractor.ts",
         "./src/raw-orderbook-handler.ts",
         "./src/raw-trades-handler.ts"
@@ -1653,7 +1653,7 @@
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./src/market-descriptions.ts",
+        "./src/mappings.ts",
         "./src/normalizer.ts",
         "./src/ws-server.ts"
       ],
@@ -1676,7 +1676,7 @@
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./src/incremental.ts",
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/raw-trades-handler.ts": [
         "./node_modules/@types/lodash/index.d.ts",
@@ -1685,7 +1685,7 @@
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/ws-server.ts": [
         "./node_modules/@types/koa-router/index.d.ts",
@@ -2818,13 +2818,11 @@
         "./node_modules/promisified-websocket/dist/websocket.d.ts"
       ],
       "./node_modules/promisified-websocket/dist/websocket.d.ts": [
-        "./node_modules/@types/node/fs.d.ts",
-        "./node_modules/@types/node/process.d.ts",
-        "./node_modules/@types/node/ts3.2/fs.d.ts",
-        "./node_modules/@types/node/ts3.2/process.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts",
-        "./node_modules/@types/node/ts3.7/index.d.ts",
-        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.1/fs.d.ts",
+        "./node_modules/@types/node/ts3.1/util.d.ts",
+        "./node_modules/@types/node/ts3.3/fs.d.ts",
+        "./node_modules/@types/node/ts3.3/util.d.ts",
+        "./node_modules/@types/ws/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./node_modules/startable/dist/index.d.ts": [
@@ -2857,7 +2855,7 @@
       "./src/incremental.ts": [
         "./node_modules/interfaces/dist/index.d.ts",
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts"
@@ -2865,7 +2863,7 @@
       "./src/normalizer.ts": [
         "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/public-agent.ts": [
         "./node_modules/startable/dist/index.d.ts"
@@ -2875,11 +2873,11 @@
       ],
       "./src/raw-orderbook-handler.ts": [
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/raw-trades-handler.ts": [
         "./src/interfaces.ts",
-        "./src/market-descriptions.ts"
+        "./src/mappings.ts"
       ],
       "./src/ws-server.ts": [
         "./node_modules/@types/node/ts3.1/events.d.ts",
@@ -3303,7 +3301,7 @@
       "./src/config.ts",
       "./src/incremental.ts",
       "./src/interfaces.ts",
-      "./src/market-descriptions.ts",
+      "./src/mappings.ts",
       "./src/normalizer.ts",
       "./src/public-agent.ts",
       "./src/raw-extractor.ts",

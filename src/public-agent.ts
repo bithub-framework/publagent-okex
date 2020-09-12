@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import {
     marketDescriptors,
     Pair,
-} from './market-descriptions';
+} from './mappings';
 import Normalizer from './normalizer';
 import WsServer from './ws-server';
 

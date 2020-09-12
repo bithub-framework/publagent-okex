@@ -1,6 +1,6 @@
 import { Orderbook, Order } from 'interfaces';
 import { StringOrder } from './interfaces';
-import { Pair } from './market-descriptions';
+import { Pair } from './mappings';
 declare type NumberOrder = Order;
 declare function formatStringOrderToOrder(pair: Pair, order: StringOrder): NumberOrder;
 declare class Incremental {

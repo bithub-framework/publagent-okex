@@ -2,7 +2,7 @@ import Startable from 'startable';
 import RawExtractor from './raw-extractor';
 import RawOrderbookHandler from './raw-orderbook-handler';
 import RawTradesHandler from './raw-trades-handler';
-import { getChannel, getPair, marketDescriptors, } from './market-descriptions';
+import { getChannel, getPair, marketDescriptors, } from './mappings';
 /*
     'trades' pair trades
     'orderbook' pair orderbook
@@ -49,20 +49,6 @@ class Normalizer extends Startable {
             }
         }
     }
-    waitForUnsub(operation, rawChannel) {
-        return new Promise((resolve, reject) => {
-            const onUnSub = (raw) => {
-                if (raw.event === operation &&
-                    raw.channel === rawChannel) {
-                    this.extractor.off('(un)sub', onUnSub);
-                    this.extractor.off('error', reject);
-                    resolve();
-                }
-            };
-            this.extractor.on('(un)sub', onUnSub);
-            this.extractor.on('error', reject);
-        });
-    }
     async unSubscribe(operation, pair) {
         this.rawTradesHandler[pair] = new RawTradesHandler(pair);
         this.rawOrderbookHandler[pair] = new RawOrderbookHandler(pair);
@@ -73,9 +59,23 @@ class Normalizer extends Startable {
                 marketDescriptors[pair].orderbookChannel,
             ],
         });
+        const waitForUnsub = (operation, rawChannel) => {
+            return new Promise((resolve, reject) => {
+                const onUnSub = (raw) => {
+                    if (raw.event === operation &&
+                        raw.channel === rawChannel) {
+                        this.extractor.off('(un)sub', onUnSub);
+                        this.extractor.off('error', reject);
+                        resolve();
+                    }
+                };
+                this.extractor.on('(un)sub', onUnSub);
+                this.extractor.on('error', reject);
+            });
+        };
         await Promise.all([
-            this.waitForUnsub(operation, marketDescriptors[pair].tradesChannel),
-            this.waitForUnsub(operation, marketDescriptors[pair].orderbookChannel),
+            waitForUnsub(operation, marketDescriptors[pair].tradesChannel),
+            waitForUnsub(operation, marketDescriptors[pair].orderbookChannel),
         ]);
     }
 }

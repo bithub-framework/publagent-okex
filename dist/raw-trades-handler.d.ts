@@ -1,5 +1,5 @@
 import { RawTrade, Trade } from './interfaces';
-import { Pair } from './market-descriptions';
+import { Pair } from './mappings';
 declare class RawTradesHandler {
     private pair;
     constructor(pair: Pair);

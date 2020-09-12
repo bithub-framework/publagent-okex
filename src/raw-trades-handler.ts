@@ -7,7 +7,7 @@ import {
 import {
     marketDescriptors,
     Pair,
-} from './market-descriptions';
+} from './mappings';
 const { flow: pipe } = _;
 
 class RawTradesHandler {

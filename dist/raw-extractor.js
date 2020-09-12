@@ -5,10 +5,11 @@ import PromisifiedWebSocket from 'promisified-websocket';
 import config from './config';
 const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
-/**
-    error
-    (un)sub
-    data
+/*
+    events:
+        error
+        (un)sub
+        data
 */
 function isRawUnSub(raw) {
     return raw.event === 'subscribe' || raw.event === 'unsubscribe';
@@ -52,7 +53,7 @@ class RawExtractor extends Startable {
         });
         this.pinger();
     }
-    async _stop(err) {
+    async _stop() {
         if (this.pinger)
             this.pinger.cancel();
         if (this.pongee)

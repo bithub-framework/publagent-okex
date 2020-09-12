@@ -1,6 +1,6 @@
 import Startable from 'startable';
 import EventEmitter from 'events';
-import { marketDescriptors, } from './market-descriptions';
+import { marketDescriptors, } from './mappings';
 import Normalizer from './normalizer';
 import WsServer from './ws-server';
 class PublicAgentOkexWebsocket extends Startable {
