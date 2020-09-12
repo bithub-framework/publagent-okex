@@ -8,11 +8,11 @@ import { getChannel, getPair, marketDescriptors, } from './market-descriptions';
     'orderbook' pair orderbook
 */
 class Normalizer extends Startable {
-    constructor(url) {
+    constructor() {
         super();
         this.rawOrderbookHandler = {};
         this.rawTradesHandler = {};
-        this.extractor = new RawExtractor(url);
+        this.extractor = new RawExtractor();
     }
     async _start() {
         this.extractor.on('error', console.error);

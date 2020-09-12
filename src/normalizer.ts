@@ -30,9 +30,9 @@ class Normalizer extends Startable {
         [pair: string]: RawTradesHandler;
     } = {};
 
-    constructor(url: string) {
+    constructor() {
         super();
-        this.extractor = new RawExtractor(url);
+        this.extractor = new RawExtractor();
     }
 
     protected async _start(): Promise<void> {

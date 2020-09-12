@@ -1,5 +1,6 @@
 declare const _default: {
-    PUBLIC_CENTER_BASE_URL: string;
     OKEX_WEBSOCKET_URL: string;
+    PORT: number;
+    WS_CLOSE_TIMEOUT: number;
 };
 export default _default;

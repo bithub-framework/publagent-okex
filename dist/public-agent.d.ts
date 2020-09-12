@@ -1,13 +1,9 @@
 import Startable from 'startable';
 declare class PublicAgentOkexWebsocket extends Startable {
+    private broadcast;
     private normalizer;
-    private center;
+    private wsServer;
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
-    private connectOkex;
-    private connectPublicCenter;
-    private onTrades;
-    private onOrderbook;
-    private subscribe;
 }
 export { PublicAgentOkexWebsocket as default, PublicAgentOkexWebsocket, };

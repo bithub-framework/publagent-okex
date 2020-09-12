@@ -5,7 +5,7 @@ declare class Normalizer extends Startable {
     private extractor;
     private rawOrderbookHandler;
     private rawTradesHandler;
-    constructor(url: string);
+    constructor();
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
     private onRawData;

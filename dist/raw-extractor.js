@@ -2,6 +2,7 @@ import Startable from 'startable';
 import pako from 'pako';
 import _ from 'lodash';
 import PromisifiedWebSocket from 'promisified-websocket';
+import config from './config';
 const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
 /**
@@ -19,10 +20,9 @@ function isRawData(raw) {
     return !!raw.table;
 }
 class RawExtractor extends Startable {
-    constructor(url) {
+    constructor() {
         super();
-        this.url = url;
-        this.socket = new PromisifiedWebSocket(this.url);
+        this.socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
     }
     async _start() {
         this.socket.on('error', err => void this.emit('error', err));
@@ -50,6 +50,7 @@ class RawExtractor extends Startable {
                     this.emit('data', rawMessage);
             }
         });
+        this.pinger();
     }
     async _stop(err) {
         if (this.pinger)

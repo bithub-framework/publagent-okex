@@ -8,6 +8,7 @@ import {
     RawUnSub,
     RawData,
 } from './interfaces';
+import config from './config';
 
 const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
@@ -33,9 +34,9 @@ class RawExtractor extends Startable {
     private pinger?: _.DebouncedFunc<() => void>;
     private pongee?: NodeJS.Timeout;
 
-    constructor(private url: string) {
+    constructor() {
         super();
-        this.socket = new PromisifiedWebSocket(this.url);
+        this.socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
     }
 
     protected async _start() {
