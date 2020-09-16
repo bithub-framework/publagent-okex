@@ -89,7 +89,7 @@ class Deserializer extends Startable {
             for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
                 this.emit(`${"trades" /* TRADES */}/${instrumentId}`, rawTrades);
         }
-        if (isRawDataOrderbook(rawData)) {
+        else if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
                 this.emit(`${"orderbook" /* ORDERBOOK */}/${rawOrderbook.instrument_id}`, rawOrderbook);
         }

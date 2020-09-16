@@ -567,7 +567,7 @@
         "affectsGlobalScope": false
       },
       "./src/deserializer.ts": {
-        "version": "08b7017a5d71a92aad26a7eb034d16c7220f0af699f4d8a51ff3ec093a7deb69",
+        "version": "27b2de675c1d74d8cd0c88af88b9226bf552125b2fa7e65d437e5adac8f5862c",
         "signature": "0100f1ac903e1806bae885f386c3d0512b14fd57e7da4dbec96d28a3d1ffec7e",
         "affectsGlobalScope": false
       },

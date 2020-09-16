@@ -107,7 +107,7 @@ class Deserializer extends Startable {
             }
             for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
                 this.emit(`${Channel.TRADES}/${instrumentId}`, rawTrades);
-        } if (isRawDataOrderbook(rawData)) {
+        } else if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
                 this.emit(`${Channel.ORDERBOOK}/${rawOrderbook.instrument_id}`, rawOrderbook);
         } else throw new Error('unknown channel');
