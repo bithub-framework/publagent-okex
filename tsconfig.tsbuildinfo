@@ -577,12 +577,12 @@
         "affectsGlobalScope": false
       },
       "./src/btc-usd-swap-usd.ts": {
-        "version": "bfb2566d6001ea513d7283c8257230a2ff0e58c2075d5cb4b6d5e75528d3a975",
+        "version": "3ebfbba9e6bb3f01cd1a275a1253bbadad136054421b790bd21cc12711d2571e",
         "signature": "86cd935c4e9d73105503bf5a36e35227d1200a12b0e8e89f57e63c2ce4c05c6a",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
-        "version": "0fc103afdf3eeb4f831f477e024941d0f8b5b27e622969273b9b976ce1302384",
+        "version": "772ff1541b074c45c6d9cf5b2930d37d5f1153c364450da955cafb869009af2e",
         "signature": "86cd935c4e9d73105503bf5a36e35227d1200a12b0e8e89f57e63c2ce4c05c6a",
         "affectsGlobalScope": false
       },

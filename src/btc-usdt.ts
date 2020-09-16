@@ -26,8 +26,8 @@ function normalizeRawOrder(rawOrder: RawOrder, action: Action): Order {
 class BtcUsdt extends Normalizer {
     protected pair = 'BTC/USDT';
     protected instrumentId = 'BTC-USDT';
-    protected rawTradesChannel = `swap/trade:${this.instrumentId}`;
-    protected rawOrderbookChannel = `swap/depth5:${this.instrumentId}`;
+    protected rawTradesChannel = 'spot/trade:BTC-USDT';
+    protected rawOrderbookChannel = 'spot/depth5:BTC-USDT';
 
     protected normalizeRawTrade(rawTrade: RawTrade): Trade {
         return {

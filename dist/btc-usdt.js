@@ -13,8 +13,8 @@ class BtcUsdt extends Normalizer {
         super(...arguments);
         this.pair = 'BTC/USDT';
         this.instrumentId = 'BTC-USDT';
-        this.rawTradesChannel = `swap/trade:${this.instrumentId}`;
-        this.rawOrderbookChannel = `swap/depth5:${this.instrumentId}`;
+        this.rawTradesChannel = 'spot/trade:BTC-USDT';
+        this.rawOrderbookChannel = 'spot/depth5:BTC-USDT';
     }
     normalizeRawTrade(rawTrade) {
         return {
