@@ -15,8 +15,8 @@ import {
 } from './interfaces';
 import config from './config';
 
-const PING_LATENCY = 5000;
-const PONG_LATENCY = 5000;
+const PING_LATENCY = 3000;
+const PONG_LATENCY = 3000;
 
 /*
     events
