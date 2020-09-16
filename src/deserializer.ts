@@ -15,9 +15,6 @@ import {
 } from './interfaces';
 import config from './config';
 
-const PING_LATENCY = 3000;
-const PONG_LATENCY = 3000;
-
 /*
     events
         error
@@ -62,12 +59,12 @@ class Deserializer extends Startable {
             this.socket.send('ping').catch(err => this.stop(err));
             this.pongee = setTimeout(() => {
                 this.stop(new Error('Pong not received')).catch(console.error);
-            }, PONG_LATENCY);
+            }, config.PONG_LATENCY);
             this.socket.once('message', () => {
                 clearTimeout(this.pongee!);
                 this.pongee = undefined;
             });
-        }, PING_LATENCY);
+        }, config.PING_LATENCY);
         this.pinger();
     }
 
@@ -79,7 +76,6 @@ class Deserializer extends Startable {
             try {
                 this.makePinger();
                 const extracted = pako.inflateRaw(message, { to: 'string' });
-                console.log(extracted);
                 const rawMessage = <RawMessage>JSON.parse(extracted);
                 if (isRawError(rawMessage))
                     this.emit('error', new Error(rawMessage.message));

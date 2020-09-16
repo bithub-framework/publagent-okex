@@ -3,5 +3,7 @@ declare const _default: {
     PORT: number;
     WS_CLOSE_TIMEOUT: number;
     MARKET_NAME: string;
+    PING_LATENCY: number;
+    PONG_LATENCY: number;
 };
 export default _default;

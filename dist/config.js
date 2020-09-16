@@ -3,5 +3,7 @@ export default {
     PORT: 12001,
     WS_CLOSE_TIMEOUT: 3000,
     MARKET_NAME: 'okex',
+    PING_LATENCY: 5000,
+    PONG_LATENCY: 5000,
 };
 //# sourceMappingURL=config.js.map
