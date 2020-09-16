@@ -62,8 +62,8 @@ class Deserializer extends Startable {
         this.socket.on('message', (message) => {
             try {
                 this.makePinger();
-                if (message instanceof Uint8Array) {
-                    const extracted = pako.inflateRaw(message, { to: 'string' });
+                const extracted = pako.inflateRaw(message, { to: 'string' });
+                if (typeof extracted === 'object') {
                     const rawMessage = JSON.parse(extracted);
                     if (isRawError(rawMessage))
                         this.emit('error', new Error(rawMessage.message));
