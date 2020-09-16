@@ -43,7 +43,7 @@ class Normalizer extends Startable {
     }
     onRawOrderbook(rawOrderbook) {
         const orderbook = this.normalizeRawOrderbook(rawOrderbook);
-        this.broadcast.emit(`${config.MARKET_NAME} / ${this.pair} / ${"orderbook" /* ORDERBOOK */}`, orderbook);
+        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/${"orderbook" /* ORDERBOOK */}`, orderbook);
     }
     async unSubscribe(operation) {
         await this.deserializer.send({
@@ -57,12 +57,12 @@ class Normalizer extends Startable {
             return new Promise((resolve, reject) => {
                 const onUnSub = (rawUnSub) => {
                     if (rawUnSub.channel === rawChannel) {
-                        this.deserializer.off(operation, onUnSub);
+                        this.deserializer.off(`${operation}/${rawChannel}`, onUnSub);
                         this.deserializer.off('error', reject);
                         resolve();
                     }
                 };
-                this.deserializer.on(`${operation} / ${rawChannel}`, onUnSub);
+                this.deserializer.on(`${operation}/${rawChannel}`, onUnSub);
                 this.deserializer.on('error', reject);
             });
         };
