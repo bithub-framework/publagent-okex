@@ -17,8 +17,8 @@ declare abstract class Normalizer extends Startable {
     protected _stop(): Promise<void>;
     private _onRawDataTrades;
     private _onRawDataOrderbook;
-    private onRawDataTrades;
-    private onRawDataOrderbook;
+    private onRawTrades;
+    private onRawOrderbook;
     private unSubscribe;
 }
 export { Normalizer as default, Normalizer, };

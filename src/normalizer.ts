@@ -2,8 +2,6 @@ import Startable from 'startable';
 import Deserializer from './deserializer';
 import EventEmitter from 'events';
 import {
-    RawDataOrderbook,
-    RawDataTrades,
     RawUnSub,
     Operation,
     Trade,
@@ -12,6 +10,7 @@ import {
     RawOrderbook,
     Channel,
 } from './interfaces';
+import config from './config';
 
 /*
     events
@@ -46,36 +45,34 @@ abstract class Normalizer extends Startable {
     }
 
     private _onRawDataTrades = (
-        ...args: Parameters<typeof Normalizer.prototype.onRawDataTrades>
+        ...args: Parameters<typeof Normalizer.prototype.onRawTrades>
     ): void => {
         try {
-            this.onRawDataTrades(...args);
+            this.onRawTrades(...args);
         } catch (err) {
             this.stop(err);
         }
     }
 
     private _onRawDataOrderbook = (
-        ...args: Parameters<typeof Normalizer.prototype.onRawDataOrderbook>
+        ...args: Parameters<typeof Normalizer.prototype.onRawOrderbook>
     ): void => {
         try {
-            this.onRawDataOrderbook(...args);
+            this.onRawOrderbook(...args);
         } catch (err) {
             this.stop(err);
         }
     }
 
-    private onRawDataTrades(rawDataTrades: RawDataTrades): void {
-        const trades = rawDataTrades.data
+    private onRawTrades(rawTrades: RawTrade[]): void {
+        const trades = rawTrades
             .map(rawTrade => this.normalizeRawTrade(rawTrade));
-        this.broadcast.emit(`${Channel.TRADES}/${this.pair}`, trades);
+        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/${Channel.TRADES}`, trades);
     }
 
-    private onRawDataOrderbook(rawDataOrderbook: RawDataOrderbook): void {
-        const orderbooks = rawDataOrderbook.data
-            .map(rawOrderbook => this.normalizeRawOrderbook(rawOrderbook));
-        for (const orderbook of orderbooks)
-            this.broadcast.emit(`${Channel.ORDERBOOK}/${this.pair}`, orderbook);
+    private onRawOrderbook(rawOrderbook: RawOrderbook): void {
+        const orderbook = this.normalizeRawOrderbook(rawOrderbook);
+        this.broadcast.emit(`${config.MARKET_NAME} / ${this.pair} / ${Channel.ORDERBOOK}`, orderbook);
     }
 
     private async unSubscribe(operation: Operation) {
@@ -95,7 +92,7 @@ abstract class Normalizer extends Startable {
                         resolve();
                     }
                 }
-                this.deserializer.on(`${operation}/${rawChannel}`, onUnSub);
+                this.deserializer.on(`${operation} / ${rawChannel}`, onUnSub);
                 this.deserializer.on('error', reject);
             });
         }

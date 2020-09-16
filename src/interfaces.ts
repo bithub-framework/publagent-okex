@@ -60,4 +60,3 @@ export interface RawDataOrderbook extends RawData {
     action?: 'partial' | 'update';
     data: RawOrderbook[];
 }
-
