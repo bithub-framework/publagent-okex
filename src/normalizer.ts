@@ -59,7 +59,7 @@ abstract class Normalizer extends Startable {
         ...args: Parameters<typeof Normalizer.prototype.onRawDataOrderbook>
     ): void {
         try {
-            console.log(typeof this.onRawDataTrades);
+            console.log(typeof this.onRawDataOrderbook);
             this.onRawDataOrderbook(...args);
         } catch (err) {
             this.stop(err);

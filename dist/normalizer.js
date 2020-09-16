@@ -29,7 +29,7 @@ class Normalizer extends Startable {
     }
     _onRawDataOrderbook(...args) {
         try {
-            console.log(typeof this.onRawDataTrades);
+            console.log(typeof this.onRawDataOrderbook);
             this.onRawDataOrderbook(...args);
         }
         catch (err) {

@@ -572,7 +572,7 @@
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "1bd77f54716b63bd342126073845787405eb57dae6e9a5d565c4d724a056221e",
+        "version": "9cf28b1c587210b36584ce978ba027c90e161361b496b03892ab5931b3021806",
         "signature": "16f16fb39cbb980854977656347dcdd2ac301261b6bbce817418f5272169251b",
         "affectsGlobalScope": false
       },
