@@ -56,11 +56,9 @@ class Deserializer extends Startable {
     private pinger?: _.DebouncedFunc<() => void>;
     private pongee?: NodeJS.Timeout;
 
-    protected async _start() {
-        this.socket.on('error', err => this.emit('error', err));
-        await this.socket.start(err => this.stop(err));
-
-        this.pinger = _.debounce(() => {
+    private makePinger(): void {
+        if (!this.pinger) this.pinger = _.debounce(() => {
+            this.pinger = undefined;
             this.socket.send('ping').catch(err => this.stop(err));
             this.pongee = setTimeout(() => {
                 this.stop(new Error('Pong not received')).catch(console.error);
@@ -70,10 +68,16 @@ class Deserializer extends Startable {
                 this.pongee = undefined;
             });
         }, PING_LATENCY);
+        this.pinger();
+    }
+
+    protected async _start() {
+        this.socket.on('error', err => this.emit('error', err));
+        await this.socket.start(err => this.stop(err));
 
         this.socket.on('message', (message: 'pong' | Uint8Array) => {
             try {
-                this.pinger!();
+                this.makePinger();
                 if (message instanceof Uint8Array) {
                     const extracted = pako.inflateRaw(message, { to: 'string' });
                     const rawMessage = <RawMessage>JSON.parse(extracted);
@@ -89,7 +93,7 @@ class Deserializer extends Startable {
             }
         });
 
-        this.pinger();
+        this.makePinger();
     }
 
     private onRawData(rawData: RawData): void {

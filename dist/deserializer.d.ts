@@ -3,6 +3,7 @@ declare class Deserializer extends Startable {
     private socket;
     private pinger?;
     private pongee?;
+    private makePinger;
     protected _start(): Promise<void>;
     private onRawData;
     private onRawUnSub;

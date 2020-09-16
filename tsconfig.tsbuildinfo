@@ -567,8 +567,8 @@
         "affectsGlobalScope": false
       },
       "./src/deserializer.ts": {
-        "version": "d9a195e79bbbbbede49e95f93be8e6aa50a13a22579fdf90b6f6902d17fe5b45",
-        "signature": "314b9db4d9c0f818405a59bff51318db6980b1982e4fcb769048de0877d5b1a2",
+        "version": "d977b21b8f34b2267a246b2ca03d29737eb8fb7f6533d11005dcbe5cf7874187",
+        "signature": "0100f1ac903e1806bae885f386c3d0512b14fd57e7da4dbec96d28a3d1ffec7e",
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
