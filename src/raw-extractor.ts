@@ -19,7 +19,7 @@ const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
 
 /*
-    events:
+    events
         error
         subscribe/<rawChannel>
         unsubscribe/<rawChannel>
@@ -28,7 +28,7 @@ const PONG_LATENCY = 5000;
 */
 
 function isRawUnSub(raw: RawMessage): raw is RawUnSub {
-    return raw.event === 'subscribe' || raw.event === 'unsubscribe';
+    return raw.event === Operation.subscribe || raw.event === Operation.unsubscribe;
 }
 function isRawError(raw: RawMessage): raw is RawError {
     return raw.event === 'error';
@@ -39,16 +39,16 @@ function isRawData(raw: RawMessage): raw is RawData {
 
 function getChannel(rawData: RawData): Channel {
     const c = rawData.table.split('/')[1];
-    if (c === 'trade') return 'trades';
-    if (c === 'depth5') return 'orderbook';
-    throw new Error('invalid channel');
+    if (c === 'trade') return Channel.TRADES;
+    if (c === 'depth5') return Channel.ORDERBOOK;
+    throw new Error('unknown channel');
 }
 
-function isRawTrades(rawData: RawData): rawData is RawDataTrades {
-    return getChannel(rawData) === 'trades';
+function isRawDataTrades(rawData: RawData): rawData is RawDataTrades {
+    return getChannel(rawData) === Channel.TRADES;
 }
-function isRawOrderbook(rawData: RawData): rawData is RawDataOrderbook {
-    return getChannel(rawData) === 'orderbook';
+function isRawDataOrderbook(rawData: RawData): rawData is RawDataOrderbook {
+    return getChannel(rawData) === Channel.ORDERBOOK;
 }
 
 class RawExtractor extends Startable {
@@ -77,16 +77,20 @@ class RawExtractor extends Startable {
         }, PING_LATENCY);
 
         this.socket.on('message', (message: 'pong' | Uint8Array) => {
-            this.pinger!();
-            if (message instanceof Uint8Array) {
-                const extracted = pako.inflateRaw(message, { to: 'string' });
-                const rawMessage = <RawMessage>JSON.parse(extracted);
-                if (isRawError(rawMessage))
-                    this.emit('error', new Error(rawMessage.message));
-                else if (isRawUnSub(rawMessage))
-                    this.onRawUnSub(rawMessage);
-                else if (isRawData(rawMessage))
-                    this.onRawData(rawMessage);
+            try {
+                this.pinger!();
+                if (message instanceof Uint8Array) {
+                    const extracted = pako.inflateRaw(message, { to: 'string' });
+                    const rawMessage = <RawMessage>JSON.parse(extracted);
+                    if (isRawError(rawMessage))
+                        this.emit('error', new Error(rawMessage.message));
+                    else if (isRawUnSub(rawMessage))
+                        this.onRawUnSub(rawMessage);
+                    else if (isRawData(rawMessage))
+                        this.onRawData(rawMessage);
+                }
+            } catch (err) {
+                this.stop(err);
             }
         });
 
@@ -94,20 +98,20 @@ class RawExtractor extends Startable {
     }
 
     private onRawData(rawData: RawData): void {
-        if (isRawTrades(rawData)) {
+        if (isRawDataTrades(rawData)) {
             const allRawTrades: {
                 [instrument_id: string]: RawTrade[];
             } = {};
             for (const rawTrade of rawData.data) {
-                if (allRawTrades[rawTrade.instrument_id] === undefined)
+                if (!allRawTrades[rawTrade.instrument_id])
                     allRawTrades[rawTrade.instrument_id] = [];
                 allRawTrades[rawTrade.instrument_id].push(rawTrade);
             }
             for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
-                this.emit(`trades/${instrumentId}`, rawTrades);
-        } if (isRawOrderbook(rawData)) {
+                this.emit(`${Channel.TRADES}/${instrumentId}`, rawTrades);
+        } if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
-                this.emit(`orderbook/${rawOrderbook.instrument_id}`, rawOrderbook);
+                this.emit(`${Channel.ORDERBOOK}/${rawOrderbook.instrument_id}`, rawOrderbook);
         } else throw new Error('unknown channel');
     }
 

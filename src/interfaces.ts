@@ -1,7 +1,14 @@
 export * from 'interfaces';
 
-export type Channel = 'trades' | 'orderbook';
-export type Operation = 'subscribe' | 'unsubscribe';
+export const enum Channel {
+    TRADES = 'trades',
+    ORDERBOOK = 'orderbook',
+}
+
+export const enum Operation {
+    subscribe = 'subscribe',
+    unsubscribe = 'unsubscribe',
+}
 
 export interface RawMessage {
     table?: string;

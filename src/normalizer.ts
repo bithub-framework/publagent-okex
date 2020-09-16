@@ -10,11 +10,13 @@ import {
     RawTrade,
     Orderbook,
     RawOrderbook,
+    Channel,
 } from './interfaces';
 
 /*
-    'trades' pair trades
-    'orderbook' pair orderbook
+    events
+        'trades/<pair>' trades
+        'orderbook/<pair>' orderbook
 */
 
 abstract class Normalizer extends Startable {
@@ -33,10 +35,9 @@ abstract class Normalizer extends Startable {
     }
 
     protected async _start(): Promise<void> {
-        this.rawExtractor.on(`trades/${this.instrumentId}`, this._onRawDataTrades);
-        this.rawExtractor.on(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
-
-        this.unSubscribe('subscribe');
+        this.rawExtractor.on(`${Channel.TRADES}/${this.instrumentId}`, this._onRawDataTrades);
+        this.rawExtractor.on(`${Channel.ORDERBOOK}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.unSubscribe(Operation.subscribe);
     }
 
     protected async _stop() {
@@ -67,14 +68,14 @@ abstract class Normalizer extends Startable {
     private onRawDataTrades(rawDataTrades: RawDataTrades): void {
         const trades = rawDataTrades.data
             .map(rawTrade => this.normalizeRawTrade(rawTrade));
-        this.broadcast.emit('trades', this.pair, trades);
+        this.broadcast.emit(`trades/${this.pair}`, trades);
     }
 
     private onRawDataOrderbook(rawDataOrderbook: RawDataOrderbook): void {
         const orderbooks = rawDataOrderbook.data
             .map(rawOrderbook => this.normalizeRawOrderbook(rawOrderbook));
         for (const orderbook of orderbooks)
-            this.broadcast.emit('orderbook', this.pair, orderbook);
+            this.broadcast.emit(`orderbook/${this.pair}`, orderbook);
     }
 
     private async unSubscribe(operation: Operation) {

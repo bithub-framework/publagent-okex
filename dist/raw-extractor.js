@@ -6,7 +6,7 @@ import config from './config';
 const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
 /*
-    events:
+    events
         error
         subscribe/<rawChannel>
         unsubscribe/<rawChannel>
@@ -14,7 +14,7 @@ const PONG_LATENCY = 5000;
         orderbook/<instrumentId>
 */
 function isRawUnSub(raw) {
-    return raw.event === 'subscribe' || raw.event === 'unsubscribe';
+    return raw.event === "subscribe" /* subscribe */ || raw.event === "unsubscribe" /* unsubscribe */;
 }
 function isRawError(raw) {
     return raw.event === 'error';
@@ -25,16 +25,16 @@ function isRawData(raw) {
 function getChannel(rawData) {
     const c = rawData.table.split('/')[1];
     if (c === 'trade')
-        return 'trades';
+        return "trades" /* TRADES */;
     if (c === 'depth5')
-        return 'orderbook';
-    throw new Error('invalid channel');
+        return "orderbook" /* ORDERBOOK */;
+    throw new Error('unknown channel');
 }
-function isRawTrades(rawData) {
-    return getChannel(rawData) === 'trades';
+function isRawDataTrades(rawData) {
+    return getChannel(rawData) === "trades" /* TRADES */;
 }
-function isRawOrderbook(rawData) {
-    return getChannel(rawData) === 'orderbook';
+function isRawDataOrderbook(rawData) {
+    return getChannel(rawData) === "orderbook" /* ORDERBOOK */;
 }
 class RawExtractor extends Startable {
     constructor() {
@@ -55,34 +55,39 @@ class RawExtractor extends Startable {
             });
         }, PING_LATENCY);
         this.socket.on('message', (message) => {
-            this.pinger();
-            if (message instanceof Uint8Array) {
-                const extracted = pako.inflateRaw(message, { to: 'string' });
-                const rawMessage = JSON.parse(extracted);
-                if (isRawError(rawMessage))
-                    this.emit('error', new Error(rawMessage.message));
-                else if (isRawUnSub(rawMessage))
-                    this.onRawUnSub(rawMessage);
-                else if (isRawData(rawMessage))
-                    this.onRawData(rawMessage);
+            try {
+                this.pinger();
+                if (message instanceof Uint8Array) {
+                    const extracted = pako.inflateRaw(message, { to: 'string' });
+                    const rawMessage = JSON.parse(extracted);
+                    if (isRawError(rawMessage))
+                        this.emit('error', new Error(rawMessage.message));
+                    else if (isRawUnSub(rawMessage))
+                        this.onRawUnSub(rawMessage);
+                    else if (isRawData(rawMessage))
+                        this.onRawData(rawMessage);
+                }
+            }
+            catch (err) {
+                this.stop(err);
             }
         });
         this.pinger();
     }
     onRawData(rawData) {
-        if (isRawTrades(rawData)) {
+        if (isRawDataTrades(rawData)) {
             const allRawTrades = {};
             for (const rawTrade of rawData.data) {
-                if (allRawTrades[rawTrade.instrument_id] === undefined)
+                if (!allRawTrades[rawTrade.instrument_id])
                     allRawTrades[rawTrade.instrument_id] = [];
                 allRawTrades[rawTrade.instrument_id].push(rawTrade);
             }
             for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
-                this.emit(`trades/${instrumentId}`, rawTrades);
+                this.emit(`${"trades" /* TRADES */}/${instrumentId}`, rawTrades);
         }
-        if (isRawOrderbook(rawData)) {
+        if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
-                this.emit(`orderbook/${rawOrderbook.instrument_id}`, rawOrderbook);
+                this.emit(`${"orderbook" /* ORDERBOOK */}/${rawOrderbook.instrument_id}`, rawOrderbook);
         }
         else
             throw new Error('unknown channel');

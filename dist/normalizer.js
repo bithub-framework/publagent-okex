@@ -1,7 +1,8 @@
 import Startable from 'startable';
 /*
-    'trades' pair trades
-    'orderbook' pair orderbook
+    events
+        'trades/<pair>' trades
+        'orderbook/<pair>' orderbook
 */
 class Normalizer extends Startable {
     constructor(rawExtractor, broadcast) {
@@ -10,9 +11,9 @@ class Normalizer extends Startable {
         this.broadcast = broadcast;
     }
     async _start() {
-        this.rawExtractor.on(`trades/${this.instrumentId}`, this._onRawDataTrades);
-        this.rawExtractor.on(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
-        this.unSubscribe('subscribe');
+        this.rawExtractor.on(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawDataTrades);
+        this.rawExtractor.on(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.unSubscribe("subscribe" /* subscribe */);
     }
     async _stop() {
         this.rawExtractor.off(`trades/${this.instrumentId}`, this._onRawDataTrades);
@@ -37,13 +38,13 @@ class Normalizer extends Startable {
     onRawDataTrades(rawDataTrades) {
         const trades = rawDataTrades.data
             .map(rawTrade => this.normalizeRawTrade(rawTrade));
-        this.broadcast.emit('trades', this.pair, trades);
+        this.broadcast.emit(`trades/${this.pair}`, trades);
     }
     onRawDataOrderbook(rawDataOrderbook) {
         const orderbooks = rawDataOrderbook.data
             .map(rawOrderbook => this.normalizeRawOrderbook(rawOrderbook));
         for (const orderbook of orderbooks)
-            this.broadcast.emit('orderbook', this.pair, orderbook);
+            this.broadcast.emit(`orderbook/${this.pair}`, orderbook);
     }
     async unSubscribe(operation) {
         await this.rawExtractor.send({
