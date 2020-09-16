@@ -96,7 +96,10 @@ abstract class Normalizer extends Startable {
                     }
                 }
                 this.deserializer.on(operation, onUnSub);
-                this.deserializer.on('error', reject);
+                this.deserializer.on('error', err => {
+                    console.error('sub error');
+                    reject();
+                });
             });
         }
         await Promise.all([
