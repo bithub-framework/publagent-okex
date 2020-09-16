@@ -45,9 +45,9 @@ abstract class Normalizer extends Startable {
         this.deserializer.off(`${Channel.ORDERBOOK}/${this.instrumentId}`, this._onRawDataOrderbook);
     }
 
-    private _onRawDataTrades(
+    private _onRawDataTrades = (
         ...args: Parameters<typeof Normalizer.prototype.onRawDataTrades>
-    ): void {
+    ): void => {
         try {
             this.onRawDataTrades(...args);
         } catch (err) {
@@ -55,11 +55,10 @@ abstract class Normalizer extends Startable {
         }
     }
 
-    private _onRawDataOrderbook(
+    private _onRawDataOrderbook = (
         ...args: Parameters<typeof Normalizer.prototype.onRawDataOrderbook>
-    ): void {
+    ): void => {
         try {
-            console.log(typeof this.onRawDataOrderbook);
             this.onRawDataOrderbook(...args);
         } catch (err) {
             this.stop(err);

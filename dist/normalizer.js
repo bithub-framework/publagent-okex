@@ -9,6 +9,22 @@ class Normalizer extends Startable {
         super();
         this.deserializer = deserializer;
         this.broadcast = broadcast;
+        this._onRawDataTrades = (...args) => {
+            try {
+                this.onRawDataTrades(...args);
+            }
+            catch (err) {
+                this.stop(err);
+            }
+        };
+        this._onRawDataOrderbook = (...args) => {
+            try {
+                this.onRawDataOrderbook(...args);
+            }
+            catch (err) {
+                this.stop(err);
+            }
+        };
     }
     async _start() {
         this.deserializer.on(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawDataTrades);
@@ -18,23 +34,6 @@ class Normalizer extends Startable {
     async _stop() {
         this.deserializer.off(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawDataTrades);
         this.deserializer.off(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawDataOrderbook);
-    }
-    _onRawDataTrades(...args) {
-        try {
-            this.onRawDataTrades(...args);
-        }
-        catch (err) {
-            this.stop(err);
-        }
-    }
-    _onRawDataOrderbook(...args) {
-        try {
-            console.log(typeof this.onRawDataOrderbook);
-            this.onRawDataOrderbook(...args);
-        }
-        catch (err) {
-            this.stop(err);
-        }
     }
     onRawDataTrades(rawDataTrades) {
         const trades = rawDataTrades.data
