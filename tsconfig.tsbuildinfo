@@ -572,13 +572,18 @@
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "5aecd707fe3817d2e33c85e3fdca6d0bcbc69495794fa96515afed05ddc806ac",
-        "signature": "875140acfed282255700e255877fb0f69db41dfe02b5e4f43fe195e09dda27f2",
+        "version": "a97ba9da6da34b45de68ad40b22b24d45ea041fc0d82f3a2965160f822d26c68",
+        "signature": "5657709b84f4de110b09645118110bd55cbfd1b1196f69328982667fa3671715",
+        "affectsGlobalScope": false
+      },
+      "./src/btc-usd-swap-usd.ts": {
+        "version": "bfb2566d6001ea513d7283c8257230a2ff0e58c2075d5cb4b6d5e75528d3a975",
+        "signature": "86cd935c4e9d73105503bf5a36e35227d1200a12b0e8e89f57e63c2ce4c05c6a",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
-        "version": "067a31ee354aef2a82ff2297e57ac221da7ba6839f79cdabfb899f8ba980b628",
-        "signature": "80db234801efc248376da22fadcf75be3893f874ee98f2b01f2a621e5ca9ee4d",
+        "version": "0fc103afdf3eeb4f831f477e024941d0f8b5b27e622969273b9b976ce1302384",
+        "signature": "86cd935c4e9d73105503bf5a36e35227d1200a12b0e8e89f57e63c2ce4c05c6a",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/accepts/index.d.ts": {
@@ -1564,6 +1569,15 @@
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/startable/dist/primitive.d.ts"
+      ],
+      "./src/btc-usd-swap-usd.ts": [
+        "./node_modules/@types/lodash/index.d.ts",
+        "./node_modules/@types/node/ts3.1/fs.d.ts",
+        "./node_modules/@types/node/ts3.1/util.d.ts",
+        "./node_modules/@types/node/ts3.3/fs.d.ts",
+        "./node_modules/@types/node/ts3.3/util.d.ts",
+        "./src/interfaces.ts",
+        "./src/normalizer.ts"
       ],
       "./src/btc-usdt.ts": [
         "./node_modules/@types/lodash/index.d.ts",
@@ -2734,6 +2748,10 @@
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/startable/dist/primitive.d.ts"
       ],
+      "./src/btc-usd-swap-usd.ts": [
+        "./src/interfaces.ts",
+        "./src/normalizer.ts"
+      ],
       "./src/btc-usdt.ts": [
         "./src/interfaces.ts",
         "./src/normalizer.ts"
@@ -3090,6 +3108,7 @@
       "./node_modules/startable/dist/index.d.ts",
       "./node_modules/startable/dist/primitive.d.ts",
       "./node_modules/startable/dist/startable.d.ts",
+      "./src/btc-usd-swap-usd.ts",
       "./src/btc-usdt.ts",
       "./src/config.ts",
       "./src/deserializer.ts",

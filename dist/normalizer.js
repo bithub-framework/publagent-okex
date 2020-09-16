@@ -2,15 +2,15 @@ import Startable from 'startable';
 import config from './config';
 /*
     events
-        'trades/<pair>' trades
-        'orderbook/<pair>' orderbook
+        '<marketName>/<pair>/trades' trades
+        '<marketName>/<pair>/orderbook' orderbook
 */
 class Normalizer extends Startable {
     constructor(deserializer, broadcast) {
         super();
         this.deserializer = deserializer;
         this.broadcast = broadcast;
-        this._onRawDataTrades = (...args) => {
+        this._onRawTrades = (...args) => {
             try {
                 this.onRawTrades(...args);
             }
@@ -18,7 +18,7 @@ class Normalizer extends Startable {
                 this.stop(err);
             }
         };
-        this._onRawDataOrderbook = (...args) => {
+        this._onRawOrderbook = (...args) => {
             try {
                 this.onRawOrderbook(...args);
             }
@@ -28,13 +28,13 @@ class Normalizer extends Startable {
         };
     }
     async _start() {
-        this.deserializer.on(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawDataTrades);
-        this.deserializer.on(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.deserializer.on(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawTrades);
+        this.deserializer.on(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawOrderbook);
         await this.unSubscribe("subscribe" /* subscribe */);
     }
     async _stop() {
-        this.deserializer.off(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawDataTrades);
-        this.deserializer.off(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.deserializer.off(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawTrades);
+        this.deserializer.off(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawOrderbook);
     }
     onRawTrades(rawTrades) {
         const trades = rawTrades

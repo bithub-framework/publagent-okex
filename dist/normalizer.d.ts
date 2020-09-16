@@ -15,8 +15,8 @@ declare abstract class Normalizer extends Startable {
     constructor(deserializer: Deserializer, broadcast: EventEmitter);
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
-    private _onRawDataTrades;
-    private _onRawDataOrderbook;
+    private _onRawTrades;
+    private _onRawOrderbook;
     private onRawTrades;
     private onRawOrderbook;
     private unSubscribe;

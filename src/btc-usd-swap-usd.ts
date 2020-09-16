@@ -11,8 +11,12 @@ import {
 import _ from 'lodash';
 const { flow: pipe } = _;
 
+function normalizeAmount(price: number, amount: number) {
+    return amount * 100 * 100 / price
+}
+
 function normalizeRawOrder(rawOrder: RawOrder, action: Action): Order {
-    return {
+    const order = {
         action,
         price: pipe(
             Number.parseFloat,
@@ -21,16 +25,18 @@ function normalizeRawOrder(rawOrder: RawOrder, action: Action): Order {
         )(rawOrder[0]),
         amount: Number.parseFloat(rawOrder[1]),
     };
+    order.amount = normalizeAmount(order.price, order.amount);
+    return order;
 }
 
 class BtcUsdt extends Normalizer {
-    protected pair = 'BTC/USDT';
-    protected instrumentId = 'BTC-USDT';
+    protected pair = 'BTC-USD-SWAP/USD';
+    protected instrumentId = 'BTC-USD-SWAP';
     protected rawTradesChannel = `swap/trade:${this.instrumentId}`;
     protected rawOrderbookChannel = `swap/depth5:${this.instrumentId}`;
 
     protected normalizeRawTrade(rawTrade: RawTrade): Trade {
-        return {
+        const trade = {
             action: rawTrade.side === 'buy' ? Action.BID : Action.ASK,
             price: pipe(
                 Number.parseFloat,
@@ -41,6 +47,8 @@ class BtcUsdt extends Normalizer {
             time: new Date(rawTrade.timestamp).getTime(),
             id: Number.parseInt(rawTrade.trade_id),
         };
+        trade.amount = normalizeAmount(trade.price, trade.amount);
+        return trade;
     }
 
     protected normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook {

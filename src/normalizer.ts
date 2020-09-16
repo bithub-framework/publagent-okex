@@ -14,8 +14,8 @@ import config from './config';
 
 /*
     events
-        'trades/<pair>' trades
-        'orderbook/<pair>' orderbook
+        '<marketName>/<pair>/trades' trades
+        '<marketName>/<pair>/orderbook' orderbook
 */
 
 abstract class Normalizer extends Startable {
@@ -34,17 +34,29 @@ abstract class Normalizer extends Startable {
     }
 
     protected async _start(): Promise<void> {
-        this.deserializer.on(`${Channel.TRADES}/${this.instrumentId}`, this._onRawDataTrades);
-        this.deserializer.on(`${Channel.ORDERBOOK}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.deserializer.on(
+            `${Channel.TRADES}/${this.instrumentId}`,
+            this._onRawTrades,
+        );
+        this.deserializer.on(
+            `${Channel.ORDERBOOK}/${this.instrumentId}`,
+            this._onRawOrderbook,
+        );
         await this.unSubscribe(Operation.subscribe);
     }
 
     protected async _stop() {
-        this.deserializer.off(`${Channel.TRADES}/${this.instrumentId}`, this._onRawDataTrades);
-        this.deserializer.off(`${Channel.ORDERBOOK}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.deserializer.off(
+            `${Channel.TRADES}/${this.instrumentId}`,
+            this._onRawTrades,
+        );
+        this.deserializer.off(
+            `${Channel.ORDERBOOK}/${this.instrumentId}`,
+            this._onRawOrderbook,
+        );
     }
 
-    private _onRawDataTrades = (
+    private _onRawTrades = (
         ...args: Parameters<typeof Normalizer.prototype.onRawTrades>
     ): void => {
         try {
@@ -54,7 +66,7 @@ abstract class Normalizer extends Startable {
         }
     }
 
-    private _onRawDataOrderbook = (
+    private _onRawOrderbook = (
         ...args: Parameters<typeof Normalizer.prototype.onRawOrderbook>
     ): void => {
         try {
