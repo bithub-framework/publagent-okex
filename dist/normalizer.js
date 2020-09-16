@@ -63,7 +63,7 @@ class Normalizer extends Startable {
                         resolve();
                     }
                 };
-                this.deserializer.on(`${operation}/${this.pair}`, onUnSub);
+                this.deserializer.on(`${operation}/${rawChannel}`, onUnSub);
                 this.deserializer.on('error', reject);
             });
         };
