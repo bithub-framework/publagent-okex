@@ -7,6 +7,11 @@ import {
     RawError,
     RawUnSub,
     RawData,
+    RawTrade,
+    RawDataTrades,
+    RawDataOrderbook,
+    Channel,
+    Operation,
 } from './interfaces';
 import config from './config';
 
@@ -16,8 +21,10 @@ const PONG_LATENCY = 5000;
 /*
     events:
         error
-        (un)sub
-        data
+        subscribe/<rawChannel>
+        unsubscribe/<rawChannel>
+        trades/<instrumentId>
+        orderbook/<instrumentId>
 */
 
 function isRawUnSub(raw: RawMessage): raw is RawUnSub {
@@ -28,6 +35,20 @@ function isRawError(raw: RawMessage): raw is RawError {
 }
 function isRawData(raw: RawMessage): raw is RawData {
     return !!raw.table;
+}
+
+function getChannel(rawData: RawData): Channel {
+    const c = rawData.table.split('/')[1];
+    if (c === 'trade') return 'trades';
+    if (c === 'depth5') return 'orderbook';
+    throw new Error('invalid channel');
+}
+
+function isRawTrades(rawData: RawData): rawData is RawDataTrades {
+    return getChannel(rawData) === 'trades';
+}
+function isRawOrderbook(rawData: RawData): rawData is RawDataOrderbook {
+    return getChannel(rawData) === 'orderbook';
 }
 
 class RawExtractor extends Startable {
@@ -63,13 +84,35 @@ class RawExtractor extends Startable {
                 if (isRawError(rawMessage))
                     this.emit('error', new Error(rawMessage.message));
                 else if (isRawUnSub(rawMessage))
-                    this.emit('(un)sub', rawMessage);
+                    this.onRawUnSub(rawMessage);
                 else if (isRawData(rawMessage))
-                    this.emit('data', rawMessage);
+                    this.onRawData(rawMessage);
             }
         });
 
         this.pinger();
+    }
+
+    private onRawData(rawData: RawData): void {
+        if (isRawTrades(rawData)) {
+            const allRawTrades: {
+                [instrument_id: string]: RawTrade[];
+            } = {};
+            for (const rawTrade of rawData.data) {
+                if (allRawTrades[rawTrade.instrument_id] === undefined)
+                    allRawTrades[rawTrade.instrument_id] = [];
+                allRawTrades[rawTrade.instrument_id].push(rawTrade);
+            }
+            for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
+                this.emit(`trades/${instrumentId}`, rawTrades);
+        } if (isRawOrderbook(rawData)) {
+            for (const rawOrderbook of rawData.data)
+                this.emit(`orderbook/${rawOrderbook.instrument_id}`, rawOrderbook);
+        } else throw new Error('unknown channel');
+    }
+
+    private onRawUnSub(rawUnSub: RawUnSub): void {
+        this.emit(`${<Operation>rawUnSub.event}/${rawUnSub.channel}`, rawUnSub);
     }
 
     protected async _stop() {
@@ -82,8 +125,6 @@ class RawExtractor extends Startable {
         await this.socket.send(JSON.stringify(object));
     }
 }
-
-
 
 export {
     RawExtractor as default,

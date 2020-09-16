@@ -1,81 +1,74 @@
 import Startable from 'startable';
-import RawExtractor from './raw-extractor';
-import RawOrderbookHandler from './raw-orderbook-handler';
-import RawTradesHandler from './raw-trades-handler';
-import { getChannel, getPair, marketDescriptors, } from './mappings';
 /*
     'trades' pair trades
     'orderbook' pair orderbook
 */
 class Normalizer extends Startable {
-    constructor() {
+    constructor(rawExtractor, broadcast) {
         super();
-        this.rawOrderbookHandler = {};
-        this.rawTradesHandler = {};
-        this.extractor = new RawExtractor();
+        this.rawExtractor = rawExtractor;
+        this.broadcast = broadcast;
     }
     async _start() {
-        this.extractor.on('error', console.error);
-        await this.extractor.start(err => void this.stop(err));
-        this.extractor.on('data', (raw) => {
-            try {
-                this.onRawData(raw);
-            }
-            catch (err) {
-                this.stop(err);
-            }
-        });
+        this.rawExtractor.on(`trades/${this.instrumentId}`, this._onRawDataTrades);
+        this.rawExtractor.on(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.unSubscribe('subscribe');
     }
     async _stop() {
-        await this.extractor.stop();
+        this.rawExtractor.off(`trades/${this.instrumentId}`, this._onRawDataTrades);
+        this.rawExtractor.off(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
     }
-    onRawData(raw) {
-        const { table } = raw;
-        const channel = getChannel(table);
-        if (channel === 'trades') {
-            for (const rawTrade of raw.data) {
-                const { instrument_id } = rawTrade;
-                const pair = getPair(table, instrument_id);
-                this.emit('trades', pair, this.rawTradesHandler[pair].handle([rawTrade]));
-            }
+    _onRawDataTrades(...args) {
+        try {
+            this.onRawDataTrades(...args);
         }
-        if (channel === 'orderbook') {
-            for (const rawOrderbookData of raw.data) {
-                const { instrument_id } = rawOrderbookData;
-                const pair = getPair(table, instrument_id);
-                this.emit('orderbook', pair, 
-                // this.rawOrderbookHandler[pair].handle(rawOrderbookData),
-                this.rawOrderbookHandler[pair].handleStock(rawOrderbookData));
-            }
+        catch (err) {
+            this.stop(err);
         }
     }
-    async unSubscribe(operation, pair) {
-        this.rawTradesHandler[pair] = new RawTradesHandler(pair);
-        this.rawOrderbookHandler[pair] = new RawOrderbookHandler(pair);
-        await this.extractor.send({
+    _onRawDataOrderbook(...args) {
+        try {
+            this.onRawDataOrderbook(...args);
+        }
+        catch (err) {
+            this.stop(err);
+        }
+    }
+    onRawDataTrades(rawDataTrades) {
+        const trades = rawDataTrades.data
+            .map(rawTrade => this.normalizeRawTrade(rawTrade));
+        this.broadcast.emit('trades', this.pair, trades);
+    }
+    onRawDataOrderbook(rawDataOrderbook) {
+        const orderbooks = rawDataOrderbook.data
+            .map(rawOrderbook => this.normalizeRawOrderbook(rawOrderbook));
+        for (const orderbook of orderbooks)
+            this.broadcast.emit('orderbook', this.pair, orderbook);
+    }
+    async unSubscribe(operation) {
+        await this.rawExtractor.send({
             op: operation,
             args: [
-                marketDescriptors[pair].tradesChannel,
-                marketDescriptors[pair].orderbookChannel,
+                this.rawTradesChannel,
+                this.rawOrderbookChannel,
             ],
         });
-        const waitForUnsub = (operation, rawChannel) => {
+        const waitForUnSub = (rawChannel) => {
             return new Promise((resolve, reject) => {
-                const onUnSub = (raw) => {
-                    if (raw.event === operation &&
-                        raw.channel === rawChannel) {
-                        this.extractor.off('(un)sub', onUnSub);
-                        this.extractor.off('error', reject);
+                const onUnSub = (rawUnSub) => {
+                    if (rawUnSub.channel === rawChannel) {
+                        this.rawExtractor.off(operation, onUnSub);
+                        this.rawExtractor.off('error', reject);
                         resolve();
                     }
                 };
-                this.extractor.on('(un)sub', onUnSub);
-                this.extractor.on('error', reject);
+                this.rawExtractor.on(operation, onUnSub);
+                this.rawExtractor.on('error', reject);
             });
         };
         await Promise.all([
-            waitForUnsub(operation, marketDescriptors[pair].tradesChannel),
-            waitForUnsub(operation, marketDescriptors[pair].orderbookChannel),
+            waitForUnSub(this.rawTradesChannel),
+            waitForUnSub(this.rawOrderbookChannel),
         ]);
     }
 }

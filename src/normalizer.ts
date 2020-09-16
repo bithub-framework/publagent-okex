@@ -1,113 +1,106 @@
 import Startable from 'startable';
 import RawExtractor from './raw-extractor';
-import RawOrderbookHandler from './raw-orderbook-handler';
-import RawTradesHandler from './raw-trades-handler';
+import EventEmitter from 'events';
 import {
     RawDataOrderbook,
     RawDataTrades,
     RawUnSub,
-    RawData,
     Operation,
+    Trade,
+    RawTrade,
+    Orderbook,
+    RawOrderbook,
 } from './interfaces';
-import {
-    getChannel,
-    getPair,
-    Pair,
-    marketDescriptors,
-} from './mappings';
 
 /*
     'trades' pair trades
     'orderbook' pair orderbook
 */
 
-class Normalizer extends Startable {
-    private extractor: RawExtractor;
-    private rawOrderbookHandler: {
-        [pair: string]: RawOrderbookHandler;
-    } = {};
-    private rawTradesHandler: {
-        [pair: string]: RawTradesHandler;
-    } = {};
+abstract class Normalizer extends Startable {
+    protected abstract normalizeRawTrade(rawTrade: RawTrade): Trade;
+    protected abstract normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook;
+    protected abstract pair: string;
+    protected abstract rawTradesChannel: string;
+    protected abstract rawOrderbookChannel: string;
+    protected abstract instrumentId: string;
 
-    constructor() {
+    constructor(
+        private rawExtractor: RawExtractor,
+        private broadcast: EventEmitter,
+    ) {
         super();
-        this.extractor = new RawExtractor();
     }
 
     protected async _start(): Promise<void> {
-        this.extractor.on('error', console.error);
-        await this.extractor.start(err => void this.stop(err));
-        this.extractor.on('data', (raw: RawData) => {
-            try {
-                this.onRawData(raw);
-            } catch (err) {
-                this.stop(err);
-            }
-        });
+        this.rawExtractor.on(`trades/${this.instrumentId}`, this._onRawDataTrades);
+        this.rawExtractor.on(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
+
+        this.unSubscribe('subscribe');
     }
 
-    protected async _stop(): Promise<void> {
-        await this.extractor.stop();
+    protected async _stop() {
+        this.rawExtractor.off(`trades/${this.instrumentId}`, this._onRawDataTrades);
+        this.rawExtractor.off(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
     }
 
-    private onRawData(raw: RawData): void {
-        const { table } = raw;
-        const channel = getChannel(table);
-        if (channel === 'trades') {
-            for (const rawTrade of (<RawDataTrades>raw).data) {
-                const { instrument_id } = rawTrade;
-                const pair = getPair(table, instrument_id);
-                this.emit('trades', pair,
-                    this.rawTradesHandler[pair].handle([rawTrade]),
-                );
-            }
-        }
-        if (channel === 'orderbook') {
-            for (const rawOrderbookData of (<RawDataOrderbook>raw).data) {
-                const { instrument_id } = rawOrderbookData;
-                const pair = getPair(table, instrument_id);
-                this.emit('orderbook', pair,
-                    // this.rawOrderbookHandler[pair].handle(rawOrderbookData),
-                    this.rawOrderbookHandler[pair].handleStock(rawOrderbookData),
-                );
-            }
+    private _onRawDataTrades(
+        ...args: Parameters<typeof Normalizer.prototype.onRawDataTrades>
+    ): void {
+        try {
+            this.onRawDataTrades(...args);
+        } catch (err) {
+            this.stop(err);
         }
     }
 
-    public async unSubscribe(
-        operation: Operation,
-        pair: Pair,
-    ) {
-        this.rawTradesHandler[pair] = new RawTradesHandler(pair);
-        this.rawOrderbookHandler[pair] = new RawOrderbookHandler(pair);
-        await this.extractor.send({
+    private _onRawDataOrderbook(
+        ...args: Parameters<typeof Normalizer.prototype.onRawDataOrderbook>
+    ): void {
+        try {
+            this.onRawDataOrderbook(...args);
+        } catch (err) {
+            this.stop(err);
+        }
+    }
+
+    private onRawDataTrades(rawDataTrades: RawDataTrades): void {
+        const trades = rawDataTrades.data
+            .map(rawTrade => this.normalizeRawTrade(rawTrade));
+        this.broadcast.emit('trades', this.pair, trades);
+    }
+
+    private onRawDataOrderbook(rawDataOrderbook: RawDataOrderbook): void {
+        const orderbooks = rawDataOrderbook.data
+            .map(rawOrderbook => this.normalizeRawOrderbook(rawOrderbook));
+        for (const orderbook of orderbooks)
+            this.broadcast.emit('orderbook', this.pair, orderbook);
+    }
+
+    private async unSubscribe(operation: Operation) {
+        await this.rawExtractor.send({
             op: operation,
             args: [
-                marketDescriptors[pair].tradesChannel,
-                marketDescriptors[pair].orderbookChannel,
+                this.rawTradesChannel,
+                this.rawOrderbookChannel,
             ],
         });
-
-        const waitForUnsub = (operation: Operation, rawChannel: string): Promise<void> => {
+        const waitForUnSub = (rawChannel: string): Promise<void> => {
             return new Promise((resolve, reject) => {
-                const onUnSub = (raw: RawUnSub) => {
-                    if (
-                        raw.event === operation &&
-                        raw.channel === rawChannel
-                    ) {
-                        this.extractor.off('(un)sub', onUnSub);
-                        this.extractor.off('error', reject);
+                const onUnSub = (rawUnSub: RawUnSub) => {
+                    if (rawUnSub.channel === rawChannel) {
+                        this.rawExtractor.off(operation, onUnSub);
+                        this.rawExtractor.off('error', reject);
                         resolve();
                     }
                 }
-                this.extractor.on('(un)sub', onUnSub);
-                this.extractor.on('error', reject);
+                this.rawExtractor.on(operation, onUnSub);
+                this.rawExtractor.on('error', reject);
             });
         }
         await Promise.all([
-            waitForUnsub(operation, marketDescriptors[pair].tradesChannel),
-            waitForUnsub(operation, marketDescriptors[pair].orderbookChannel),
+            waitForUnSub(this.rawTradesChannel),
+            waitForUnSub(this.rawOrderbookChannel),
         ]);
     }
 }

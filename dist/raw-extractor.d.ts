@@ -5,6 +5,8 @@ declare class RawExtractor extends Startable {
     private pongee?;
     constructor();
     protected _start(): Promise<void>;
+    private onRawData;
+    private onRawUnSub;
     protected _stop(): Promise<void>;
     send(object: object): Promise<void>;
 }

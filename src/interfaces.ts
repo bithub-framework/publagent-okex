@@ -1,5 +1,6 @@
 export * from 'interfaces';
 
+export type Channel = 'trades' | 'orderbook';
 export type Operation = 'subscribe' | 'unsubscribe';
 
 export interface RawMessage {
@@ -19,15 +20,18 @@ export interface RawError extends RawMessage {
 
 export interface RawData extends RawMessage {
     table: string;
-    data: {}[];
+    data: RawDataData[];
 }
 
-export interface RawTrade {
+export interface RawDataData {
+    timestamp: string;
     instrument_id: string;
+}
+
+export interface RawTrade extends RawDataData {
     price: string;
     side: 'buy' | 'sell';
     size: string;
-    timestamp: string;
     trade_id: string;
 }
 
@@ -38,22 +42,15 @@ export interface RawDataTrades extends RawData {
 
 export type RawOrder = [string, string, number];
 
-export interface RawOrderbook {
-    instrument_id: string;
+export interface RawOrderbook extends RawDataData {
     asks: RawOrder[];
     bids: RawOrder[];
-    checksum: number;
-    timestamp: string;
+    checksum?: number;
 }
 
 export interface RawDataOrderbook extends RawData {
     table: string;
-    action: 'partial' | 'update';
+    action?: 'partial' | 'update';
     data: RawOrderbook[];
 }
 
-export interface StringOrder {
-    price: string;
-    amount: string;
-    action: 'ask' | 'bid';
-}
