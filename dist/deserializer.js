@@ -64,6 +64,7 @@ class Deserializer extends Startable {
                 this.makePinger();
                 const extracted = pako.inflateRaw(message, { to: 'string' });
                 if (typeof extracted === 'object') {
+                    console.log(extracted);
                     const rawMessage = JSON.parse(extracted);
                     if (isRawError(rawMessage))
                         this.emit('error', new Error(rawMessage.message));
