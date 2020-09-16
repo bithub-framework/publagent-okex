@@ -97,7 +97,6 @@ class Deserializer extends Startable {
             throw new Error('unknown channel');
     }
     onRawUnSub(rawUnSub) {
-        console.log(`${rawUnSub.event}/${rawUnSub.channel}`);
         this.emit(`${rawUnSub.event}/${rawUnSub.channel}`, rawUnSub);
     }
     async _stop() {

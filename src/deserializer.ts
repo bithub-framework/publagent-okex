@@ -114,7 +114,6 @@ class Deserializer extends Startable {
     }
 
     private onRawUnSub(rawUnSub: RawUnSub): void {
-        console.log(`${<Operation>rawUnSub.event}/${rawUnSub.channel}`);
         this.emit(`${<Operation>rawUnSub.event}/${rawUnSub.channel}`, rawUnSub);
     }
 
