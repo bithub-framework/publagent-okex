@@ -15,8 +15,9 @@ class PublicAgentOkexWebsocket extends Startable {
 
     protected async _start(): Promise<void> {
         this.deserializer.on('error', console.error);
+        this.deserializer.start(err => this.stop(err));
         await this.btcUsdt.start(err => this.stop(err));
-        await this.wsServer.start(err => void this.stop(err));
+        await this.wsServer.start(err => this.stop(err));
     }
 
     protected async _stop(): Promise<void> {

@@ -13,8 +13,9 @@ class PublicAgentOkexWebsocket extends Startable {
     }
     async _start() {
         this.deserializer.on('error', console.error);
+        this.deserializer.start(err => this.stop(err));
         await this.btcUsdt.start(err => this.stop(err));
-        await this.wsServer.start(err => void this.stop(err));
+        await this.wsServer.start(err => this.stop(err));
     }
     async _stop() {
         await this.wsServer.stop();

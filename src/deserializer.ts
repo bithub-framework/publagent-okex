@@ -52,21 +52,16 @@ function isRawDataOrderbook(rawData: RawData): rawData is RawDataOrderbook {
 }
 
 class Deserializer extends Startable {
-    private socket: PromisifiedWebSocket;
+    private socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
     private pinger?: _.DebouncedFunc<() => void>;
     private pongee?: NodeJS.Timeout;
 
-    constructor() {
-        super();
-        this.socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
-    }
-
     protected async _start() {
-        this.socket.on('error', err => void this.emit('error', err));
-        await this.socket.start(err => void this.stop(err));
+        this.socket.on('error', err => this.emit('error', err));
+        await this.socket.start(err => this.stop(err));
 
         this.pinger = _.debounce(() => {
-            this.socket.send('ping').catch(err => void this.stop(err));
+            this.socket.send('ping').catch(err => this.stop(err));
             this.pongee = setTimeout(() => {
                 this.stop(new Error('Pong not received')).catch(console.error);
             }, PONG_LATENCY);
