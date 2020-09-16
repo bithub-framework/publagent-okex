@@ -566,29 +566,19 @@
         "signature": "ce065551b43df51bd7bcf96c8962527b77362beb1d98d97e32fb73dc3b10aae3",
         "affectsGlobalScope": false
       },
-      "./src/raw-extractor.ts": {
-        "version": "d1fca52aa7a6a086a3f4e88f737d7583927dd6069948151dacb4a137ae8c12c5",
-        "signature": "93cada073f1623edeaa3b218462654457a9bca5b74a0f9b2eb08a256db49b41a",
+      "./src/deserializer.ts": {
+        "version": "1b193c65c63b301fcebf14625a1d15bca139ac6ce99bd9d94992d133d61e078b",
+        "signature": "66c8fdaba73314b5fc955f75592dea595064530293aa43e56fca79d6e3776600",
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "d99257b99d619d476705f9e4f9e039966b4545baed3dfb46ed28cc2ec27d9c1b",
-        "signature": "9c39ad664337326f9f780835a7c85df73c97893d13527215600f68d3a38c8fac",
+        "version": "86072be0b89fea20c6d2e5336a185217420ce959345e0986235a07134c812131",
+        "signature": "16f16fb39cbb980854977656347dcdd2ac301261b6bbce817418f5272169251b",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
         "version": "067a31ee354aef2a82ff2297e57ac221da7ba6839f79cdabfb899f8ba980b628",
         "signature": "80db234801efc248376da22fadcf75be3893f874ee98f2b01f2a621e5ca9ee4d",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/crc-32/types/index.d.ts": {
-        "version": "e1e1e8a8d9b7e290797e25d3d73903f77ab2ded8b18618318d162c1ba2817e19",
-        "signature": "e1e1e8a8d9b7e290797e25d3d73903f77ab2ded8b18618318d162c1ba2817e19",
-        "affectsGlobalScope": false
-      },
-      "./src/checksum.ts": {
-        "version": "245f6ea662f58a4146f396c94b83b5499319df8bf725e34c3314a5289813b723",
-        "signature": "51c215bcd1ab97def19dfcc146adca1b1c35aea6c168351321565af849c1afd5",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/accepts/index.d.ts": {
@@ -692,8 +682,8 @@
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "bc7933861a516ce271946f1c8998d8a225faa6560c21355e7fbfec426de79273",
-        "signature": "f45babdc99f5c77302bd07c38ca5abeec4d800e4a08b4d3577f96facd16904c0",
+        "version": "76d8aae88aa7f437b33bc0ed99d2500347ed3cdbc135b3c54a8859f3de93c222",
+        "signature": "f7958dba425a10ee969fdf5b4a27f9a0281e7067bcb52e7ea20185a84f577e89",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/chai/index.d.ts": {
@@ -1506,12 +1496,6 @@
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts"
       ],
-      "./node_modules/crc-32/types/index.d.ts": [
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts"
-      ],
       "./node_modules/eventemitter3/index.d.ts": [
         "./node_modules/@types/node/ts3.1/fs.d.ts",
         "./node_modules/@types/node/ts3.1/util.d.ts",
@@ -1590,18 +1574,23 @@
         "./src/interfaces.ts",
         "./src/normalizer.ts"
       ],
-      "./src/checksum.ts": [
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts",
-        "./node_modules/crc-32/types/index.d.ts"
-      ],
       "./src/config.ts": [
         "./node_modules/@types/node/ts3.1/fs.d.ts",
         "./node_modules/@types/node/ts3.1/util.d.ts",
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts"
+      ],
+      "./src/deserializer.ts": [
+        "./node_modules/@types/lodash/index.d.ts",
+        "./node_modules/@types/node/ts3.1/fs.d.ts",
+        "./node_modules/@types/node/ts3.1/util.d.ts",
+        "./node_modules/@types/node/ts3.3/fs.d.ts",
+        "./node_modules/@types/node/ts3.3/util.d.ts",
+        "./node_modules/@types/pako/index.d.ts",
+        "./node_modules/promisified-websocket/dist/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts",
+        "./src/config.ts",
+        "./src/interfaces.ts"
       ],
       "./src/interfaces.ts": [
         "./node_modules/@types/node/ts3.1/fs.d.ts",
@@ -1617,8 +1606,8 @@
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./src/interfaces.ts",
-        "./src/raw-extractor.ts"
+        "./src/deserializer.ts",
+        "./src/interfaces.ts"
       ],
       "./src/public-agent.ts": [
         "./node_modules/@types/node/ts3.1/events.d.ts",
@@ -1628,20 +1617,8 @@
         "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./src/btc-usdt.ts",
-        "./src/raw-extractor.ts",
+        "./src/deserializer.ts",
         "./src/ws-server.ts"
-      ],
-      "./src/raw-extractor.ts": [
-        "./node_modules/@types/lodash/index.d.ts",
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts",
-        "./node_modules/@types/pako/index.d.ts",
-        "./node_modules/promisified-websocket/dist/index.d.ts",
-        "./node_modules/startable/dist/index.d.ts",
-        "./src/config.ts",
-        "./src/interfaces.ts"
       ],
       "./src/ws-server.ts": [
         "./node_modules/@types/koa-router/index.d.ts",
@@ -2687,12 +2664,6 @@
         "./node_modules/@types/node/ts3.3/fs.d.ts",
         "./node_modules/@types/node/ts3.3/util.d.ts"
       ],
-      "./node_modules/crc-32/types/index.d.ts": [
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts"
-      ],
       "./node_modules/eventemitter3/index.d.ts": [
         "./node_modules/@types/node/ts3.1/fs.d.ts",
         "./node_modules/@types/node/ts3.1/util.d.ts",
@@ -2766,19 +2737,19 @@
         "./src/interfaces.ts",
         "./src/normalizer.ts"
       ],
+      "./src/deserializer.ts": [
+        "./node_modules/startable/dist/index.d.ts"
+      ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts"
       ],
       "./src/normalizer.ts": [
         "./node_modules/@types/node/ts3.1/events.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./src/interfaces.ts",
-        "./src/raw-extractor.ts"
+        "./src/deserializer.ts",
+        "./src/interfaces.ts"
       ],
       "./src/public-agent.ts": [
-        "./node_modules/startable/dist/index.d.ts"
-      ],
-      "./src/raw-extractor.ts": [
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./src/ws-server.ts": [
@@ -3109,7 +3080,6 @@
       "./node_modules/@types/range-parser/index.d.ts",
       "./node_modules/@types/serve-static/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
-      "./node_modules/crc-32/types/index.d.ts",
       "./node_modules/eventemitter3/index.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/koa-ws-filter/dist/index.d.ts",
@@ -3120,12 +3090,11 @@
       "./node_modules/startable/dist/primitive.d.ts",
       "./node_modules/startable/dist/startable.d.ts",
       "./src/btc-usdt.ts",
-      "./src/checksum.ts",
       "./src/config.ts",
+      "./src/deserializer.ts",
       "./src/interfaces.ts",
       "./src/normalizer.ts",
       "./src/public-agent.ts",
-      "./src/raw-extractor.ts",
       "./src/ws-server.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",

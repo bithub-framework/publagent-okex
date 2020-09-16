@@ -2,19 +2,19 @@ import Startable from 'startable';
 import EventEmitter from 'events';
 import WsServer from './ws-server';
 import BtcUsdt from './btc-usdt';
-import RawExtractor from './raw-extractor';
+import Deserializer from './deserializer';
 
 class PublicAgentOkexWebsocket extends Startable {
     private broadcast = new EventEmitter();
-    private rawExtractor = new RawExtractor();
+    private deserializer = new Deserializer();
     private btcUsdt = new BtcUsdt(
-        this.rawExtractor,
+        this.deserializer,
         this.broadcast,
     );
     private wsServer = new WsServer(this.broadcast);
 
     protected async _start(): Promise<void> {
-        this.rawExtractor.on('error', console.error);
+        this.deserializer.on('error', console.error);
         await this.btcUsdt.start(err => this.stop(err));
         await this.wsServer.start(err => void this.stop(err));
     }
@@ -22,7 +22,7 @@ class PublicAgentOkexWebsocket extends Startable {
     protected async _stop(): Promise<void> {
         await this.wsServer.stop();
         await this.btcUsdt.stop();
-        await this.rawExtractor.stop();
+        await this.deserializer.stop();
     }
 }
 

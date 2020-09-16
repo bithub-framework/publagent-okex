@@ -1,5 +1,5 @@
 import Startable from 'startable';
-import RawExtractor from './raw-extractor';
+import Deserializer from './deserializer';
 import EventEmitter from 'events';
 import {
     RawDataOrderbook,
@@ -28,21 +28,21 @@ abstract class Normalizer extends Startable {
     protected abstract instrumentId: string;
 
     constructor(
-        private rawExtractor: RawExtractor,
+        private deserializer: Deserializer,
         private broadcast: EventEmitter,
     ) {
         super();
     }
 
     protected async _start(): Promise<void> {
-        this.rawExtractor.on(`${Channel.TRADES}/${this.instrumentId}`, this._onRawDataTrades);
-        this.rawExtractor.on(`${Channel.ORDERBOOK}/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.deserializer.on(`${Channel.TRADES}/${this.instrumentId}`, this._onRawDataTrades);
+        this.deserializer.on(`${Channel.ORDERBOOK}/${this.instrumentId}`, this._onRawDataOrderbook);
         this.unSubscribe(Operation.subscribe);
     }
 
     protected async _stop() {
-        this.rawExtractor.off(`trades/${this.instrumentId}`, this._onRawDataTrades);
-        this.rawExtractor.off(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
+        this.deserializer.off(`trades/${this.instrumentId}`, this._onRawDataTrades);
+        this.deserializer.off(`orderbook/${this.instrumentId}`, this._onRawDataOrderbook);
     }
 
     private _onRawDataTrades(
@@ -79,7 +79,7 @@ abstract class Normalizer extends Startable {
     }
 
     private async unSubscribe(operation: Operation) {
-        await this.rawExtractor.send({
+        await this.deserializer.send({
             op: operation,
             args: [
                 this.rawTradesChannel,
@@ -90,13 +90,13 @@ abstract class Normalizer extends Startable {
             return new Promise((resolve, reject) => {
                 const onUnSub = (rawUnSub: RawUnSub) => {
                     if (rawUnSub.channel === rawChannel) {
-                        this.rawExtractor.off(operation, onUnSub);
-                        this.rawExtractor.off('error', reject);
+                        this.deserializer.off(operation, onUnSub);
+                        this.deserializer.off('error', reject);
                         resolve();
                     }
                 }
-                this.rawExtractor.on(operation, onUnSub);
-                this.rawExtractor.on('error', reject);
+                this.deserializer.on(operation, onUnSub);
+                this.deserializer.on('error', reject);
             });
         }
         await Promise.all([

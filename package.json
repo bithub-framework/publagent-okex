@@ -29,7 +29,6 @@
         "@types/node": "^12.12.58",
         "@types/pako": "^1.0.1",
         "@types/ws": "^7.2.6",
-        "crc-32": "^1.2.0",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "koa": "^2.8.2",
         "koa-router": "^9.4.0",
@@ -38,7 +37,6 @@
         "pako": "^1.0.10",
         "promisified-websocket": "https://gitee.com/zimtsui/promisified-websocket.git",
         "startable": "https://gitee.com/zimtsui/startable.git",
-        "un": "0.0.0",
         "ws": "^7.3.1"
     }
 }

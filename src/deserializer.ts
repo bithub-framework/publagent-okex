@@ -2,9 +2,22 @@ import Startable from 'startable';
 import pako from 'pako';
 import _ from 'lodash';
 import PromisifiedWebSocket from 'promisified-websocket';
+import {
+    RawMessage,
+    RawError,
+    RawUnSub,
+    RawData,
+    RawTrade,
+    RawDataTrades,
+    RawDataOrderbook,
+    Channel,
+    Operation,
+} from './interfaces';
 import config from './config';
+
 const PING_LATENCY = 5000;
 const PONG_LATENCY = 5000;
+
 /*
     events
         error
@@ -13,53 +26,62 @@ const PONG_LATENCY = 5000;
         trades/<instrumentId>
         orderbook/<instrumentId>
 */
-function isRawUnSub(raw) {
-    return raw.event === "subscribe" /* subscribe */ || raw.event === "unsubscribe" /* unsubscribe */;
+
+function isRawUnSub(raw: RawMessage): raw is RawUnSub {
+    return raw.event === Operation.subscribe || raw.event === Operation.unsubscribe;
 }
-function isRawError(raw) {
+function isRawError(raw: RawMessage): raw is RawError {
     return raw.event === 'error';
 }
-function isRawData(raw) {
+function isRawData(raw: RawMessage): raw is RawData {
     return !!raw.table;
 }
-function getChannel(rawData) {
+
+function getChannel(rawData: RawData): Channel {
     const c = rawData.table.split('/')[1];
-    if (c === 'trade')
-        return "trades" /* TRADES */;
-    if (c === 'depth5')
-        return "orderbook" /* ORDERBOOK */;
+    if (c === 'trade') return Channel.TRADES;
+    if (c === 'depth5') return Channel.ORDERBOOK;
     throw new Error('unknown channel');
 }
-function isRawDataTrades(rawData) {
-    return getChannel(rawData) === "trades" /* TRADES */;
+
+function isRawDataTrades(rawData: RawData): rawData is RawDataTrades {
+    return getChannel(rawData) === Channel.TRADES;
 }
-function isRawDataOrderbook(rawData) {
-    return getChannel(rawData) === "orderbook" /* ORDERBOOK */;
+function isRawDataOrderbook(rawData: RawData): rawData is RawDataOrderbook {
+    return getChannel(rawData) === Channel.ORDERBOOK;
 }
-class RawExtractor extends Startable {
+
+class Deserializer extends Startable {
+    private socket: PromisifiedWebSocket;
+    private pinger?: _.DebouncedFunc<() => void>;
+    private pongee?: NodeJS.Timeout;
+
     constructor() {
         super();
         this.socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
     }
-    async _start() {
+
+    protected async _start() {
         this.socket.on('error', err => void this.emit('error', err));
         await this.socket.start(err => void this.stop(err));
+
         this.pinger = _.debounce(() => {
             this.socket.send('ping').catch(err => void this.stop(err));
             this.pongee = setTimeout(() => {
                 this.stop(new Error('Pong not received')).catch(console.error);
             }, PONG_LATENCY);
             this.socket.once('message', () => {
-                clearTimeout(this.pongee);
+                clearTimeout(this.pongee!);
                 this.pongee = undefined;
             });
         }, PING_LATENCY);
-        this.socket.on('message', (message) => {
+
+        this.socket.on('message', (message: 'pong' | Uint8Array) => {
             try {
-                this.pinger();
+                this.pinger!();
                 if (message instanceof Uint8Array) {
                     const extracted = pako.inflateRaw(message, { to: 'string' });
-                    const rawMessage = JSON.parse(extracted);
+                    const rawMessage = <RawMessage>JSON.parse(extracted);
                     if (isRawError(rawMessage))
                         this.emit('error', new Error(rawMessage.message));
                     else if (isRawUnSub(rawMessage))
@@ -67,44 +89,48 @@ class RawExtractor extends Startable {
                     else if (isRawData(rawMessage))
                         this.onRawData(rawMessage);
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 this.stop(err);
             }
         });
+
         this.pinger();
     }
-    onRawData(rawData) {
+
+    private onRawData(rawData: RawData): void {
         if (isRawDataTrades(rawData)) {
-            const allRawTrades = {};
+            const allRawTrades: {
+                [instrument_id: string]: RawTrade[];
+            } = {};
             for (const rawTrade of rawData.data) {
                 if (!allRawTrades[rawTrade.instrument_id])
                     allRawTrades[rawTrade.instrument_id] = [];
                 allRawTrades[rawTrade.instrument_id].push(rawTrade);
             }
             for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
-                this.emit(`${"trades" /* TRADES */}/${instrumentId}`, rawTrades);
-        }
-        if (isRawDataOrderbook(rawData)) {
+                this.emit(`${Channel.TRADES}/${instrumentId}`, rawTrades);
+        } if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
-                this.emit(`${"orderbook" /* ORDERBOOK */}/${rawOrderbook.instrument_id}`, rawOrderbook);
-        }
-        else
-            throw new Error('unknown channel');
+                this.emit(`${Channel.ORDERBOOK}/${rawOrderbook.instrument_id}`, rawOrderbook);
+        } else throw new Error('unknown channel');
     }
-    onRawUnSub(rawUnSub) {
-        this.emit(`${rawUnSub.event}/${rawUnSub.channel}`, rawUnSub);
+
+    private onRawUnSub(rawUnSub: RawUnSub): void {
+        this.emit(`${<Operation>rawUnSub.event}/${rawUnSub.channel}`, rawUnSub);
     }
-    async _stop() {
-        if (this.pinger)
-            this.pinger.cancel();
-        if (this.pongee)
-            clearTimeout(this.pongee);
+
+    protected async _stop() {
+        if (this.pinger) this.pinger.cancel();
+        if (this.pongee) clearTimeout(this.pongee);
         await this.socket.stop();
     }
-    async send(object) {
+
+    public async send(object: object): Promise<void> {
         await this.socket.send(JSON.stringify(object));
     }
 }
-export { RawExtractor as default, RawExtractor, };
-//# sourceMappingURL=raw-extractor.js.map
+
+export {
+    Deserializer as default,
+    Deserializer,
+}

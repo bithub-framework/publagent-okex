@@ -1,5 +1,5 @@
 import Startable from 'startable';
-declare class RawExtractor extends Startable {
+declare class Deserializer extends Startable {
     private socket;
     private pinger?;
     private pongee?;
@@ -10,4 +10,4 @@ declare class RawExtractor extends Startable {
     protected _stop(): Promise<void>;
     send(object: object): Promise<void>;
 }
-export { RawExtractor as default, RawExtractor, };
+export { Deserializer as default, Deserializer, };
