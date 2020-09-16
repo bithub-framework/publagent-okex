@@ -682,7 +682,7 @@
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "fdfd7a48838f2b6e29d16a57ed26dfb5688985120c355c0c11df1c7da1b03055",
+        "version": "0a90d05172f47618598d1358f3afd60c405fc14a58acc5e0d9552827eddbfc2e",
         "signature": "f7958dba425a10ee969fdf5b4a27f9a0281e7067bcb52e7ea20185a84f577e89",
         "affectsGlobalScope": false
       },
