@@ -89,7 +89,9 @@ abstract class Normalizer extends Startable {
         const waitForUnSub = (rawChannel: string): Promise<void> => {
             return new Promise((resolve, reject) => {
                 const onUnSub = (rawUnSub: RawUnSub) => {
+                    console.log('on un sub');
                     if (rawUnSub.channel === rawChannel) {
+                        console.log('on channel comparison');
                         this.deserializer.off(operation, onUnSub);
                         this.deserializer.off('error', reject);
                         resolve();
