@@ -8,7 +8,6 @@ import {
     RawTrade,
     Orderbook,
     RawOrderbook,
-    Channel,
 } from './interfaces';
 import config from './config';
 
@@ -19,12 +18,13 @@ import config from './config';
 */
 
 abstract class Normalizer extends Startable {
+    // TS 暂不支持 static abstract 成员
     protected abstract normalizeRawTrade(rawTrade: RawTrade): Trade;
     protected abstract normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook;
     protected abstract pair: string;
     protected abstract rawTradesChannel: string;
     protected abstract rawOrderbookChannel: string;
-    protected abstract instrumentId: string;
+    protected abstract rawInstrumentId: string;
 
     constructor(
         private deserializer: Deserializer,
@@ -35,23 +35,23 @@ abstract class Normalizer extends Startable {
 
     protected async _start(): Promise<void> {
         this.deserializer.on(
-            `${Channel.TRADES}/${this.instrumentId}`,
+            `trades/${this.rawInstrumentId}`,
             this._onRawTrades,
         );
         this.deserializer.on(
-            `${Channel.ORDERBOOK}/${this.instrumentId}`,
+            `orderbook/${this.rawInstrumentId}`,
             this._onRawOrderbook,
         );
-        await this.unSubscribe(Operation.subscribe);
+        await this.unSubscribe('subscribe');
     }
 
     protected async _stop() {
         this.deserializer.off(
-            `${Channel.TRADES}/${this.instrumentId}`,
+            `trades/${this.rawInstrumentId}`,
             this._onRawTrades,
         );
         this.deserializer.off(
-            `${Channel.ORDERBOOK}/${this.instrumentId}`,
+            `orderbook/${this.rawInstrumentId}`,
             this._onRawOrderbook,
         );
     }
@@ -79,12 +79,12 @@ abstract class Normalizer extends Startable {
     private onRawTrades(rawTrades: RawTrade[]): void {
         const trades = rawTrades
             .map(rawTrade => this.normalizeRawTrade(rawTrade));
-        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/${Channel.TRADES}`, trades);
+        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/trades`, trades);
     }
 
     private onRawOrderbook(rawOrderbook: RawOrderbook): void {
         const orderbook = this.normalizeRawOrderbook(rawOrderbook);
-        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/${Channel.ORDERBOOK}`, orderbook);
+        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/orderbook`, orderbook);
     }
 
     private async unSubscribe(operation: Operation) {

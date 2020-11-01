@@ -4,59 +4,43 @@ import {
     RawOrderbook,
     Trade,
     Orderbook,
-    Action,
+    Side,
     RawOrder,
     Order,
 } from './interfaces';
-import _ from 'lodash';
-const { flow: pipe } = _;
 
-function normalizeAmount(price: number, amount: number) {
-    return amount * 100 * 100 / price
-}
-
-function normalizeRawOrder(rawOrder: RawOrder, action: Action): Order {
+function normalizeRawOrder(rawOrder: RawOrder, side: Side): Order {
     const order = {
-        action,
-        price: pipe(
-            Number.parseFloat,
-            x => x * 100,
-            Math.round,
-        )(rawOrder[0]),
-        amount: Number.parseFloat(rawOrder[1]),
+        side,
+        price: Number.parseFloat(rawOrder[0]),
+        quantity: Number.parseFloat(rawOrder[1]),
     };
-    order.amount = normalizeAmount(order.price, order.amount);
     return order;
 }
 
 class BtcUsdt extends Normalizer {
     protected pair = 'BTC-USD-SWAP/USD';
-    protected instrumentId = 'BTC-USD-SWAP';
+    protected rawInstrumentId = 'BTC-USD-SWAP';
     protected rawTradesChannel = 'swap/trade:BTC-USD-SWAP';
     protected rawOrderbookChannel = 'swap/depth5:BTC-USD-SWAP';
 
     protected normalizeRawTrade(rawTrade: RawTrade): Trade {
         const trade = {
-            action: rawTrade.side === 'buy' ? Action.BID : Action.ASK,
-            price: pipe(
-                Number.parseFloat,
-                x => x * 100,
-                Math.round,
-            )(rawTrade.price),
-            amount: Number.parseFloat(rawTrade.size),
+            side: rawTrade.side,
+            price: Number.parseFloat(rawTrade.price),
+            quantity: Number.parseFloat(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
             id: Number.parseInt(rawTrade.trade_id),
         };
-        trade.amount = normalizeAmount(trade.price, trade.amount);
         return trade;
     }
 
     protected normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook {
         return {
             asks: rawOrderbook.asks
-                .map(rawOrder => normalizeRawOrder(rawOrder, Action.ASK)),
+                .map(rawOrder => normalizeRawOrder(rawOrder, 'sell')),
             bids: rawOrderbook.bids
-                .map(rawOrder => normalizeRawOrder(rawOrder, Action.BID)),
+                .map(rawOrder => normalizeRawOrder(rawOrder, 'buy')),
             time: Date.parse(rawOrderbook.timestamp),
         };
     }

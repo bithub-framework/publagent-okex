@@ -11,7 +11,7 @@ declare abstract class Normalizer extends Startable {
     protected abstract pair: string;
     protected abstract rawTradesChannel: string;
     protected abstract rawOrderbookChannel: string;
-    protected abstract instrumentId: string;
+    protected abstract rawInstrumentId: string;
     constructor(deserializer: Deserializer, broadcast: EventEmitter);
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;

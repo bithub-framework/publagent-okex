@@ -28,22 +28,22 @@ class Normalizer extends Startable {
         };
     }
     async _start() {
-        this.deserializer.on(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawTrades);
-        this.deserializer.on(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawOrderbook);
-        await this.unSubscribe("subscribe" /* subscribe */);
+        this.deserializer.on(`trades/${this.rawInstrumentId}`, this._onRawTrades);
+        this.deserializer.on(`orderbook/${this.rawInstrumentId}`, this._onRawOrderbook);
+        await this.unSubscribe('subscribe');
     }
     async _stop() {
-        this.deserializer.off(`${"trades" /* TRADES */}/${this.instrumentId}`, this._onRawTrades);
-        this.deserializer.off(`${"orderbook" /* ORDERBOOK */}/${this.instrumentId}`, this._onRawOrderbook);
+        this.deserializer.off(`trades/${this.rawInstrumentId}`, this._onRawTrades);
+        this.deserializer.off(`orderbook/${this.rawInstrumentId}`, this._onRawOrderbook);
     }
     onRawTrades(rawTrades) {
         const trades = rawTrades
             .map(rawTrade => this.normalizeRawTrade(rawTrade));
-        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/${"trades" /* TRADES */}`, trades);
+        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/trades`, trades);
     }
     onRawOrderbook(rawOrderbook) {
         const orderbook = this.normalizeRawOrderbook(rawOrderbook);
-        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/${"orderbook" /* ORDERBOOK */}`, orderbook);
+        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/orderbook`, orderbook);
     }
     async unSubscribe(operation) {
         await this.deserializer.send({

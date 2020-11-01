@@ -21,20 +21,20 @@ class WsServer extends Startable {
         });
         this.router.all('/:exchange/:instrument/:currency/trades', async (ctx, next) => {
             const { marketName } = ctx.state;
-            const downloader = await ctx.state.upgrade();
+            const client = await ctx.state.upgrade();
             function onData(trades) {
                 const message = JSON.stringify(trades);
-                downloader.send(message);
+                client.send(message);
             }
             this.broadcast.on(`${marketName}/trades`, onData);
-            downloader.on('error', console.error);
-            downloader.on('close', () => {
+            client.on('error', console.error);
+            client.on('close', () => {
                 this.broadcast.off(`${marketName}/trades`, onData);
             });
         });
         this.router.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const { marketName } = ctx.state;
-            const downloader = await ctx.state.upgrade();
+            const client = await ctx.state.upgrade();
             function onData(orderbook) {
                 const orderbookDepthLtd = {
                     bids: orderbook.bids.slice(0, ctx.query.depth),
@@ -42,11 +42,11 @@ class WsServer extends Startable {
                     time: orderbook.time,
                 };
                 const message = JSON.stringify(orderbookDepthLtd);
-                downloader.send(message);
+                client.send(message);
             }
             this.broadcast.on(`${marketName}/orderbook`, onData);
-            downloader.on('error', console.error);
-            downloader.on('close', () => {
+            client.on('error', console.error);
+            client.on('close', () => {
                 this.broadcast.off(`${marketName}/orderbook`, onData);
             });
         });

@@ -8,11 +8,11 @@ import config from './config';
         error
         subscribe/<rawChannel>
         unsubscribe/<rawChannel>
-        trades/<instrumentId>
-        orderbook/<instrumentId>
+        trades/<rawInstrumentId>
+        orderbook/<rawInstrumentId>
 */
 function isRawUnSub(raw) {
-    return raw.event === "subscribe" /* subscribe */ || raw.event === "unsubscribe" /* unsubscribe */;
+    return raw.event === 'subscribe' || raw.event === 'unsubscribe';
 }
 function isRawError(raw) {
     return raw.event === 'error';
@@ -20,19 +20,13 @@ function isRawError(raw) {
 function isRawData(raw) {
     return !!raw.table;
 }
-function getChannel(rawData) {
-    const c = rawData.table.split('/')[1];
-    if (c === 'trade')
-        return "trades" /* TRADES */;
-    if (c === 'depth5')
-        return "orderbook" /* ORDERBOOK */;
-    throw new Error('unknown channel');
-}
 function isRawDataTrades(rawData) {
-    return getChannel(rawData) === "trades" /* TRADES */;
+    const c = rawData.table.split('/')[1];
+    return c === 'trades';
 }
 function isRawDataOrderbook(rawData) {
-    return getChannel(rawData) === "orderbook" /* ORDERBOOK */;
+    const c = rawData.table.split('/')[1];
+    return c === 'depth5';
 }
 class Deserializer extends Startable {
     constructor() {
@@ -85,12 +79,12 @@ class Deserializer extends Startable {
                     allRawTrades[rawTrade.instrument_id] = [];
                 allRawTrades[rawTrade.instrument_id].push(rawTrade);
             }
-            for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
-                this.emit(`${"trades" /* TRADES */}/${instrumentId}`, rawTrades);
+            for (const [rawInstrumentId, rawTrades] of Object.entries(allRawTrades))
+                this.emit(`trades/${rawInstrumentId}`, rawTrades);
         }
         else if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
-                this.emit(`${"orderbook" /* ORDERBOOK */}/${rawOrderbook.instrument_id}`, rawOrderbook);
+                this.emit(`orderbook/${rawOrderbook.instrument_id}`, rawOrderbook);
         }
         else
             throw new Error('unknown channel');

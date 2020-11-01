@@ -4,51 +4,41 @@ import {
     RawOrderbook,
     Trade,
     Orderbook,
-    Action,
+    Side,
     RawOrder,
     Order,
 } from './interfaces';
-import _ from 'lodash';
-const { flow: pipe } = _;
 
-function normalizeRawOrder(rawOrder: RawOrder, action: Action): Order {
+function normalizeRawOrder(rawOrder: RawOrder, side: Side): Order {
     return {
-        action,
-        price: pipe(
-            Number.parseFloat,
-            x => x * 100,
-            Math.round,
-        )(rawOrder[0]),
-        amount: Number.parseFloat(rawOrder[1]),
+        side,
+        price: Number.parseFloat(rawOrder[1]),
+        quantity: Number.parseFloat(rawOrder[1]),
     };
 }
 
 class BtcUsdt extends Normalizer {
     protected pair = 'BTC/USDT';
-    protected instrumentId = 'BTC-USDT';
+    protected rawInstrumentId = 'BTC-USDT';
     protected rawTradesChannel = 'spot/trade:BTC-USDT';
     protected rawOrderbookChannel = 'spot/depth5:BTC-USDT';
 
     protected normalizeRawTrade(rawTrade: RawTrade): Trade {
         return {
-            action: rawTrade.side === 'buy' ? Action.BID : Action.ASK,
-            price: pipe(
-                Number.parseFloat,
-                x => x * 100,
-                Math.round,
-            )(rawTrade.price),
-            amount: Number.parseFloat(rawTrade.size),
+            side: rawTrade.side,
+            price: Number.parseFloat(rawTrade.price),
+            quantity: Number.parseFloat(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
-            id: Number.parseInt(rawTrade.trade_id),
+            id: rawTrade.trade_id,
         };
     }
 
     protected normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook {
         return {
             asks: rawOrderbook.asks
-                .map(rawOrder => normalizeRawOrder(rawOrder, Action.ASK)),
+                .map(rawOrder => normalizeRawOrder(rawOrder, 'sell')),
             bids: rawOrderbook.bids
-                .map(rawOrder => normalizeRawOrder(rawOrder, Action.BID)),
+                .map(rawOrder => normalizeRawOrder(rawOrder, 'buy')),
             time: Date.parse(rawOrderbook.timestamp),
         };
     }

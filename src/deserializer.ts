@@ -10,7 +10,6 @@ import {
     RawTrade,
     RawDataTrades,
     RawDataOrderbook,
-    Channel,
     Operation,
 } from './interfaces';
 import config from './config';
@@ -20,12 +19,12 @@ import config from './config';
         error
         subscribe/<rawChannel>
         unsubscribe/<rawChannel>
-        trades/<instrumentId>
-        orderbook/<instrumentId>
+        trades/<rawInstrumentId>
+        orderbook/<rawInstrumentId>
 */
 
 function isRawUnSub(raw: RawMessage): raw is RawUnSub {
-    return raw.event === Operation.subscribe || raw.event === Operation.unsubscribe;
+    return raw.event === 'subscribe' || raw.event === 'unsubscribe';
 }
 function isRawError(raw: RawMessage): raw is RawError {
     return raw.event === 'error';
@@ -34,19 +33,15 @@ function isRawData(raw: RawMessage): raw is RawData {
     return !!raw.table;
 }
 
-function getChannel(rawData: RawData): Channel {
-    const c = rawData.table.split('/')[1];
-    if (c === 'trade') return Channel.TRADES;
-    if (c === 'depth5') return Channel.ORDERBOOK;
-    throw new Error('unknown channel');
-}
-
 function isRawDataTrades(rawData: RawData): rawData is RawDataTrades {
-    return getChannel(rawData) === Channel.TRADES;
+    const c = rawData.table.split('/')[1];
+    return c === 'trades';
 }
 function isRawDataOrderbook(rawData: RawData): rawData is RawDataOrderbook {
-    return getChannel(rawData) === Channel.ORDERBOOK;
+    const c = rawData.table.split('/')[1];
+    return c === 'depth5';
 }
+
 
 class Deserializer extends Startable {
     private socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
@@ -102,11 +97,11 @@ class Deserializer extends Startable {
                     allRawTrades[rawTrade.instrument_id] = [];
                 allRawTrades[rawTrade.instrument_id].push(rawTrade);
             }
-            for (const [instrumentId, rawTrades] of Object.entries(allRawTrades))
-                this.emit(`${Channel.TRADES}/${instrumentId}`, rawTrades);
+            for (const [rawInstrumentId, rawTrades] of Object.entries(allRawTrades))
+                this.emit(`trades/${rawInstrumentId}`, rawTrades);
         } else if (isRawDataOrderbook(rawData)) {
             for (const rawOrderbook of rawData.data)
-                this.emit(`${Channel.ORDERBOOK}/${rawOrderbook.instrument_id}`, rawOrderbook);
+                this.emit(`orderbook/${rawOrderbook.instrument_id}`, rawOrderbook);
         } else throw new Error('unknown channel');
     }
 
