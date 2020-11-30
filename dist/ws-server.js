@@ -5,6 +5,7 @@ import Router from 'koa-router';
 import _ from 'lodash';
 import WsFilter from 'koa-ws-filter';
 import http from 'http';
+import fetch from 'node-fetch';
 import config from './config';
 const ACTIVE_CLOSE = 'public agent okex websocket';
 class WsServer extends Startable {
@@ -31,6 +32,7 @@ class WsServer extends Startable {
             client.on('close', () => {
                 this.broadcast.off(`${marketName}/trades`, onData);
             });
+            await next();
         });
         this.router.all('/:exchange/:instrument/:currency/orderbook', async (ctx, next) => {
             const { marketName } = ctx.state;
@@ -49,14 +51,20 @@ class WsServer extends Startable {
             client.on('close', () => {
                 this.broadcast.off(`${marketName}/orderbook`, onData);
             });
+            await next();
         });
         this.wsFilter.ws(this.router.routes());
         this.koa.use(this.wsFilter.filter());
         this.httpServer.on('request', this.koa.callback());
     }
     async _start() {
-        this.httpServer.listen(config.PORT);
+        this.httpServer.listen();
         await once(this.httpServer, 'listening');
+        const port = this.httpServer.address().port;
+        await fetch('http://localhost:12000/public-agents-okex-websocket', {
+            method: 'put',
+            body: `http://localhost:${port}`,
+        });
     }
     async _stop() {
         this.httpServer.close();

@@ -1,6 +1,6 @@
 import Startable from 'startable';
 import Deserializer from './deserializer';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import {
     RawUnSub,
     Operation,

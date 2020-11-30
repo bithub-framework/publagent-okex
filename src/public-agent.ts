@@ -1,5 +1,5 @@
 import Startable from 'startable';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import WsServer from './ws-server';
 import BtcUsdt from './btc-usdt';
 import Deserializer from './deserializer';

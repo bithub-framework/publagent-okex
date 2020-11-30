@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import Startable from 'startable';
 import Deserializer from './deserializer';
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { Trade, RawTrade, Orderbook, RawOrderbook } from './interfaces';
 declare abstract class Normalizer extends Startable {
     private deserializer;

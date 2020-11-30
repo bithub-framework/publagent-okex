@@ -3,10 +3,10 @@
     "version": "0.0.1",
     "description": "",
     "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./dist/public-agent.js",
+    "types": "./dist/public-agent.d.ts",
     "scripts": {
-        "test": "tsc -b ./test/ && ava",
+        "test": "tsc -b ./test && ava",
         "build": "tsc -b",
         "debug": "epi-cli run -c ./epi.config.json",
         "start": "epi-cli start -c ./epi.config.json"
@@ -23,20 +23,22 @@
     "homepage": "https://github.com/zimtsui/public-agent-okex-websocket#readme",
     "devDependencies": {},
     "dependencies": {
-        "@types/koa": "^2.0.50",
+        "@types/koa": "^2.11.6",
         "@types/koa-router": "^7.0.42",
-        "@types/lodash": "^4.14.136",
-        "@types/node": "^12.12.58",
+        "@types/lodash": "^4.14.165",
+        "@types/node": "^14.14.10",
+        "@types/node-fetch": "^2.5.7",
         "@types/pako": "^1.0.1",
-        "@types/ws": "^7.2.6",
+        "@types/ws": "^7.4.0",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "koa": "^2.8.2",
         "koa-router": "^9.4.0",
         "koa-ws-filter": "https://gitee.com/zimtsui/koa-ws-filter.git",
         "lodash": "^4.17.15",
+        "node-fetch": "^2.6.1",
         "pako": "^1.0.10",
         "promisified-websocket": "https://gitee.com/zimtsui/promisified-websocket.git",
         "startable": "https://gitee.com/zimtsui/startable.git",
-        "ws": "^7.3.1"
+        "ws": "^7.4.0"
     }
 }
