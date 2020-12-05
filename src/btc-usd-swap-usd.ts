@@ -10,29 +10,27 @@ import {
 } from './interfaces';
 
 function normalizeRawOrder(rawOrder: RawOrder, side: Side): Order {
-    const order = {
+    return {
         side,
         price: Number.parseFloat(rawOrder[0]),
         quantity: Number.parseInt(rawOrder[1]),
     };
-    return order;
 }
 
-class BtcUsdt extends Normalizer {
-    protected pair = 'BTC-USD-SWAP/USD';
+class BtcUsdSwapUsd extends Normalizer {
+    protected pair = 'btc-usd-swap/usd';
     protected rawInstrumentId = 'BTC-USD-SWAP';
     protected rawTradesChannel = 'swap/trade:BTC-USD-SWAP';
     protected rawOrderbookChannel = 'swap/depth5:BTC-USD-SWAP';
 
     protected normalizeRawTrade(rawTrade: RawTrade): Trade {
-        const trade = {
+        return {
             side: rawTrade.side,
             price: Number.parseFloat(rawTrade.price),
             quantity: Number.parseInt(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
             id: rawTrade.trade_id,
         };
-        return trade;
     }
 
     protected normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook {
@@ -47,6 +45,6 @@ class BtcUsdt extends Normalizer {
 }
 
 export {
-    BtcUsdt as default,
-    BtcUsdt,
+    BtcUsdSwapUsd as default,
+    BtcUsdSwapUsd,
 }

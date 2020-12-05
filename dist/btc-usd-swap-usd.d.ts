@@ -1,6 +1,6 @@
 import Normalizer from './normalizer';
 import { RawTrade, RawOrderbook, Trade, Orderbook } from './interfaces';
-declare class BtcUsdt extends Normalizer {
+declare class BtcUsdSwapUsd extends Normalizer {
     protected pair: string;
     protected rawInstrumentId: string;
     protected rawTradesChannel: string;
@@ -8,4 +8,4 @@ declare class BtcUsdt extends Normalizer {
     protected normalizeRawTrade(rawTrade: RawTrade): Trade;
     protected normalizeRawOrderbook(rawOrderbook: RawOrderbook): Orderbook;
 }
-export { BtcUsdt as default, BtcUsdt, };
+export { BtcUsdSwapUsd as default, BtcUsdSwapUsd, };

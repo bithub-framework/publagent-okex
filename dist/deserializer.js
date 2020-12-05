@@ -61,12 +61,12 @@ class Deserializer extends Startable {
                 this.pongee = setTimeout(() => {
                     this.stop(new Error('Pong not received'))
                         .catch(() => { });
-                }, config.PONG_LATENCY);
+                }, config.PONG_TIMEOUT);
                 this.socket.once('message', () => {
                     clearTimeout(this.pongee);
                     this.pongee = undefined;
                 });
-            }, config.PING_LATENCY);
+            }, config.PING_TIMEOUT);
         this.pinger();
     }
     async _start() {

@@ -1,29 +1,27 @@
 import Normalizer from './normalizer';
 function normalizeRawOrder(rawOrder, side) {
-    const order = {
+    return {
         side,
         price: Number.parseFloat(rawOrder[0]),
         quantity: Number.parseInt(rawOrder[1]),
     };
-    return order;
 }
-class BtcUsdt extends Normalizer {
+class BtcUsdSwapUsd extends Normalizer {
     constructor() {
         super(...arguments);
-        this.pair = 'BTC-USD-SWAP/USD';
+        this.pair = 'btc-usd-swap/usd';
         this.rawInstrumentId = 'BTC-USD-SWAP';
         this.rawTradesChannel = 'swap/trade:BTC-USD-SWAP';
         this.rawOrderbookChannel = 'swap/depth5:BTC-USD-SWAP';
     }
     normalizeRawTrade(rawTrade) {
-        const trade = {
+        return {
             side: rawTrade.side,
             price: Number.parseFloat(rawTrade.price),
             quantity: Number.parseInt(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
             id: rawTrade.trade_id,
         };
-        return trade;
     }
     normalizeRawOrderbook(rawOrderbook) {
         return {
@@ -35,5 +33,5 @@ class BtcUsdt extends Normalizer {
         };
     }
 }
-export { BtcUsdt as default, BtcUsdt, };
+export { BtcUsdSwapUsd as default, BtcUsdSwapUsd, };
 //# sourceMappingURL=btc-usd-swap-usd.js.map

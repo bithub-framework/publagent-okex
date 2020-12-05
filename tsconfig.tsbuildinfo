@@ -552,12 +552,12 @@
         "affectsGlobalScope": false
       },
       "./src/config.ts": {
-        "version": "311d8a7c24685d4c89ac3a36997b0d13a682bda9e2b7dbc777d95b4073af4b91",
-        "signature": "8a4e01a02acf3dc124bf4d8605e7ec86ed6becc320548687b24e1fdb4df909d0",
+        "version": "eb4264254872daf769b55d73a5cbe6fa892a0a1831238a34f9f64893a2ab2979",
+        "signature": "7a249a26e212abe9f5f75c63a5033ca6c99da41c7a293d0d9a9e0dbea1ac1426",
         "affectsGlobalScope": false
       },
       "./src/deserializer.ts": {
-        "version": "656a78074903eb3546c9a965bde062e8accb57c64c54ca1cd65c9035cdcbaee2",
+        "version": "8fc04c31de3fd128cac46825b695dfd65c96a34621a7ed3850517e5bd12cf8b1",
         "signature": "e3426551025cb4ecc9ffe867aa292a158819e8e58190b0b326e42864bb9acbc8",
         "affectsGlobalScope": false
       },
@@ -567,8 +567,8 @@
         "affectsGlobalScope": false
       },
       "./src/btc-usd-swap-usd.ts": {
-        "version": "eec4e89ac1b22bfeccd6f20201856380c3251e06bf696d4c431589b458b3b3a2",
-        "signature": "504767e2cc400d29e57244ff4717af5508f9502f736d5d6cf77ea4dd901c8aa4",
+        "version": "541b1081b2b008165f11d46d20b283acf6682540f18b41ccf6948c20a68e0b58",
+        "signature": "59086c0e1b16074a263de3a0cfd2a0b52955acee41db5f6bcf29ab2e65ee7cc6",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
@@ -692,8 +692,8 @@
         "affectsGlobalScope": false
       },
       "./src/public-agent.ts": {
-        "version": "6c6f4c8d57baeab0de46b9687d9dfaf1350667aaddd3e93b520aa77a48a7a267",
-        "signature": "f7958dba425a10ee969fdf5b4a27f9a0281e7067bcb52e7ea20185a84f577e89",
+        "version": "55c4f06e4a0ae52008ba6a0459fc452e7223bd7148b20b9190de24cee5b9893d",
+        "signature": "7fbdfc8427ed91478337621caa8ac3e569dd755756c3c9e00ee1992bdd15ad38",
         "affectsGlobalScope": false
       },
       "./src/script.ts": {
@@ -1239,6 +1239,7 @@
       "./src/public-agent.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/startable/dist/index.d.ts",
+        "./src/btc-usd-swap-usd.ts",
         "./src/btc-usdt.ts",
         "./src/deserializer.ts",
         "./src/ws-server.ts"
