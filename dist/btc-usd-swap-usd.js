@@ -3,7 +3,7 @@ function normalizeRawOrder(rawOrder, side) {
     const order = {
         side,
         price: Number.parseFloat(rawOrder[0]),
-        quantity: Number.parseFloat(rawOrder[1]),
+        quantity: Number.parseInt(rawOrder[1]),
     };
     return order;
 }
@@ -19,9 +19,9 @@ class BtcUsdt extends Normalizer {
         const trade = {
             side: rawTrade.side,
             price: Number.parseFloat(rawTrade.price),
-            quantity: Number.parseFloat(rawTrade.size),
+            quantity: Number.parseInt(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
-            id: Number.parseInt(rawTrade.trade_id),
+            id: rawTrade.trade_id,
         };
         return trade;
     }

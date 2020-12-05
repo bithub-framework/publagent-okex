@@ -7,9 +7,7 @@
     "types": "./dist/public-agent.d.ts",
     "scripts": {
         "test": "tsc -b ./test && ava",
-        "build": "tsc -b",
-        "debug": "epi-cli run -c ./epi.config.json",
-        "start": "epi-cli start -c ./epi.config.json"
+        "build": "tsc -b"
     },
     "repository": {
         "type": "git",
@@ -23,8 +21,9 @@
     "homepage": "https://github.com/zimtsui/public-agent-okex-websocket#readme",
     "devDependencies": {},
     "dependencies": {
+        "@koa/router": "^9.4.0",
         "@types/koa": "^2.11.6",
-        "@types/koa-router": "^7.0.42",
+        "@types/koa__router": "^8.0.3",
         "@types/lodash": "^4.14.165",
         "@types/node": "^14.14.10",
         "@types/node-fetch": "^2.5.7",
@@ -32,7 +31,6 @@
         "@types/ws": "^7.4.0",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "koa": "^2.8.2",
-        "koa-router": "^9.4.0",
         "koa-ws-filter": "https://gitee.com/zimtsui/koa-ws-filter.git",
         "lodash": "^4.17.15",
         "node-fetch": "^2.6.1",

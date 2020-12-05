@@ -30,27 +30,9 @@ function isRawDataOrderbook(rawData) {
 }
 class Deserializer extends Startable {
     constructor() {
-        super(...arguments);
+        super();
         this.socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
-    }
-    makePinger() {
-        if (!this.pinger)
-            this.pinger = _.debounce(() => {
-                this.pinger = undefined;
-                this.socket.send('ping').catch(err => this.stop(err));
-                this.pongee = setTimeout(() => {
-                    this.stop(new Error('Pong not received')).catch(console.error);
-                }, config.PONG_LATENCY);
-                this.socket.once('message', () => {
-                    clearTimeout(this.pongee);
-                    this.pongee = undefined;
-                });
-            }, config.PING_LATENCY);
-        this.pinger();
-    }
-    async _start() {
         this.socket.on('error', err => this.emit('error', err));
-        await this.socket.start(err => this.stop(err));
         this.socket.on('message', (message) => {
             try {
                 this.makePinger();
@@ -66,9 +48,29 @@ class Deserializer extends Startable {
                     this.onRawData(rawMessage);
             }
             catch (err) {
-                this.stop(err);
+                this.stop(err).catch(() => { });
             }
         });
+    }
+    makePinger() {
+        if (!this.pinger)
+            this.pinger = _.debounce(() => {
+                this.pinger = undefined;
+                this.socket.send('ping')
+                    .catch(err => void this.stop(err).catch(() => { }));
+                this.pongee = setTimeout(() => {
+                    this.stop(new Error('Pong not received'))
+                        .catch(() => { });
+                }, config.PONG_LATENCY);
+                this.socket.once('message', () => {
+                    clearTimeout(this.pongee);
+                    this.pongee = undefined;
+                });
+            }, config.PING_LATENCY);
+        this.pinger();
+    }
+    async _start() {
+        await this.socket.start(err => void this.stop(err).catch(() => { }));
         this.makePinger();
     }
     onRawData(rawData) {

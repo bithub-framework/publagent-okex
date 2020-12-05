@@ -36,11 +36,11 @@ abstract class Normalizer extends Startable {
     protected async _start(): Promise<void> {
         this.deserializer.on(
             `trades/${this.rawInstrumentId}`,
-            this._onRawTrades,
+            this.onRawTrades,
         );
         this.deserializer.on(
             `orderbook/${this.rawInstrumentId}`,
-            this._onRawOrderbook,
+            this.onRawOrderbook,
         );
         await this.unSubscribe('subscribe');
     }
@@ -48,43 +48,31 @@ abstract class Normalizer extends Startable {
     protected async _stop() {
         this.deserializer.off(
             `trades/${this.rawInstrumentId}`,
-            this._onRawTrades,
+            this.onRawTrades,
         );
         this.deserializer.off(
             `orderbook/${this.rawInstrumentId}`,
-            this._onRawOrderbook,
+            this.onRawOrderbook,
         );
     }
 
-    private _onRawTrades = (
-        ...args: Parameters<typeof Normalizer.prototype.onRawTrades>
-    ): void => {
+    private onRawTrades = (rawTrades: RawTrade[]): void => {
         try {
-            this.onRawTrades(...args);
+            const trades = rawTrades
+                .map(rawTrade => this.normalizeRawTrade(rawTrade));
+            this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/trades`, trades);
         } catch (err) {
-            this.stop(err);
+            this.stop(err).catch(() => { });
         }
     }
 
-    private _onRawOrderbook = (
-        ...args: Parameters<typeof Normalizer.prototype.onRawOrderbook>
-    ): void => {
+    private onRawOrderbook = (rawOrderbook: RawOrderbook): void => {
         try {
-            this.onRawOrderbook(...args);
+            const orderbook = this.normalizeRawOrderbook(rawOrderbook);
+            this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/orderbook`, orderbook);
         } catch (err) {
-            this.stop(err);
+            this.stop(err).catch(() => { });
         }
-    }
-
-    private onRawTrades(rawTrades: RawTrade[]): void {
-        const trades = rawTrades
-            .map(rawTrade => this.normalizeRawTrade(rawTrade));
-        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/trades`, trades);
-    }
-
-    private onRawOrderbook(rawOrderbook: RawOrderbook): void {
-        const orderbook = this.normalizeRawOrderbook(rawOrderbook);
-        this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/orderbook`, orderbook);
     }
 
     private async unSubscribe(operation: Operation) {

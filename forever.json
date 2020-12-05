@@ -1,0 +1,7 @@
+{
+    "uid": "public-agent-okex-websocket",
+    "append": true,
+    "script": "./dist/script.js",
+    "command": "node --experimental-specifier-resolution=node --enable-source-maps",
+    "killSignal": "SIGINT"
+}

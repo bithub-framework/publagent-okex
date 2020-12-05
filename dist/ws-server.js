@@ -1,7 +1,7 @@
 import Startable from 'startable';
 import { once } from 'events';
 import Koa from 'koa';
-import Router from 'koa-router';
+import Router from '@koa/router';
 import _ from 'lodash';
 import WsFilter from 'koa-ws-filter';
 import http from 'http';
