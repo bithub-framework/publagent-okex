@@ -552,8 +552,8 @@
         "affectsGlobalScope": false
       },
       "./src/config.ts": {
-        "version": "f8a8cdfc457229a5e003e20c7d97df78f4da4b3401c71d606cd24ea4366c145f",
-        "signature": "a882663853bb574f81d3648b8af1cdbfbea8cf8bf5941354d57f28513f17a2d3",
+        "version": "311d8a7c24685d4c89ac3a36997b0d13a682bda9e2b7dbc777d95b4073af4b91",
+        "signature": "8a4e01a02acf3dc124bf4d8605e7ec86ed6becc320548687b24e1fdb4df909d0",
         "affectsGlobalScope": false
       },
       "./src/deserializer.ts": {
@@ -562,7 +562,7 @@
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "2f737ad8458d6e864f686d5e4bf7e46b4b09950b54bab8578bc36ace1c8cb67c",
+        "version": "4acb21023f2baf0b46123a1f01338b27f461594f8b39ae55eddeda8033c35351",
         "signature": "fdccc678095c6480653a86b4378a7a6489b3ef164cfe4731df9aa5e78269fb16",
         "affectsGlobalScope": false
       },
@@ -572,7 +572,7 @@
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
-        "version": "0d62dbc41463ef1b9f69ae1500a304f3385d7b154d8615d13a330dfafaf59a9f",
+        "version": "cf3f244aedbcbbd65a792946df97ca81ad78280ef97374cff0aa909a2ac5bf5a",
         "signature": "504767e2cc400d29e57244ff4717af5508f9502f736d5d6cf77ea4dd901c8aa4",
         "affectsGlobalScope": false
       },

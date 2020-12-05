@@ -60,7 +60,7 @@ abstract class Normalizer extends Startable {
         try {
             const trades = rawTrades
                 .map(rawTrade => this.normalizeRawTrade(rawTrade));
-            this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/trades`, trades);
+            this.broadcast.emit(`${config.EXCHANGE_NAME}/${this.pair}/trades`, trades);
         } catch (err) {
             this.stop(err).catch(() => { });
         }
@@ -69,7 +69,7 @@ abstract class Normalizer extends Startable {
     private onRawOrderbook = (rawOrderbook: RawOrderbook): void => {
         try {
             const orderbook = this.normalizeRawOrderbook(rawOrderbook);
-            this.broadcast.emit(`${config.MARKET_NAME}/${this.pair}/orderbook`, orderbook);
+            this.broadcast.emit(`${config.EXCHANGE_NAME}/${this.pair}/orderbook`, orderbook);
         } catch (err) {
             this.stop(err).catch(() => { });
         }

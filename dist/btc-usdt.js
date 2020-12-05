@@ -9,7 +9,7 @@ function normalizeRawOrder(rawOrder, side) {
 class BtcUsdt extends Normalizer {
     constructor() {
         super(...arguments);
-        this.pair = 'BTC/USDT';
+        this.pair = 'btc/usdt';
         this.rawInstrumentId = 'BTC-USDT';
         this.rawTradesChannel = 'spot/trade:BTC-USDT';
         this.rawOrderbookChannel = 'spot/depth5:BTC-USDT';
