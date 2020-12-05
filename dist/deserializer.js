@@ -22,7 +22,7 @@ function isRawData(raw) {
 }
 function isRawDataTrades(rawData) {
     const c = rawData.table.split('/')[1];
-    return c === 'trades';
+    return c === 'trade';
 }
 function isRawDataOrderbook(rawData) {
     const c = rawData.table.split('/')[1];

@@ -35,7 +35,7 @@ function isRawData(raw: RawMessage): raw is RawData {
 
 function isRawDataTrades(rawData: RawData): rawData is RawDataTrades {
     const c = rawData.table.split('/')[1];
-    return c === 'trades';
+    return c === 'trade';
 }
 function isRawDataOrderbook(rawData: RawData): rawData is RawDataOrderbook {
     const c = rawData.table.split('/')[1];
