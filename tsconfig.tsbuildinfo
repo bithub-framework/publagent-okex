@@ -687,7 +687,7 @@
         "affectsGlobalScope": false
       },
       "./src/ws-server.ts": {
-        "version": "3a9d077f79565475c523b8c659ab27062ac9ef91b970468bc0fe34fcfd4bc6d0",
+        "version": "7b62b26d058af55c7042c296df5082039a6b7fcaa5d1041d1acf47139d21c7d8",
         "signature": "a5ed2f9754e9e20ee4eb6696ea5ee598be14dc6c163c02f3d477bd07f245c17b",
         "affectsGlobalScope": false
       },

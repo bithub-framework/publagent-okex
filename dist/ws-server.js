@@ -61,7 +61,7 @@ class WsServer extends Startable {
         this.httpServer.listen();
         await once(this.httpServer, 'listening');
         const port = this.httpServer.address().port;
-        await fetch('http://localhost:12000/public-agents-okex-websocket', {
+        await fetch('http://localhost:12000/public-agent-okex-websocket', {
             method: 'put',
             body: `http://localhost:${port}`,
         });
