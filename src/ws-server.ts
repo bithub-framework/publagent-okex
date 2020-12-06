@@ -8,13 +8,10 @@ import WebSocket from 'ws';
 import http from 'http';
 import { AddressInfo } from 'net';
 import fetch from 'node-fetch';
-import config from './config';
 import {
     Trade,
     Orderbook,
 } from './interfaces';
-
-const ACTIVE_CLOSE = 'public agent okex websocket';
 
 class WsServer extends Startable {
     private httpServer = http.createServer();
@@ -79,7 +76,7 @@ class WsServer extends Startable {
         });
 
         this.wsFilter.ws(this.router.routes());
-        this.koa.use(this.wsFilter.filter());
+        this.koa.use(this.wsFilter.protocols());
         this.httpServer.on('request', this.koa.callback());
     }
 
@@ -96,7 +93,7 @@ class WsServer extends Startable {
     protected async _stop() {
         this.httpServer.close();
         await Promise.all([
-            this.wsFilter.close(config.WS_CLOSE_TIMEOUT, ACTIVE_CLOSE),
+            this.wsFilter.close(),
             once(this.httpServer, 'close'),
         ]);
     }

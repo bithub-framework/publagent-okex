@@ -6,7 +6,6 @@
     "main": "./dist/public-agent.js",
     "types": "./dist/public-agent.d.ts",
     "scripts": {
-        "test": "tsc -b ./test && ava",
         "build": "tsc -b"
     },
     "repository": {
@@ -37,6 +36,6 @@
         "pako": "^1.0.10",
         "promisified-websocket": "https://gitee.com/zimtsui/promisified-websocket.git",
         "startable": "https://gitee.com/zimtsui/startable.git",
-        "ws": "^7.4.0"
+        "ws": "^7.4.1"
     }
 }
