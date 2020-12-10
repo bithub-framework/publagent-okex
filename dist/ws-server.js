@@ -6,8 +6,6 @@ import _ from 'lodash';
 import WsFilter from 'koa-ws-filter';
 import http from 'http';
 import fetch from 'node-fetch';
-import config from './config';
-const ACTIVE_CLOSE = 'public agent okex websocket';
 class WsServer extends Startable {
     constructor(broadcast) {
         super();
@@ -39,8 +37,8 @@ class WsServer extends Startable {
             const client = await ctx.state.upgrade();
             function onData(orderbook) {
                 const orderbookDepthLtd = {
-                    bids: orderbook.bids.slice(0, ctx.query.depth),
-                    asks: orderbook.asks.slice(0, ctx.query.depth),
+                    [0 /* BID */]: orderbook[0 /* BID */].slice(0, ctx.query.depth),
+                    [1 /* ASK */]: orderbook[1 /* ASK */].slice(0, ctx.query.depth),
                     time: orderbook.time,
                 };
                 const message = JSON.stringify(orderbookDepthLtd);
@@ -54,7 +52,7 @@ class WsServer extends Startable {
             await next();
         });
         this.wsFilter.ws(this.router.routes());
-        this.koa.use(this.wsFilter.filter());
+        this.koa.use(this.wsFilter.protocols());
         this.httpServer.on('request', this.koa.callback());
     }
     async _start() {
@@ -69,7 +67,7 @@ class WsServer extends Startable {
     async _stop() {
         this.httpServer.close();
         await Promise.all([
-            this.wsFilter.close(config.WS_CLOSE_TIMEOUT, ACTIVE_CLOSE),
+            this.wsFilter.close(),
             once(this.httpServer, 'close'),
         ]);
     }

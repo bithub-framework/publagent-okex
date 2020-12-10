@@ -542,8 +542,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "1d97bffcb5ccffe0b339fe3f26094b00278cb39d9aec789965820bae363628a6",
-        "signature": "1d97bffcb5ccffe0b339fe3f26094b00278cb39d9aec789965820bae363628a6",
+        "version": "32af7cb858ff05f187612f0062bbb9b14cbb353a057ce4b5122df1257778682f",
+        "signature": "32af7cb858ff05f187612f0062bbb9b14cbb353a057ce4b5122df1257778682f",
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
@@ -552,8 +552,8 @@
         "affectsGlobalScope": false
       },
       "./src/config.ts": {
-        "version": "eb4264254872daf769b55d73a5cbe6fa892a0a1831238a34f9f64893a2ab2979",
-        "signature": "7a249a26e212abe9f5f75c63a5033ca6c99da41c7a293d0d9a9e0dbea1ac1426",
+        "version": "f1030f4d8b4245405be5d694e9936cdff9c48ffe8850083031a358747b1f3e6d",
+        "signature": "e913e447ce3dcf05b09490ad6816fccd13d744c7d4f26c507774ef4445b0bc1e",
         "affectsGlobalScope": false
       },
       "./src/deserializer.ts": {
@@ -567,12 +567,12 @@
         "affectsGlobalScope": false
       },
       "./src/btc-usd-swap-usd.ts": {
-        "version": "541b1081b2b008165f11d46d20b283acf6682540f18b41ccf6948c20a68e0b58",
+        "version": "244424b38b37b951b9d96800139f7c2c8b424d5f35ac6b2fa5b8533a990555d0",
         "signature": "59086c0e1b16074a263de3a0cfd2a0b52955acee41db5f6bcf29ab2e65ee7cc6",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
-        "version": "cf3f244aedbcbbd65a792946df97ca81ad78280ef97374cff0aa909a2ac5bf5a",
+        "version": "4d3db4cc7bf47c56907265298ad7bbd17e983c30a213abb2d2743025ee511470",
         "signature": "504767e2cc400d29e57244ff4717af5508f9502f736d5d6cf77ea4dd901c8aa4",
         "affectsGlobalScope": false
       },
@@ -667,8 +667,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/koa-ws-filter/dist/index.d.ts": {
-        "version": "3b3bdf1af9a608401323ee0964f87a936373462198af6a3020fe53a1d6f8fc18",
-        "signature": "3b3bdf1af9a608401323ee0964f87a936373462198af6a3020fe53a1d6f8fc18",
+        "version": "edd8ff3ef4ce3bcbed94d05280c6d153b181fea4c19bfe32daa3b8a80dcc29dc",
+        "signature": "edd8ff3ef4ce3bcbed94d05280c6d153b181fea4c19bfe32daa3b8a80dcc29dc",
         "affectsGlobalScope": false
       },
       "./node_modules/form-data/index.d.ts": {
@@ -687,7 +687,7 @@
         "affectsGlobalScope": false
       },
       "./src/ws-server.ts": {
-        "version": "7b62b26d058af55c7042c296df5082039a6b7fcaa5d1041d1acf47139d21c7d8",
+        "version": "4660a957dcd9798ebcf3df6e45f8d39543efbbdf644cfa4b50a13a5d3bae6176",
         "signature": "a5ed2f9754e9e20ee4eb6696ea5ee598be14dc6c163c02f3d477bd07f245c17b",
         "affectsGlobalScope": false
       },
@@ -1259,7 +1259,6 @@
         "./node_modules/@types/ws/index.d.ts",
         "./node_modules/koa-ws-filter/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./src/config.ts",
         "./src/interfaces.ts"
       ]
     },
@@ -1807,18 +1806,8 @@
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/@types/node/stream.d.ts"
       ],
-      "./node_modules/interfaces/dist/index.d.ts": [
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts"
-      ],
       "./node_modules/koa-ws-filter/dist/index.d.ts": [
         "./node_modules/@types/koa/index.d.ts",
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/koa-ws-filter/node_modules/@types/ws/index.d.ts"
       ],
       "./node_modules/koa-ws-filter/node_modules/@types/ws/index.d.ts": [

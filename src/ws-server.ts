@@ -11,6 +11,7 @@ import fetch from 'node-fetch';
 import {
     Trade,
     Orderbook,
+    Side,
 } from './interfaces';
 
 class WsServer extends Startable {
@@ -58,8 +59,8 @@ class WsServer extends Startable {
 
             function onData(orderbook: Orderbook): void {
                 const orderbookDepthLtd: Orderbook = {
-                    bids: orderbook.bids.slice(0, ctx.query.depth),
-                    asks: orderbook.asks.slice(0, ctx.query.depth),
+                    [Side.BID]: orderbook[Side.BID].slice(0, ctx.query.depth),
+                    [Side.ASK]: orderbook[Side.ASK].slice(0, ctx.query.depth),
                     time: orderbook.time,
                 }
                 const message = JSON.stringify(orderbookDepthLtd);
