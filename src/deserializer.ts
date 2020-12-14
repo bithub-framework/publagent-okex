@@ -12,7 +12,11 @@ import {
     RawDataOrderbook,
     Operation,
 } from './interfaces';
-import config from './config';
+import {
+    OKEX_WEBSOCKET_URL,
+    PING_TIMEOUT,
+    PONG_TIMEOUT,
+} from './config';
 
 /*
     events
@@ -44,7 +48,7 @@ function isRawDataOrderbook(rawData: RawData): rawData is RawDataOrderbook {
 
 
 class Deserializer extends Startable {
-    private socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
+    private socket = new PromisifiedWebSocket(OKEX_WEBSOCKET_URL);
     private pinger?: _.DebouncedFunc<() => void>;
     private pongee?: NodeJS.Timeout;
 
@@ -55,8 +59,8 @@ class Deserializer extends Startable {
             try {
                 this.makePinger();
                 const extracted = pako.inflateRaw(message, { to: 'string' });
-                const rawMessage = <RawMessage | 'pong'>JSON.parse(extracted);
-                if (rawMessage === 'pong') return;
+                if (extracted === 'pong') return;
+                const rawMessage = <RawMessage>JSON.parse(extracted);
                 if (isRawError(rawMessage))
                     this.emit('error', new Error(rawMessage.message));
                 else if (isRawUnSub(rawMessage))
@@ -77,12 +81,12 @@ class Deserializer extends Startable {
             this.pongee = setTimeout(() => {
                 this.stop(new Error('Pong not received'))
                     .catch(() => { });
-            }, config.PONG_TIMEOUT);
+            }, PONG_TIMEOUT);
             this.socket.once('message', () => {
                 clearTimeout(this.pongee!);
                 this.pongee = undefined;
             });
-        }, config.PING_TIMEOUT);
+        }, PING_TIMEOUT);
         this.pinger();
     }
 

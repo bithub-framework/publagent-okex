@@ -1,8 +1,10 @@
 import Normalizer from './normalizer';
-function normalizeRawOrder(rawOrder) {
+import { BID, ASK, } from './interfaces';
+function normalizeRawOrder(rawOrder, side) {
     return {
         price: Number.parseFloat(rawOrder[0]),
         quantity: Number.parseInt(rawOrder[1]),
+        side,
     };
 }
 class BtcUsdSwapUsd extends Normalizer {
@@ -15,7 +17,7 @@ class BtcUsdSwapUsd extends Normalizer {
     }
     normalizeRawTrade(rawTrade) {
         return {
-            side: rawTrade.side === 'buy' ? 0 /* BID */ : 1 /* ASK */,
+            side: rawTrade.side === 'buy' ? BID : ASK,
             price: Number.parseFloat(rawTrade.price),
             quantity: Number.parseInt(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
@@ -24,8 +26,8 @@ class BtcUsdSwapUsd extends Normalizer {
     }
     normalizeRawOrderbook(rawOrderbook) {
         return {
-            [1 /* ASK */]: rawOrderbook.asks.map(normalizeRawOrder),
-            [0 /* BID */]: rawOrderbook.bids.map(normalizeRawOrder),
+            [ASK]: rawOrderbook.asks.map(rawOrder => normalizeRawOrder(rawOrder, ASK)),
+            [BID]: rawOrderbook.bids.map(rawOrder => normalizeRawOrder(rawOrder, BID)),
             time: Date.parse(rawOrderbook.timestamp),
         };
     }

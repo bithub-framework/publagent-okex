@@ -37,8 +37,8 @@ class WsServer extends Startable {
             const client = await ctx.state.upgrade();
             function onData(orderbook) {
                 const orderbookDepthLtd = {
-                    [0 /* BID */]: orderbook[0 /* BID */].slice(0, ctx.query.depth),
-                    [1 /* ASK */]: orderbook[1 /* ASK */].slice(0, ctx.query.depth),
+                    [1 /* BID */]: orderbook[1 /* BID */].slice(0, ctx.query.depth),
+                    [0 /* ASK */]: orderbook[0 /* ASK */].slice(0, ctx.query.depth),
                     time: orderbook.time,
                 };
                 const message = JSON.stringify(orderbookDepthLtd);

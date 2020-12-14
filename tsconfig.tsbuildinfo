@@ -202,8 +202,8 @@
         "affectsGlobalScope": true
       },
       "./node_modules/@types/node/globals.d.ts": {
-        "version": "cdbd1c3e0c329abaa9442d3dd8b62699464a26b2e8e36fbde362bd4e7d490f16",
-        "signature": "cdbd1c3e0c329abaa9442d3dd8b62699464a26b2e8e36fbde362bd4e7d490f16",
+        "version": "215d8d9a2c480fd460127edc048d68d9931d3b27f95132253a6e71975f060bb1",
+        "signature": "215d8d9a2c480fd460127edc048d68d9931d3b27f95132253a6e71975f060bb1",
         "affectsGlobalScope": true
       },
       "./node_modules/@types/node/async_hooks.d.ts": {
@@ -362,8 +362,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/tls.d.ts": {
-        "version": "a0545ca910ec6b318b8e1d63813c980c3be44824cf217b6477a56fbe9c7927d5",
-        "signature": "a0545ca910ec6b318b8e1d63813c980c3be44824cf217b6477a56fbe9c7927d5",
+        "version": "c52eb62e3388a01b966c57bd14ca0ee9d5f6e656d6a18f6ce6b7cdece63734a3",
+        "signature": "c52eb62e3388a01b966c57bd14ca0ee9d5f6e656d6a18f6ce6b7cdece63734a3",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/trace_events.d.ts": {
@@ -427,8 +427,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/assert.d.ts": {
-        "version": "00a0faaea871db3288a11ce92bbed248ea2473a5bfd174d222011cde800ce397",
-        "signature": "00a0faaea871db3288a11ce92bbed248ea2473a5bfd174d222011cde800ce397",
+        "version": "6fbe72eed85e363ad83b763e03be824558c6ea7456c7259a48bcf0afdeb9d7e4",
+        "signature": "6fbe72eed85e363ad83b763e03be824558c6ea7456c7259a48bcf0afdeb9d7e4",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/base.d.ts": {
@@ -532,8 +532,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-websocket/dist/websocket.d.ts": {
-        "version": "a71ea592e127e8b3ad38edb17f7e518c7c0e7afa0cc6987f6119a48d8fe57bf2",
-        "signature": "a71ea592e127e8b3ad38edb17f7e518c7c0e7afa0cc6987f6119a48d8fe57bf2",
+        "version": "edd4a587447d5631b40f730c158855ec08d8412d0c3eb39ed430e210ff248540",
+        "signature": "edd4a587447d5631b40f730c158855ec08d8412d0c3eb39ed430e210ff248540",
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-websocket/dist/index.d.ts": {
@@ -542,8 +542,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "32af7cb858ff05f187612f0062bbb9b14cbb353a057ce4b5122df1257778682f",
-        "signature": "32af7cb858ff05f187612f0062bbb9b14cbb353a057ce4b5122df1257778682f",
+        "version": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
+        "signature": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
@@ -552,27 +552,27 @@
         "affectsGlobalScope": false
       },
       "./src/config.ts": {
-        "version": "f1030f4d8b4245405be5d694e9936cdff9c48ffe8850083031a358747b1f3e6d",
-        "signature": "e913e447ce3dcf05b09490ad6816fccd13d744c7d4f26c507774ef4445b0bc1e",
+        "version": "13796611a225ceb9429c2fcac08ffb94b4ab00e0c5fcbbcb6841ea714a969f5c",
+        "signature": "3e613e1eb38bc1f0a7dae81949beca69a31724dcc85329b9cbefac3dd125c81d",
         "affectsGlobalScope": false
       },
       "./src/deserializer.ts": {
-        "version": "8fc04c31de3fd128cac46825b695dfd65c96a34621a7ed3850517e5bd12cf8b1",
+        "version": "9bce3403db5c5dcb0e14f93ef14e406504c6a41511bcbc0a4179ee509b4e4963",
         "signature": "e3426551025cb4ecc9ffe867aa292a158819e8e58190b0b326e42864bb9acbc8",
         "affectsGlobalScope": false
       },
       "./src/normalizer.ts": {
-        "version": "4acb21023f2baf0b46123a1f01338b27f461594f8b39ae55eddeda8033c35351",
+        "version": "346caed01f4215276d386d7af597025e10ffef4f8d5165c901e7bac4b7f24176",
         "signature": "fdccc678095c6480653a86b4378a7a6489b3ef164cfe4731df9aa5e78269fb16",
         "affectsGlobalScope": false
       },
       "./src/btc-usd-swap-usd.ts": {
-        "version": "244424b38b37b951b9d96800139f7c2c8b424d5f35ac6b2fa5b8533a990555d0",
+        "version": "c482fe0e6ed2ffeddb280fc93f2804db213a629c5ba333f8fd8de45b27056887",
         "signature": "59086c0e1b16074a263de3a0cfd2a0b52955acee41db5f6bcf29ab2e65ee7cc6",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
-        "version": "4d3db4cc7bf47c56907265298ad7bbd17e983c30a213abb2d2743025ee511470",
+        "version": "e8f86018ae1057930d0a09a883c916e39c9cbb3480332e817de401d59a22a6dd",
         "signature": "504767e2cc400d29e57244ff4717af5508f9502f736d5d6cf77ea4dd901c8aa4",
         "affectsGlobalScope": false
       },
@@ -1831,10 +1831,6 @@
         "./node_modules/promisified-websocket/dist/websocket.d.ts"
       ],
       "./node_modules/promisified-websocket/dist/websocket.d.ts": [
-        "./node_modules/@types/node/ts3.1/fs.d.ts",
-        "./node_modules/@types/node/ts3.1/util.d.ts",
-        "./node_modules/@types/node/ts3.3/fs.d.ts",
-        "./node_modules/@types/node/ts3.3/util.d.ts",
         "./node_modules/@types/ws/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],

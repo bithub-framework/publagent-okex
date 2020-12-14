@@ -2,7 +2,7 @@ import Startable from 'startable';
 import pako from 'pako';
 import _ from 'lodash';
 import PromisifiedWebSocket from 'promisified-websocket';
-import config from './config';
+import { OKEX_WEBSOCKET_URL, PING_TIMEOUT, PONG_TIMEOUT, } from './config';
 /*
     events
         error
@@ -31,15 +31,15 @@ function isRawDataOrderbook(rawData) {
 class Deserializer extends Startable {
     constructor() {
         super();
-        this.socket = new PromisifiedWebSocket(config.OKEX_WEBSOCKET_URL);
+        this.socket = new PromisifiedWebSocket(OKEX_WEBSOCKET_URL);
         this.socket.on('error', err => this.emit('error', err));
         this.socket.on('message', (message) => {
             try {
                 this.makePinger();
                 const extracted = pako.inflateRaw(message, { to: 'string' });
-                const rawMessage = JSON.parse(extracted);
-                if (rawMessage === 'pong')
+                if (extracted === 'pong')
                     return;
+                const rawMessage = JSON.parse(extracted);
                 if (isRawError(rawMessage))
                     this.emit('error', new Error(rawMessage.message));
                 else if (isRawUnSub(rawMessage))
@@ -61,12 +61,12 @@ class Deserializer extends Startable {
                 this.pongee = setTimeout(() => {
                     this.stop(new Error('Pong not received'))
                         .catch(() => { });
-                }, config.PONG_TIMEOUT);
+                }, PONG_TIMEOUT);
                 this.socket.once('message', () => {
                     clearTimeout(this.pongee);
                     this.pongee = undefined;
                 });
-            }, config.PING_TIMEOUT);
+            }, PING_TIMEOUT);
         this.pinger();
     }
     async _start() {
