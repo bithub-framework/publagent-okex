@@ -541,9 +541,24 @@
         "signature": "a929faac4f32ea01b6b5c42f4d0e16615902e643a177fd9ada5c937373b111d4",
         "affectsGlobalScope": false
       },
+      "./node_modules/@types/big.js/index.d.ts": {
+        "version": "90589e3f3eed0a07917117760dc77abb1c6c672eb7d1d3b4ca76b8cb48f73917",
+        "signature": "90589e3f3eed0a07917117760dc77abb1c6c672eb7d1d3b4ca76b8cb48f73917",
+        "affectsGlobalScope": true
+      },
+      "./node_modules/interfaces/dist/data.d.ts": {
+        "version": "40ba3f12e8d2675659781cc2ee775f484e53034f4127637acd9ee8ca0e925056",
+        "signature": "40ba3f12e8d2675659781cc2ee775f484e53034f4127637acd9ee8ca0e925056",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/interfaces/dist/context.d.ts": {
+        "version": "34496b45872ab6d8ec87074f114315460dd15a03e3c0db6ea902504ea719c6b6",
+        "signature": "34496b45872ab6d8ec87074f114315460dd15a03e3c0db6ea902504ea719c6b6",
+        "affectsGlobalScope": false
+      },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
-        "signature": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
+        "version": "54b215a738551cbb94bfbe599a3101726924eb838ab5f2511962556b8ec39357",
+        "signature": "54b215a738551cbb94bfbe599a3101726924eb838ab5f2511962556b8ec39357",
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
@@ -567,12 +582,12 @@
         "affectsGlobalScope": false
       },
       "./src/btc-usd-swap-usd.ts": {
-        "version": "c482fe0e6ed2ffeddb280fc93f2804db213a629c5ba333f8fd8de45b27056887",
+        "version": "db80d0ef4ea67680182a752372c34634b4e50b9a81ae373d27db166594603ca8",
         "signature": "59086c0e1b16074a263de3a0cfd2a0b52955acee41db5f6bcf29ab2e65ee7cc6",
         "affectsGlobalScope": false
       },
       "./src/btc-usdt.ts": {
-        "version": "e8f86018ae1057930d0a09a883c916e39c9cbb3480332e817de401d59a22a6dd",
+        "version": "d48d4ad9b3817d2c96364a7f115731f7327e43b60171fed6bf23bef1372192fd",
         "signature": "504767e2cc400d29e57244ff4717af5508f9502f736d5d6cf77ea4dd901c8aa4",
         "affectsGlobalScope": false
       },
@@ -1179,6 +1194,18 @@
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/@types/node/stream.d.ts"
       ],
+      "./node_modules/interfaces/dist/context.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
+      "./node_modules/interfaces/dist/data.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts"
+      ],
+      "./node_modules/interfaces/dist/index.d.ts": [
+        "./node_modules/interfaces/dist/context.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
       "./node_modules/koa-ws-filter/dist/index.d.ts": [
         "./node_modules/@types/koa/index.d.ts",
         "./node_modules/koa-ws-filter/node_modules/@types/ws/index.d.ts"
@@ -1211,10 +1238,12 @@
         "./node_modules/@types/node/index.d.ts"
       ],
       "./src/btc-usd-swap-usd.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./src/interfaces.ts",
         "./src/normalizer.ts"
       ],
       "./src/btc-usdt.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./src/interfaces.ts",
         "./src/normalizer.ts"
       ],
@@ -1806,6 +1835,18 @@
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/@types/node/stream.d.ts"
       ],
+      "./node_modules/interfaces/dist/context.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
+      "./node_modules/interfaces/dist/data.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts"
+      ],
+      "./node_modules/interfaces/dist/index.d.ts": [
+        "./node_modules/interfaces/dist/context.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
       "./node_modules/koa-ws-filter/dist/index.d.ts": [
         "./node_modules/@types/koa/index.d.ts",
         "./node_modules/koa-ws-filter/node_modules/@types/ws/index.d.ts"
@@ -2117,6 +2158,7 @@
       "../../../../node_modules/@types/koa-bodyparser/index.d.ts",
       "../../../../node_modules/@types/koa/index.d.ts",
       "./node_modules/@types/accepts/index.d.ts",
+      "./node_modules/@types/big.js/index.d.ts",
       "./node_modules/@types/body-parser/index.d.ts",
       "./node_modules/@types/connect/index.d.ts",
       "./node_modules/@types/content-disposition/index.d.ts",
@@ -2199,6 +2241,8 @@
       "./node_modules/@types/serve-static/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/form-data/index.d.ts",
+      "./node_modules/interfaces/dist/context.d.ts",
+      "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/koa-ws-filter/dist/index.d.ts",
       "./node_modules/koa-ws-filter/node_modules/@types/ws/index.d.ts",

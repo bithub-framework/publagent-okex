@@ -21,6 +21,7 @@
     "devDependencies": {},
     "dependencies": {
         "@koa/router": "^9.4.0",
+        "@types/big.js": "^6.0.1",
         "@types/koa": "^2.11.6",
         "@types/koa__router": "^8.0.3",
         "@types/lodash": "^4.14.165",
@@ -28,6 +29,7 @@
         "@types/node-fetch": "^2.5.7",
         "@types/pako": "^1.0.1",
         "@types/ws": "^7.4.0",
+        "big.js": "^6.0.3",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "koa": "^2.8.2",
         "koa-ws-filter": "https://gitee.com/zimtsui/koa-ws-filter.git",

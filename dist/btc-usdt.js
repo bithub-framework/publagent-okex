@@ -1,9 +1,10 @@
 import Normalizer from './normalizer';
 import { ASK, BID, } from './interfaces';
+import Big from 'big.js';
 function normalizeRawOrder(rawOrder, side) {
     return {
-        price: Number.parseFloat(rawOrder[1]),
-        quantity: Number.parseFloat(rawOrder[1]),
+        price: new Big(rawOrder[0]),
+        quantity: new Big(rawOrder[1]),
         side,
     };
 }
@@ -18,8 +19,8 @@ class BtcUsdt extends Normalizer {
     normalizeRawTrade(rawTrade) {
         return {
             side: rawTrade.side === 'buy' ? BID : ASK,
-            price: Number.parseFloat(rawTrade.price),
-            quantity: Number.parseFloat(rawTrade.size),
+            price: new Big(rawTrade.price),
+            quantity: new Big(rawTrade.size),
             time: new Date(rawTrade.timestamp).getTime(),
             id: rawTrade.trade_id,
         };
