@@ -1,23 +1,14 @@
 {
-    "name": "public-agent-okex-websocket",
+    "name": "publagent-okex",
     "version": "0.0.1",
     "description": "",
-    "type": "module",
-    "main": "./dist/public-agent.js",
-    "types": "./dist/public-agent.d.ts",
+    "main": "./build/agent.js",
+    "types": "./build/agent.d.ts",
     "scripts": {
-        "build": "tsc -b"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/zimtsui/public-agent-okex-websocket.git"
+        "build": "tsc -b ./src/tsconfig.json"
     },
     "author": "Zim",
     "license": "SEE LICENSE IN ./LICENSE",
-    "bugs": {
-        "url": "https://github.com/zimtsui/public-agent-okex-websocket/issues"
-    },
-    "homepage": "https://github.com/zimtsui/public-agent-okex-websocket#readme",
     "devDependencies": {},
     "dependencies": {
         "@koa/router": "^9.4.0",
