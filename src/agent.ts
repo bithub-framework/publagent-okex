@@ -1,40 +1,38 @@
-import Startable from 'startable';
+import { Startable } from 'startable';
 import { EventEmitter } from 'events';
-import WsServer from './ws-server';
-import { BtcUsdt } from './btc-usdt';
-import { BtcUsdSwapUsd } from './btc-usd-swap-usd';
-import { Deserializer } from './deserializer';
+import { Stream } from './stream';
+import { ExtractorConstructor, ExtractorLike } from './extractor';
+import { Server } from './server';
 
-class PublicAgentOkexWebsocket extends Startable {
+
+export class PublagentOkex extends Startable {
     private broadcast = new EventEmitter();
-    private deserializer = new Deserializer();
-    private btcUsdt = new BtcUsdt(
-        this.deserializer,
-        this.broadcast,
-    );
-    private btcUsdSwapUsd = new BtcUsdSwapUsd(
-        this.deserializer,
-        this.broadcast,
-    );
-    private wsServer = new WsServer(this.broadcast);
+    private stream = new Stream();
+    private extractors: ExtractorLike[];
+    private servers: Server[];
+
+    constructor(extractorConstructors: ExtractorConstructor[]) {
+        super();
+        this.stream.on('error', console.error);
+        this.extractors = extractorConstructors.map(extractorConstructor =>
+            new extractorConstructor(this.stream, this.broadcast));
+        this.servers = this.extractors.map(extractor =>
+            new Server(extractor.mid, this.broadcast));
+    }
 
     protected async _start(): Promise<void> {
-        this.deserializer.on('error', console.error);
-        await this.deserializer.start(err => void this.stop(err).catch(() => { }));
-        await this.btcUsdt.start(err => void this.stop(err).catch(() => { }));
-        await this.btcUsdSwapUsd.start(err => void this.stop(err).catch(() => { }));
-        await this.wsServer.start(err => void this.stop(err).catch(() => { }));
+        await this.stream.start(this.starp);
+        for (const extractor of this.extractors)
+            await extractor.start(this.starp);
+        for (const server of this.servers)
+            await server.start(this.starp);
     }
 
     protected async _stop(): Promise<void> {
-        await this.btcUsdt.stop();
-        await this.btcUsdSwapUsd.stop();
-        await this.wsServer.stop();
-        await this.deserializer.stop();
+        for (const server of this.servers)
+            await server.stop();
+        for (const extractor of this.extractors)
+            await extractor.stop();
+        await this.stream.stop();
     }
 }
-
-export {
-    PublicAgentOkexWebsocket as default,
-    PublicAgentOkexWebsocket,
-};

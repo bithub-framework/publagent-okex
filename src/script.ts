@@ -1,16 +1,18 @@
 import { adaptor } from 'startable';
-import PublicAgent from './public-agent';
+import { lockPidFile } from 'lock-pid-file';
+import { PublagentOkex } from './agent';
+import { OkexSpotBtcUsdt } from './okex-spot-btc-usdt';
+import { OkexPerpetualBtcUsdt } from './okex-perpetual-btc-usdt';
 
-console.log = (...args: any[]) => {
-    console.info(new Date());
-    console.info(...args);
-}
+const agent = new PublagentOkex([
+    OkexSpotBtcUsdt,
+    OkexPerpetualBtcUsdt,
+]);
 
-console.log('Starting');
+lockPidFile('publagent-okex');
 
-const publicAgent = new PublicAgent();
-adaptor(publicAgent);
+adaptor(agent);
 
-publicAgent.start().then(() => {
+agent.start().then(() => {
     console.log('Started');
 }, () => { });

@@ -1,56 +1,68 @@
 export * from 'interfaces';
 
-export type Channel = 'trades' | 'orderbook';
+export type RawChannel = 'trades' | 'books5';
+export type SubscriptionOperation = 'subscribe' | 'unsubscribe';
 
-export type Operation = 'subscribe' | 'unsubscribe';
-
-export interface RawMessage {
-    table?: string;
-    event?: 'error' | Operation;
-}
-
-export interface RawUnSub extends RawMessage {
-    event: Operation;
-    channel: string;
-}
-
-export interface RawError extends RawMessage {
+export interface RawError {
     event: 'error';
-    message: string;
+    code: string;
+    msg: string;
+}
+export function isRawError(rawMessage: any): rawMessage is RawError {
+    return rawMessage.event === 'error';
 }
 
-export interface RawData extends RawMessage {
-    table: string;
-    data: RawDataData[];
+export interface RawTradesMessage {
+    arg: {
+        channel: 'trades';
+        instId: string;
+    };
+    data: {
+        instId: string;
+        tradeId: string;
+        px: string;
+        sz: string;
+        side: 'buy' | 'sell';
+        ts: string;
+    }[];
+}
+export function isRawTradesMessage(message: any, rawInstrumentId: string): message is RawTradesMessage {
+    return message.arg?.channel === 'trades' &&
+        message.arg?.instId === rawInstrumentId;
 }
 
-export interface RawDataData {
-    timestamp: string;
-    instrument_id: string;
+export interface RawOrderbookMessage {
+    arg: {
+        channel: 'books5';
+        instId: string;
+    };
+    action: 'snapshot';
+    data: {
+        asks: [string, string, string, string][];
+        bids: [string, string, string, string][];
+        ts: string;
+        checksum: number;
+    }[];
+}
+export function isRawOrderbookMessage(message: any, rawInstrumentId: string): message is RawOrderbookMessage {
+    return message.arg?.channel === 'books5' &&
+        message.arg?.instId === rawInstrumentId;
 }
 
-export interface RawTrade extends RawDataData {
-    price: string;
-    side: 'buy' | 'sell';
-    size: string;
-    trade_id: string;
+export interface RawUnSubscriptionMessage {
+    event: SubscriptionOperation;
+    arg: {
+        channel: string;
+        instId: string;
+    }
 }
-
-export interface RawDataTrades extends RawData {
-    table: string;
-    data: RawTrade[];
-}
-
-export type RawOrder = [string, string, number];
-
-export interface RawOrderbook extends RawDataData {
-    asks: RawOrder[];
-    bids: RawOrder[];
-    checksum?: number;
-}
-
-export interface RawDataOrderbook extends RawData {
-    table: string;
-    action?: 'partial' | 'update';
-    data: RawOrderbook[];
+export function isRawUnSubscription(
+    message: any,
+    operation: SubscriptionOperation,
+    rawInstrumentId: string,
+    rawChannel: RawChannel,
+): message is RawUnSubscriptionMessage {
+    return message.event === operation &&
+        message.arg?.channel === rawChannel &&
+        message.arg?.instId === rawInstrumentId;
 }
