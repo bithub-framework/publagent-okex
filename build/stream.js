@@ -11,7 +11,7 @@ class Stream extends startable_1.Startable {
     async _start() {
         this.socket = Bluebird.promisifyAll(new websocket_1.Websocket(config_1.OKEX_WEBSOCKET_URL));
         const [res] = await events_1.once(this.socket, 'upgrade');
-        net_keepalive_1.setUserTimeout(res.socket, 10 * 1000);
+        net_keepalive_1.setUserTimeout(res.socket, config_1.TCP_USER_TIMEOUT);
         this.socket.on('error', err => this.emit('error', err));
         this.socket.on('close', (code, reason) => void this.starp(new Error(reason)));
         this.socket.on('message', (message) => {
