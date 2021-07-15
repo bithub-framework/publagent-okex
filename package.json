@@ -30,6 +30,6 @@
         "net-keepalive": "^2.1.0",
         "node-fetch": "^2.6.1",
         "startable": "https://gitee.com/zimtsui/startable.git",
-        "ws": "^7.4.1"
+        "ws": "^7.4.6"
     }
 }
