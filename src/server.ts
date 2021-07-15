@@ -2,7 +2,6 @@ import { Startable } from 'startable';
 import { EventEmitter, once } from 'events';
 import Koa = require('koa');
 import Router = require('@koa/router');
-import _ = require('lodash');
 import { KoaWsFilter, Upgraded } from 'koa-ws-filter';
 import { createServer } from 'http';
 import { join } from 'path';

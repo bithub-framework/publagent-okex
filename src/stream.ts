@@ -1,5 +1,4 @@
 import { Startable } from 'startable';
-import _ = require('lodash');
 import { Websocket } from './websocket';
 import { once } from 'events';
 import { IncomingMessage } from 'http';
