@@ -15,9 +15,9 @@ lock_pid_file_1.lockPidFile('publagent-okex');
 startable_1.adaptor(agent);
 agent.start().then(() => {
     console.log('Started');
+    const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
+    const socketFilePath = path_1.join(XDG_RUNTIME_DIR, `okex-spot-btc-usdt.socket`);
+    const ws = new WebSocket(`ws+unix://${socketFilePath}:/trades`);
+    ws.on('message', console.log);
 }, () => { });
-const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
-const socketFilePath = path_1.join(XDG_RUNTIME_DIR, `okex-spot-btc-usdt.socket`);
-const ws = new WebSocket(`ws+unix://${socketFilePath}:/trades`);
-ws.on('message', console.log);
 //# sourceMappingURL=index.js.map
