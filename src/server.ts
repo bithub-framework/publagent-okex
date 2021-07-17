@@ -27,6 +27,39 @@ export class Server extends Startable {
     ) {
         super();
 
+        this.router.all('/', async (ctx, next) => {
+            const client = await ctx.upgrade();
+            const onTrades = (trades: Trade[]): void => {
+                const message = JSON.stringify({
+                    event: 'trades',
+                    data: trades,
+                });
+                client.send(message);
+            }
+            const onOrderbook = (orderbook: Orderbook): void => {
+                const shallowBook: Orderbook = {
+                    [Side.BID]: orderbook[Side.BID].slice(0, ctx.query.depth),
+                    [Side.ASK]: orderbook[Side.ASK].slice(0, ctx.query.depth),
+                    time: orderbook.time,
+                }
+                const message = JSON.stringify({
+                    event: 'orderbook',
+                    data: shallowBook,
+                });
+                client.send(message);
+            }
+            this.broadcast.on(`${mid}/trades`, onTrades);
+            this.broadcast.on(`${mid}/orderbook`, onOrderbook);
+            client.on('error', console.error);
+            client.on('close', () => {
+                this.broadcast.off(`${mid}/trades`, onTrades);
+                this.broadcast.off(`${mid}/orderbook`, onOrderbook);
+            });
+
+            await next();
+        });
+
+
         this.router.all('/trades', async (ctx, next) => {
             const client = await ctx.upgrade();
             const onData = (trades: Trade[]): void => {

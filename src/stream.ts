@@ -3,11 +3,9 @@ import { Websocket } from './websocket';
 import { once } from 'events';
 import { IncomingMessage } from 'http';
 import Bluebird = require('bluebird');
-import { setUserTimeout } from 'net-keepalive';
 import {
     OKEX_WEBSOCKET_URL,
     PING_INTERVAL,
-    TCP_USER_TIMEOUT,
 } from './config';
 
 declare module './websocket' {
@@ -24,7 +22,7 @@ export class Stream extends Startable {
     protected async _start() {
         this.socket = Bluebird.promisifyAll(new Websocket(OKEX_WEBSOCKET_URL));
         const [res] = <[IncomingMessage]>await once(this.socket, 'upgrade');
-        setUserTimeout(res.socket, TCP_USER_TIMEOUT);
+        // setUserTimeout(res.socket, TCP_USER_TIMEOUT);
         this.socket.on('error', err => this.emit('error', err));
         this.socket.on('close', (code, reason) => void this.starp(new Error(reason)));
 

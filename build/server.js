@@ -21,6 +21,36 @@ class Server extends startable_1.Startable {
         this.koa = new Koa();
         this.router = new Router();
         this.filter = new koa_ws_filter_1.KoaWsFilter();
+        this.router.all('/', async (ctx, next) => {
+            const client = await ctx.upgrade();
+            const onTrades = (trades) => {
+                const message = JSON.stringify({
+                    event: 'trades',
+                    data: trades,
+                });
+                client.send(message);
+            };
+            const onOrderbook = (orderbook) => {
+                const shallowBook = {
+                    [interfaces_1.Side.BID]: orderbook[interfaces_1.Side.BID].slice(0, ctx.query.depth),
+                    [interfaces_1.Side.ASK]: orderbook[interfaces_1.Side.ASK].slice(0, ctx.query.depth),
+                    time: orderbook.time,
+                };
+                const message = JSON.stringify({
+                    event: 'orderbook',
+                    data: shallowBook,
+                });
+                client.send(message);
+            };
+            this.broadcast.on(`${mid}/trades`, onTrades);
+            this.broadcast.on(`${mid}/orderbook`, onOrderbook);
+            client.on('error', console.error);
+            client.on('close', () => {
+                this.broadcast.off(`${mid}/trades`, onTrades);
+                this.broadcast.off(`${mid}/orderbook`, onOrderbook);
+            });
+            await next();
+        });
         this.router.all('/trades', async (ctx, next) => {
             const client = await ctx.upgrade();
             const onData = (trades) => {
