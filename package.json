@@ -5,7 +5,9 @@
     "main": "./build/agent.js",
     "types": "./build/agent.d.ts",
     "scripts": {
-        "build": "tsc -b ./src/tsconfig.json"
+        "build": "tsc -b ./src/tsconfig.json",
+        "build-test": "tsc -b ./test/src/tsconfig.json",
+        "test": "npm run build-test && node --enable-source-maps ./test/build/index.js"
     },
     "author": "Zim",
     "license": "SEE LICENSE IN ./LICENSE",

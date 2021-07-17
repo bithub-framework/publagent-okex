@@ -1,6 +1,6 @@
 import { adaptor } from 'startable';
 import { lockPidFile } from 'lock-pid-file';
-import WebSocket from 'ws';
+import WebSocket = require('ws');
 import { join } from 'path';
 import { PublagentOkex } from '../../build/agent';
 import { OkexSpotBtcUsdt } from '../../build/okex-spot-btc-usdt';
