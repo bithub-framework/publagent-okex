@@ -10,7 +10,6 @@ import fse = require('fs-extra');
 import {
     Trade,
     Orderbook,
-    Side,
 } from './interfaces';
 const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
@@ -39,14 +38,9 @@ export class Server extends Startable {
                 client.send(message);
             }
             const onOrderbook = (orderbook: Orderbook): void => {
-                const shallowBook: Orderbook = {
-                    [Side.BID]: orderbook[Side.BID].slice(0, ctx.query.depth),
-                    [Side.ASK]: orderbook[Side.ASK].slice(0, ctx.query.depth),
-                    time: orderbook.time,
-                }
                 const message = JSON.stringify({
                     event: 'orderbook',
-                    data: shallowBook,
+                    data: orderbook,
                 });
                 client.send(message);
             }
@@ -80,12 +74,7 @@ export class Server extends Startable {
         this.router.all('/orderbook', async (ctx, next) => {
             const client = await ctx.upgrade();
             const onData = (orderbook: Orderbook): void => {
-                const shallowBook: Orderbook = {
-                    [Side.BID]: orderbook[Side.BID].slice(0, ctx.query.depth),
-                    [Side.ASK]: orderbook[Side.ASK].slice(0, ctx.query.depth),
-                    time: orderbook.time,
-                }
-                const message = JSON.stringify(shallowBook);
+                const message = JSON.stringify(orderbook);
                 client.send(message);
             }
             this.broadcast.on(`${mid}/orderbook`, onData);

@@ -9,7 +9,10 @@ import {
 } from './interfaces';
 import Big from 'big.js';
 
-function normalizeRawOrder(rawBookOrder: RawOrderbookMessage['data'][0]['asks'][0], side: Side): BookOrder {
+function normalizeRawOrder(
+    rawBookOrder: RawOrderbookMessage['data'][0]['asks'][0],
+    side: Side,
+): BookOrder {
     return {
         price: new Big(rawBookOrder[0]),
         quantity: new Big(rawBookOrder[1]),

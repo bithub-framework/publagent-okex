@@ -1,7 +1,9 @@
-import { Startable, StartableLike } from 'startable';
+import { Startable } from 'startable';
 import { Stream } from './stream';
 import { EventEmitter } from 'events';
 import { Server } from './server';
+import assert = require('assert');
+import { kebabCase } from 'identifier-cases';
 import {
     Trade,
     Orderbook,
@@ -53,6 +55,7 @@ export abstract class Extractor extends Startable {
     }
 
     protected async _start(): Promise<void> {
+        assert(kebabCase.test(this.mid));
         this.server = new Server(this.mid, this.broadcast);
         await this.subscriptionOperate('subscribe', 'trades')
         await this.subscriptionOperate('subscribe', 'books5');
@@ -78,7 +81,8 @@ export abstract class Extractor extends Startable {
         });
         await new Promise<void>((resolve, reject) => {
             const onMessage = (message: any) => {
-                if (isRawUnSubscription(message,
+                if (isRawUnSubscription(
+                    message,
                     operation,
                     this.rawInstrumentId,
                     rawChannel,

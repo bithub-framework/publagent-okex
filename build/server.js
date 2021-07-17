@@ -10,7 +10,6 @@ const http_1 = require("http");
 const path_1 = require("path");
 const assert = require("assert");
 const fse = require("fs-extra");
-const interfaces_1 = require("./interfaces");
 const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
@@ -33,14 +32,9 @@ class Server extends startable_1.Startable {
                 client.send(message);
             };
             const onOrderbook = (orderbook) => {
-                const shallowBook = {
-                    [interfaces_1.Side.BID]: orderbook[interfaces_1.Side.BID].slice(0, ctx.query.depth),
-                    [interfaces_1.Side.ASK]: orderbook[interfaces_1.Side.ASK].slice(0, ctx.query.depth),
-                    time: orderbook.time,
-                };
                 const message = JSON.stringify({
                     event: 'orderbook',
-                    data: shallowBook,
+                    data: orderbook,
                 });
                 client.send(message);
             };
@@ -69,12 +63,7 @@ class Server extends startable_1.Startable {
         this.router.all('/orderbook', async (ctx, next) => {
             const client = await ctx.upgrade();
             const onData = (orderbook) => {
-                const shallowBook = {
-                    [interfaces_1.Side.BID]: orderbook[interfaces_1.Side.BID].slice(0, ctx.query.depth),
-                    [interfaces_1.Side.ASK]: orderbook[interfaces_1.Side.ASK].slice(0, ctx.query.depth),
-                    time: orderbook.time,
-                };
-                const message = JSON.stringify(shallowBook);
+                const message = JSON.stringify(orderbook);
                 client.send(message);
             };
             this.broadcast.on(`${mid}/orderbook`, onData);

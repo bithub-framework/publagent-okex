@@ -22,6 +22,7 @@
         "big.js": "^6.0.3",
         "bluebird": "^3.7.2",
         "fs-extra": "^10.0.0",
+        "identifier-cases": "https://gitee.com/zimtsui/identifier-cases.git",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "koa": "^2.8.2",
         "koa-ws-filter": "https://gitee.com/zimtsui/koa-ws-filter.git",

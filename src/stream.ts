@@ -1,7 +1,6 @@
 import { Startable } from 'startable';
 import WebSocket = require('ws');
 import { once } from 'events';
-import { IncomingMessage } from 'http';
 import Bluebird = require('bluebird');
 import {
     OKEX_WEBSOCKET_URL,
@@ -15,7 +14,6 @@ export class Stream extends Startable {
 
     protected async _start() {
         this.socket = Bluebird.promisifyAll(new WebSocket(OKEX_WEBSOCKET_URL));
-        const [res] = <[IncomingMessage]>await once(this.socket, 'upgrade');
         this.socket.on('error', err => this.emit('error', err));
         this.socket.on('close', (code, reason) => void this.starp(new Error(reason)));
 

@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Extractor = void 0;
 const startable_1 = require("startable");
 const server_1 = require("./server");
+const assert = require("assert");
+const identifier_cases_1 = require("identifier-cases");
 const interfaces_1 = require("./interfaces");
 class Extractor extends startable_1.Startable {
     constructor(stream, broadcast) {
@@ -28,6 +30,7 @@ class Extractor extends startable_1.Startable {
         });
     }
     async _start() {
+        assert(identifier_cases_1.kebabCase.test(this.mid));
         this.server = new server_1.Server(this.mid, this.broadcast);
         await this.subscriptionOperate('subscribe', 'trades');
         await this.subscriptionOperate('subscribe', 'books5');
