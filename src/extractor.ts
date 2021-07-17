@@ -1,6 +1,7 @@
 import { Startable, StartableLike } from 'startable';
 import { Stream } from './stream';
 import { EventEmitter } from 'events';
+import { Server } from './server';
 import {
     Trade,
     Orderbook,
@@ -14,20 +15,18 @@ import {
     RawChannel,
 } from './interfaces';
 
-export interface ExtractorLike extends StartableLike {
-    mid: string;
-}
 
 export interface ExtractorConstructor {
-    new(stream: Stream, broadcast: EventEmitter): ExtractorLike;
+    new(stream: Stream, broadcast: EventEmitter): Extractor;
 }
 
-export abstract class Extractor extends Startable implements ExtractorLike {
+export abstract class Extractor extends Startable {
     // TS 暂不支持 static abstract 成员
     protected abstract normalizeRawTrade(rawTrade: RawTradesMessage['data'][0]): Trade;
     protected abstract normalizeRawOrderbook(rawOrderbook: RawOrderbookMessage['data'][0]): Orderbook;
-    public abstract mid: string;
+    protected abstract mid: string;
     protected abstract rawInstrumentId: string;
+    private server?: Server;
 
     constructor(
         private stream: Stream,
@@ -54,11 +53,14 @@ export abstract class Extractor extends Startable implements ExtractorLike {
     }
 
     protected async _start(): Promise<void> {
+        this.server = new Server(this.mid, this.broadcast);
         await this.subscriptionOperate('subscribe', 'trades')
         await this.subscriptionOperate('subscribe', 'books5');
+        await this.server.start(this.starp);
     }
 
     protected async _stop() {
+        if (this.server) await this.server.stop();
         await this.subscriptionOperate('unsubscribe', 'trades');
         await this.subscriptionOperate('unsubscribe', 'books5');
     }

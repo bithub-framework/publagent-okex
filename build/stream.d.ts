@@ -1,9 +1,4 @@
 import { Startable } from 'startable';
-declare module './websocket' {
-    interface Websocket {
-        sendAsync(message: string): Promise<void>;
-    }
-}
 export declare class Stream extends Startable {
     private socket?;
     private pingTimer?;

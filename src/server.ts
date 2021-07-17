@@ -6,11 +6,13 @@ import { KoaWsFilter, Upgraded } from 'koa-ws-filter';
 import { createServer } from 'http';
 import { join } from 'path';
 import assert = require('assert');
+import fse = require('fs-extra');
 import {
     Trade,
     Orderbook,
     Side,
 } from './interfaces';
+const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
 
@@ -102,6 +104,7 @@ export class Server extends Startable {
 
     protected async _start() {
         const socketFilePath = join(<string>XDG_RUNTIME_DIR, `${this.mid}.socket`);
+        removeSync(socketFilePath);
         this.httpServer.listen(socketFilePath);
         await once(this.httpServer, 'listening');
     }

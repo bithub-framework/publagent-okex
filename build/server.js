@@ -9,7 +9,9 @@ const koa_ws_filter_1 = require("koa-ws-filter");
 const http_1 = require("http");
 const path_1 = require("path");
 const assert = require("assert");
+const fse = require("fs-extra");
 const interfaces_1 = require("./interfaces");
+const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
 class Server extends startable_1.Startable {
@@ -88,6 +90,7 @@ class Server extends startable_1.Startable {
     }
     async _start() {
         const socketFilePath = path_1.join(XDG_RUNTIME_DIR, `${this.mid}.socket`);
+        removeSync(socketFilePath);
         this.httpServer.listen(socketFilePath);
         await events_1.once(this.httpServer, 'listening');
     }

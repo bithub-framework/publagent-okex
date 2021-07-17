@@ -1,5 +1,5 @@
 import { Startable } from 'startable';
-import { Websocket } from './websocket';
+import WebSocket = require('ws');
 import { once } from 'events';
 import { IncomingMessage } from 'http';
 import Bluebird = require('bluebird');
@@ -8,21 +8,14 @@ import {
     PING_INTERVAL,
 } from './config';
 
-declare module './websocket' {
-    interface Websocket {
-        sendAsync(message: string): Promise<void>;
-    }
-}
-
 
 export class Stream extends Startable {
-    private socket?: Websocket;
+    private socket?: WebSocket;
     private pingTimer?: NodeJS.Timeout;
 
     protected async _start() {
-        this.socket = Bluebird.promisifyAll(new Websocket(OKEX_WEBSOCKET_URL));
+        this.socket = Bluebird.promisifyAll(new WebSocket(OKEX_WEBSOCKET_URL));
         const [res] = <[IncomingMessage]>await once(this.socket, 'upgrade');
-        // setUserTimeout(res.socket, TCP_USER_TIMEOUT);
         this.socket.on('error', err => this.emit('error', err));
         this.socket.on('close', (code, reason) => void this.starp(new Error(reason)));
 
@@ -37,6 +30,7 @@ export class Stream extends Startable {
         await once(this.socket, 'open');
 
         this.pingTimer = setInterval(() => {
+            // @ts-ignore
             this.socket!.sendAsync('ping').catch(this.starp);
         }, PING_INTERVAL);
     }
@@ -50,6 +44,7 @@ export class Stream extends Startable {
     }
 
     public async send(object: {}): Promise<void> {
+        // @ts-ignore
         await this.socket!.sendAsync(JSON.stringify(object));
     }
 }

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Extractor = void 0;
 const startable_1 = require("startable");
+const server_1 = require("./server");
 const interfaces_1 = require("./interfaces");
 class Extractor extends startable_1.Startable {
     constructor(stream, broadcast) {
@@ -27,10 +28,14 @@ class Extractor extends startable_1.Startable {
         });
     }
     async _start() {
+        this.server = new server_1.Server(this.mid, this.broadcast);
         await this.subscriptionOperate('subscribe', 'trades');
         await this.subscriptionOperate('subscribe', 'books5');
+        await this.server.start(this.starp);
     }
     async _stop() {
+        if (this.server)
+            await this.server.stop();
         await this.subscriptionOperate('unsubscribe', 'trades');
         await this.subscriptionOperate('unsubscribe', 'books5');
     }
