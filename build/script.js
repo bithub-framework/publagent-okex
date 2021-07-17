@@ -11,7 +11,4 @@ const agent = new agent_1.PublagentOkex([
 ]);
 lock_pid_file_1.lockPidFile('publagent-okex');
 startable_1.adaptor(agent);
-agent.start().then(() => {
-    console.log('Started');
-}, () => { });
 //# sourceMappingURL=script.js.map

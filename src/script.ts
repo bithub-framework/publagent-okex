@@ -13,6 +13,3 @@ lockPidFile('publagent-okex');
 
 adaptor(agent);
 
-agent.start().then(() => {
-    console.log('Started');
-}, () => { });
