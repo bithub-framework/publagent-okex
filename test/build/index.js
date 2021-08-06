@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const startable_1 = require("startable");
+const startable_adaptor_1 = require("startable-adaptor");
 const lock_pid_file_1 = require("lock-pid-file");
 const WebSocket = require("ws");
 const path_1 = require("path");
@@ -12,7 +12,7 @@ const agent = new agent_1.PublagentOkex([
     okex_perpetual_btc_usdt_1.OkexPerpetualBtcUsdt,
 ]);
 lock_pid_file_1.lockPidFile('publagent-okex');
-startable_1.adaptor(agent);
+startable_adaptor_1.adaptor(agent);
 agent.start().then(() => {
     console.log('Started');
     const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
