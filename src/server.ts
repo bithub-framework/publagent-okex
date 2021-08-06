@@ -11,6 +11,7 @@ import {
     Trade,
     Orderbook,
 } from './interfaces';
+import { Rwlock } from 'coroutine-locks';
 const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
@@ -21,6 +22,7 @@ export class Server extends Startable {
     private koa = new Koa();
     private router = new Router<any, Upgraded<{}>>();
     private filter = new KoaWsFilter();
+    private rwlock = new Rwlock();
 
     constructor(
         private mid: string,
@@ -87,6 +89,11 @@ export class Server extends Startable {
         });
 
         this.filter.ws(this.router.routes());
+        this.koa.use(async (ctx, next) => {
+            await this.rwlock.rlock();
+            await next();
+            this.rwlock.unlock();
+        });
         this.koa.use(this.filter.protocols());
         this.httpServer.on('request', this.koa.callback());
     }
@@ -100,6 +107,8 @@ export class Server extends Startable {
 
     protected async _stop() {
         this.httpServer.close();
+        await this.rwlock.wlock();
+        this.rwlock.unlock();
         this.filter.closeAsync().catch(() => { });
         await once(this.httpServer, 'close');
     }

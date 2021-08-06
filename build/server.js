@@ -10,6 +10,7 @@ const http_1 = require("http");
 const path_1 = require("path");
 const assert = require("assert");
 const fse = require("fs-extra");
+const coroutine_locks_1 = require("coroutine-locks");
 const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
@@ -22,6 +23,7 @@ class Server extends startable_1.Startable {
         this.koa = new Koa();
         this.router = new Router();
         this.filter = new koa_ws_filter_1.KoaWsFilter();
+        this.rwlock = new coroutine_locks_1.Rwlock();
         this.router.all('/', async (ctx, next) => {
             const client = await ctx.upgrade();
             const onTrades = (trades) => {
@@ -74,6 +76,11 @@ class Server extends startable_1.Startable {
             await next();
         });
         this.filter.ws(this.router.routes());
+        this.koa.use(async (ctx, next) => {
+            await this.rwlock.rlock();
+            await next();
+            this.rwlock.unlock();
+        });
         this.koa.use(this.filter.protocols());
         this.httpServer.on('request', this.koa.callback());
     }
@@ -85,6 +92,8 @@ class Server extends startable_1.Startable {
     }
     async _stop() {
         this.httpServer.close();
+        await this.rwlock.wlock();
+        this.rwlock.unlock();
         this.filter.closeAsync().catch(() => { });
         await events_1.once(this.httpServer, 'close');
     }

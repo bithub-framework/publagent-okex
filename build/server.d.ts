@@ -8,6 +8,7 @@ export declare class Server extends Startable {
     private koa;
     private router;
     private filter;
+    private rwlock;
     constructor(mid: string, broadcast: EventEmitter);
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
