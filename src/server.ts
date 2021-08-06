@@ -1,4 +1,4 @@
-import { Startable } from 'startable';
+import { Startable, ReadyState } from 'startable';
 import { EventEmitter, once } from 'events';
 import Koa = require('koa');
 import Router = require('@koa/router');
@@ -17,6 +17,10 @@ const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
 
 
+/*
+    stop 返回后，可能还有几个处理连接的线程没有结束，直接再次 start 可能导致
+    readyState 误判。因此这个 startable 对象不可复用。
+*/
 export class Server extends Startable {
     private httpServer = createServer();
     private koa = new Koa();
@@ -90,9 +94,11 @@ export class Server extends Startable {
 
         this.filter.ws(this.router.routes());
         this.koa.use(async (ctx, next) => {
-            await this.rwlock.rlock();
-            await next();
-            this.rwlock.unlock();
+            if (this.readyState === ReadyState.STARTED) {
+                await this.rwlock.rlock();
+                await next();
+                this.rwlock.unlock();
+            }
         });
         this.koa.use(this.filter.protocols());
         this.httpServer.on('request', this.koa.callback());

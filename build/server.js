@@ -14,6 +14,10 @@ const coroutine_locks_1 = require("coroutine-locks");
 const { removeSync } = fse;
 const XDG_RUNTIME_DIR = process.env['XDG_RUNTIME_DIR'];
 assert(XDG_RUNTIME_DIR);
+/*
+    stop 返回后，可能还有几个处理连接的线程没有结束，直接再次 start 可能导致
+    readyState 误判。因此这个 startable 对象不可复用。
+*/
 class Server extends startable_1.Startable {
     constructor(mid, broadcast) {
         super();
@@ -77,9 +81,11 @@ class Server extends startable_1.Startable {
         });
         this.filter.ws(this.router.routes());
         this.koa.use(async (ctx, next) => {
-            await this.rwlock.rlock();
-            await next();
-            this.rwlock.unlock();
+            if (this.readyState === "STARTED" /* STARTED */) {
+                await this.rwlock.rlock();
+                await next();
+                this.rwlock.unlock();
+            }
         });
         this.koa.use(this.filter.protocols());
         this.httpServer.on('request', this.koa.callback());
