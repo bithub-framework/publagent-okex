@@ -1,19 +1,19 @@
 import { Startable } from 'startable';
 import WebSocket = require('ws');
 import { once } from 'events';
-import Bluebird = require('bluebird');
 import {
     OKEX_WEBSOCKET_URL,
     PING_INTERVAL,
 } from './config';
 
 
+// 不可复用
 export class Stream extends Startable {
     private socket?: WebSocket;
     private pingTimer?: NodeJS.Timeout;
 
     protected async _start() {
-        this.socket = Bluebird.promisifyAll(new WebSocket(OKEX_WEBSOCKET_URL));
+        this.socket = new WebSocket(OKEX_WEBSOCKET_URL);
         this.socket.on('error', err => this.emit('error', err));
         this.socket.on('close', (code, reason) => void this.starp(new Error(reason)));
 
@@ -28,8 +28,7 @@ export class Stream extends Startable {
         await once(this.socket, 'open');
 
         this.pingTimer = setInterval(() => {
-            // @ts-ignore
-            this.socket!.sendAsync('ping').catch(this.starp);
+            this.socket!.send('ping', err => err && this.starp(err));
         }, PING_INTERVAL);
     }
 
@@ -42,7 +41,11 @@ export class Stream extends Startable {
     }
 
     public async send(object: {}): Promise<void> {
-        // @ts-ignore
-        await this.socket!.sendAsync(JSON.stringify(object));
+        await new Promise<void>((resolve, reject) => {
+            this.socket!.send(
+                JSON.stringify(object),
+                err => err ? reject(err) : resolve(),
+            );
+        });
     }
 }
