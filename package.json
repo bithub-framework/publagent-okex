@@ -14,7 +14,6 @@
     "dependencies": {
         "@koa/router": "^9.4.0",
         "@types/big.js": "^6.0.1",
-        "@types/bluebird": "^3.5.36",
         "@types/fs-extra": "^9.0.12",
         "@types/koa": "^2.11.6",
         "@types/koa__router": "^8.0.3",
